@@ -1,0 +1,755 @@
+$date
+	Thu Jul 24 09:48:10 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module debug_tb $end
+$var wire 4 ! mem_be [3:0] $end
+$var wire 32 " mem_rdata [31:0] $end
+$var wire 1 # mem_ready $end
+$var wire 32 $ mem_wdata [31:0] $end
+$var wire 1 % mem_we $end
+$var wire 1 & running $end
+$var wire 1 ' mem_re $end
+$var wire 32 ( mem_addr [31:0] $end
+$var wire 32 ) debug_pc [31:0] $end
+$var wire 32 * debug_instr [31:0] $end
+$var reg 1 + clk $end
+$var reg 1 , debug_en $end
+$var reg 1 - fiq $end
+$var reg 1 . halt $end
+$var reg 1 / irq $end
+$var reg 1 0 rst_n $end
+$scope module dut $end
+$var wire 1 + clk $end
+$var wire 1 , debug_en $end
+$var wire 32 1 debug_instr [31:0] $end
+$var wire 32 2 debug_pc [31:0] $end
+$var wire 1 - fiq $end
+$var wire 1 . halt $end
+$var wire 1 / irq $end
+$var wire 4 3 mem_be [3:0] $end
+$var wire 32 4 mem_rdata [31:0] $end
+$var wire 1 # mem_ready $end
+$var wire 32 5 mem_wdata [31:0] $end
+$var wire 1 % mem_we $end
+$var wire 32 6 reg_pc_out [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 7 thumb_mode $end
+$var wire 32 8 reg_spsr_out [31:0] $end
+$var wire 32 9 reg_rn_data [31:0] $end
+$var wire 32 : reg_rm_data [31:0] $end
+$var wire 32 ; reg_cpsr_out [31:0] $end
+$var wire 1 ' mem_re $end
+$var wire 32 < mem_addr [31:0] $end
+$var wire 32 = fetch_pc [31:0] $end
+$var wire 32 > fetch_instruction [31:0] $end
+$var wire 1 ? fetch_instr_valid $end
+$var wire 1 @ decode_valid $end
+$var wire 2 A decode_shift_type [1:0] $end
+$var wire 5 B decode_shift_amount [4:0] $end
+$var wire 1 C decode_set_flags $end
+$var wire 4 D decode_rn [3:0] $end
+$var wire 4 E decode_rm [3:0] $end
+$var wire 4 F decode_rd [3:0] $end
+$var wire 32 G decode_pc [31:0] $end
+$var wire 1 H decode_mem_writeback $end
+$var wire 1 I decode_mem_up $end
+$var wire 1 J decode_mem_pre $end
+$var wire 1 K decode_mem_load $end
+$var wire 1 L decode_mem_byte $end
+$var wire 1 M decode_is_memory $end
+$var wire 1 N decode_is_branch $end
+$var wire 4 O decode_instr_type [3:0] $end
+$var wire 12 P decode_immediate [11:0] $end
+$var wire 1 Q decode_imm_en $end
+$var wire 4 R decode_condition [3:0] $end
+$var wire 24 S decode_branch_offset [23:0] $end
+$var wire 1 T decode_branch_link $end
+$var wire 4 U decode_alu_op [3:0] $end
+$var wire 5 V current_mode [4:0] $end
+$var wire 1 W condition_passed $end
+$var wire 1 X alu_zero $end
+$var wire 32 Y alu_result [31:0] $end
+$var wire 1 Z alu_overflow $end
+$var wire 1 [ alu_negative $end
+$var wire 1 \ alu_carry_out $end
+$var reg 1 ] alu_carry_in $end
+$var reg 32 ^ alu_operand_a [31:0] $end
+$var reg 32 _ alu_operand_b [31:0] $end
+$var reg 1 ` branch_taken $end
+$var reg 32 a branch_target [31:0] $end
+$var reg 3 b current_state [2:0] $end
+$var reg 1 c fetch_en $end
+$var reg 1 d flush $end
+$var reg 1 e mode_change $end
+$var reg 3 f next_state [2:0] $end
+$var reg 32 g reg_cpsr_in [31:0] $end
+$var reg 1 h reg_cpsr_we $end
+$var reg 32 i reg_pc_in [31:0] $end
+$var reg 1 j reg_pc_we $end
+$var reg 32 k reg_rd_data [31:0] $end
+$var reg 1 l reg_rd_we $end
+$var reg 32 m reg_spsr_in [31:0] $end
+$var reg 1 n reg_spsr_we $end
+$var reg 1 & running $end
+$var reg 1 o stall $end
+$var reg 5 p target_mode [4:0] $end
+$scope function evaluate_condition $end
+$var reg 1 q c $end
+$var reg 4 r cond [3:0] $end
+$var reg 1 s n $end
+$var reg 1 t v $end
+$var reg 1 u z $end
+$upscope $end
+$scope module u_alu $end
+$var wire 1 ] carry_in $end
+$var wire 1 \ carry_out $end
+$var wire 1 + clk $end
+$var wire 32 v operand_a [31:0] $end
+$var wire 32 w operand_b [31:0] $end
+$var wire 1 Z overflow $end
+$var wire 32 x result [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 X zero $end
+$var wire 1 C set_flags $end
+$var wire 1 [ negative $end
+$var wire 4 y alu_op [3:0] $end
+$var reg 1 z alu_carry $end
+$var reg 1 { alu_overflow $end
+$var reg 32 | alu_result [31:0] $end
+$var reg 33 } extended_result [32:0] $end
+$upscope $end
+$scope module u_decode $end
+$var wire 1 T branch_link $end
+$var wire 24 ~ branch_offset [23:0] $end
+$var wire 1 + clk $end
+$var wire 4 !" condition [3:0] $end
+$var wire 1 @ decode_valid $end
+$var wire 1 d flush $end
+$var wire 1 Q imm_en $end
+$var wire 12 "" immediate [11:0] $end
+$var wire 1 M is_memory $end
+$var wire 1 L mem_byte $end
+$var wire 1 K mem_load $end
+$var wire 1 J mem_pre $end
+$var wire 1 I mem_up $end
+$var wire 1 H mem_writeback $end
+$var wire 32 #" pc_out [31:0] $end
+$var wire 4 $" rd [3:0] $end
+$var wire 4 %" rm [3:0] $end
+$var wire 4 &" rn [3:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 C set_flags $end
+$var wire 5 '" shift_amount [4:0] $end
+$var wire 2 (" shift_type [1:0] $end
+$var wire 1 o stall $end
+$var wire 1 7 thumb_mode $end
+$var wire 1 )" w_bit $end
+$var wire 1 *" u_bit $end
+$var wire 2 +" shift_type_field [1:0] $end
+$var wire 5 ," shift_amt_field [4:0] $end
+$var wire 1 -" s_bit $end
+$var wire 4 ." rn_field [3:0] $end
+$var wire 4 /" rm_field [3:0] $end
+$var wire 4 0" rd_field [3:0] $end
+$var wire 32 1" pc_in [31:0] $end
+$var wire 1 2" p_bit $end
+$var wire 6 3" op_code [5:0] $end
+$var wire 2 4" op_class [1:0] $end
+$var wire 1 5" l_bit_mem $end
+$var wire 1 6" l_bit $end
+$var wire 1 N is_branch $end
+$var wire 32 7" instruction [31:0] $end
+$var wire 1 ? instr_valid $end
+$var wire 12 8" imm_field [11:0] $end
+$var wire 1 9" i_bit $end
+$var wire 4 :" cond_field [3:0] $end
+$var wire 24 ;" branch_offset_field [23:0] $end
+$var wire 1 <" b_bit $end
+$var wire 4 =" alu_op [3:0] $end
+$var reg 4 >" instr_type [3:0] $end
+$var reg 32 ?" pc_reg [31:0] $end
+$var reg 1 @" valid_reg $end
+$upscope $end
+$scope module u_fetch $end
+$var wire 1 ` branch_taken $end
+$var wire 32 A" branch_target [31:0] $end
+$var wire 1 + clk $end
+$var wire 1 c fetch_en $end
+$var wire 1 d flush $end
+$var wire 1 ? instr_valid $end
+$var wire 32 B" instruction [31:0] $end
+$var wire 32 C" mem_rdata [31:0] $end
+$var wire 1 # mem_ready $end
+$var wire 32 D" pc_out [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 o stall $end
+$var wire 1 7 thumb_mode $end
+$var reg 2 E" current_state [1:0] $end
+$var reg 32 F" instr_buffer [31:0] $end
+$var reg 1 G" instr_ready $end
+$var reg 32 H" mem_addr [31:0] $end
+$var reg 1 ' mem_re $end
+$var reg 2 I" next_state [1:0] $end
+$var reg 32 J" pc [31:0] $end
+$upscope $end
+$scope module u_regfile $end
+$var wire 1 + clk $end
+$var wire 32 K" cpsr_in [31:0] $end
+$var wire 32 L" cpsr_out [31:0] $end
+$var wire 1 h cpsr_we $end
+$var wire 5 M" current_mode [4:0] $end
+$var wire 1 e mode_change $end
+$var wire 32 N" pc_in [31:0] $end
+$var wire 32 O" pc_out [31:0] $end
+$var wire 1 j pc_we $end
+$var wire 4 P" rd_addr [3:0] $end
+$var wire 32 Q" rd_data [31:0] $end
+$var wire 1 l rd_we $end
+$var wire 4 R" rm_addr [3:0] $end
+$var wire 32 S" rm_data [31:0] $end
+$var wire 4 T" rn_addr [3:0] $end
+$var wire 32 U" rn_data [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 32 V" spsr_in [31:0] $end
+$var wire 32 W" spsr_out [31:0] $end
+$var wire 1 n spsr_we $end
+$var wire 5 X" target_mode [4:0] $end
+$var reg 32 Y" cpsr [31:0] $end
+$var reg 32 Z" current_spsr [31:0] $end
+$var reg 32 [" rm_data_internal [31:0] $end
+$var reg 32 \" rn_data_internal [31:0] $end
+$var reg 32 ]" spsr_abt [31:0] $end
+$var reg 32 ^" spsr_fiq [31:0] $end
+$var reg 32 _" spsr_irq [31:0] $end
+$var reg 32 `" spsr_svc [31:0] $end
+$var reg 32 a" spsr_und [31:0] $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 b" i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 c" i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop2 $end
+$var integer 32 d" i [31:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b1111 d"
+b1111 c"
+b10000 b"
+b0 a"
+b0 `"
+b0 _"
+b0 ^"
+b0 ]"
+b0 \"
+b0 ["
+b0 Z"
+b10011 Y"
+b10011 X"
+b0 W"
+b0 V"
+b0 U"
+b0 T"
+b0 S"
+b0 R"
+b0 Q"
+b0 P"
+b0 O"
+b0 N"
+b10011 M"
+b10011 L"
+b10011 K"
+b0 J"
+b1 I"
+b0 H"
+0G"
+b0 F"
+b0 E"
+b0 D"
+b11100001101000000000000000000000 C"
+b0 B"
+b0 A"
+0@"
+b0 ?"
+b0 >"
+b0 ="
+0<"
+b0 ;"
+b0 :"
+09"
+b0 8"
+b0 7"
+06"
+05"
+b0 4"
+b0 3"
+02"
+b0 1"
+b0 0"
+b0 /"
+b0 ."
+0-"
+b0 ,"
+b0 +"
+0*"
+0)"
+b0 ("
+b0 '"
+b0 &"
+b0 %"
+b0 $"
+b0 #"
+b0 ""
+b0 !"
+b0 ~
+b0 }
+b0 |
+0{
+0z
+b0 y
+b0 x
+b0 w
+b0 v
+0u
+0t
+0s
+b0 r
+0q
+b10011 p
+0o
+0n
+b0 m
+0l
+b0 k
+1j
+b0 i
+0h
+b10011 g
+b0 f
+0e
+0d
+1c
+b0 b
+b0 a
+0`
+b0 _
+b0 ^
+0]
+0\
+0[
+0Z
+b0 Y
+1X
+0W
+b10011 V
+b0 U
+0T
+b0 S
+b0 R
+0Q
+b0 P
+b0 O
+0N
+0M
+0L
+0K
+0J
+0I
+0H
+b0 G
+b0 F
+b0 E
+b0 D
+0C
+b0 B
+b0 A
+0@
+0?
+b0 >
+b0 =
+b0 <
+b10011 ;
+b0 :
+b0 9
+b0 8
+07
+b0 6
+b0 5
+b11100001101000000000000000000000 4
+b1111 3
+b0 2
+b0 1
+00
+0/
+0.
+0-
+1,
+0+
+b0 *
+b0 )
+b0 (
+1'
+0&
+0%
+b0 $
+1#
+b11100001101000000000000000000000 "
+b1111 !
+$end
+#5
+b1111 d"
+b1111 c"
+b10000 b"
+1+
+#10
+0+
+#15
+b1111 d"
+b1111 c"
+b10000 b"
+1+
+#20
+0+
+#25
+b1111 d"
+b1111 c"
+b10000 b"
+1+
+#30
+0+
+#35
+b1111 d"
+b1111 c"
+b10000 b"
+1+
+#40
+0+
+#45
+b1111 d"
+b1111 c"
+b10000 b"
+1+
+#50
+0+
+10
+#55
+b0 O
+b0 >"
+1c
+b100 i
+b100 N"
+b100 (
+b100 <
+b100 H"
+b10 I"
+b100 =
+b100 1"
+b100 D"
+b100 J"
+b1 E"
+1&
+1+
+#60
+0+
+#65
+1W
+b1110 r
+b1 f
+b1101 U
+b1101 y
+b1101 ="
+1H
+1)"
+1I
+1*"
+1J
+12"
+b101000000000000000000000 S
+b101000000000000000000000 ~
+b101000000000000000000000 ;"
+16"
+b110100 3"
+b1110 R
+b1110 !"
+b1110 :"
+1?
+1c
+b1000 i
+b1000 N"
+b1 I"
+0'
+b1000 (
+b1000 <
+b1000 H"
+b0 O
+b0 >"
+b100 G
+b100 #"
+b100 ?"
+1G"
+b11100001101000000000000000000000 *
+b11100001101000000000000000000000 1
+b11100001101000000000000000000000 >
+b11100001101000000000000000000000 7"
+b11100001101000000000000000000000 B"
+b11100001101000000000000000000000 F"
+b10 E"
+b1000 =
+b1000 1"
+b1000 D"
+b1000 J"
+b100 )
+b100 2
+b100 6
+b100 O"
+1+
+#70
+0+
+#75
+0?
+b1100 i
+b1100 N"
+b10 f
+0c
+b10 I"
+1'
+b1100 (
+b1100 <
+b1100 H"
+b0 O
+b0 >"
+b1100 =
+b1100 1"
+b1100 D"
+b1100 J"
+b1 E"
+0G"
+1@
+1@"
+b1000 G
+b1000 #"
+b1000 ?"
+b1 b
+b1000 )
+b1000 2
+b1000 6
+b1000 O"
+1+
+#80
+0+
+#85
+b11 f
+1?
+b0 I"
+0'
+b0 O
+b0 >"
+b10 b
+0@
+0@"
+b1100 G
+b1100 #"
+b1100 ?"
+1G"
+b10 E"
+b1100 )
+b1100 2
+b1100 6
+b1100 O"
+1+
+#90
+0+
+#95
+0?
+b0 O
+b0 >"
+b100 f
+b0 E"
+0G"
+1@
+1@"
+b11 b
+1+
+#100
+0+
+#105
+b0 O
+b0 >"
+b0 f
+b100 b
+0@
+0@"
+1+
+#110
+0+
+#115
+b1 I"
+1'
+b0 O
+b0 >"
+1c
+b0 b
+1+
+#120
+0+
+#125
+b10 I"
+b10000 (
+b10000 <
+b10000 H"
+b0 O
+b0 >"
+1c
+b10000 i
+b10000 N"
+b1 E"
+b10000 =
+b10000 1"
+b10000 D"
+b10000 J"
+1+
+#130
+0+
+#135
+b1 f
+b10100 i
+b10100 N"
+1?
+1c
+b1 I"
+0'
+b10100 (
+b10100 <
+b10100 H"
+b0 O
+b0 >"
+b10100 =
+b10100 1"
+b10100 D"
+b10100 J"
+b10 E"
+1G"
+b10000 G
+b10000 #"
+b10000 ?"
+b10000 )
+b10000 2
+b10000 6
+b10000 O"
+1+
+#140
+0+
+#145
+0?
+b10 f
+0c
+b11000 i
+b11000 N"
+b10 I"
+1'
+b11000 (
+b11000 <
+b11000 H"
+b0 O
+b0 >"
+b1 b
+1@
+1@"
+b10100 G
+b10100 #"
+b10100 ?"
+0G"
+b1 E"
+b11000 =
+b11000 1"
+b11000 D"
+b11000 J"
+b10100 )
+b10100 2
+b10100 6
+b10100 O"
+1+
+#150
+0+
+#155
+1?
+b11 f
+b0 I"
+0'
+b0 O
+b0 >"
+b10 E"
+1G"
+0@
+0@"
+b11000 G
+b11000 #"
+b11000 ?"
+b10 b
+b11000 )
+b11000 2
+b11000 6
+b11000 O"
+1+
+#160
+0+
+#165
+b0 O
+b0 >"
+b100 f
+0?
+b11 b
+1@
+1@"
+0G"
+b0 E"
+1+
+#170
+0+
+#175
+b0 O
+b0 >"
+b0 f
+0@
+0@"
+b100 b
+1+
+#180
+0+
+#185
+b1 I"
+1'
+b0 O
+b0 >"
+1c
+b0 b
+1+
+#190
+0+
+#195
+b0 O
+b0 >"
+1c
+b11100 i
+b11100 N"
+b11100 (
+b11100 <
+b11100 H"
+b10 I"
+b11100 =
+b11100 1"
+b11100 D"
+b11100 J"
+b1 E"
+1+
