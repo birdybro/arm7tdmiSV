@@ -46,6 +46,8 @@ module arm7tdmi_top (
     logic decode_imm_en, decode_set_flags;
     shift_type_t decode_shift_type;
     logic [4:0] decode_shift_amount;
+    logic decode_shift_reg;
+    logic [3:0] decode_shift_rs;
     logic decode_is_branch, decode_branch_link;
     logic [23:0] decode_branch_offset;
     logic decode_is_memory, decode_mem_load, decode_mem_byte;
@@ -61,6 +63,13 @@ module arm7tdmi_top (
     logic [3:0] decode_cp_num, decode_cp_rd, decode_cp_rn;
     logic [2:0] decode_cp_opcode1, decode_cp_opcode2;
     logic decode_cp_load;
+    
+    // Thumb instruction signals
+    thumb_instr_type_t decode_thumb_instr_type;
+    logic [2:0]  decode_thumb_rd, decode_thumb_rs, decode_thumb_rn;
+    logic [7:0]  decode_thumb_imm8, decode_thumb_offset8;
+    logic [4:0]  decode_thumb_imm5;
+    logic [10:0] decode_thumb_offset11;
     
     // Register file signals
     logic [31:0] reg_rn_data, reg_rm_data, reg_pc_out, reg_cpsr_out, reg_spsr_out;
@@ -110,6 +119,10 @@ module arm7tdmi_top (
     logic [31:0]     cp_data_out;      // Data from coprocessor
     logic            cp_exception;     // Coprocessor exception
     
+    // Thumb BL instruction state tracking
+    logic [31:0]     thumb_bl_target;  // Computed target address from BL prefix
+    logic            thumb_bl_pending; // BL prefix processed, waiting for suffix
+    
     // Pipeline state machine
     cpu_state_t current_state, next_state;
     
@@ -127,6 +140,21 @@ module arm7tdmi_top (
         end else begin
             current_state <= next_state;
             running <= 1'b1;
+        end
+    end
+    
+    // Thumb BL state tracking
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            thumb_bl_target <= 32'b0;
+            thumb_bl_pending <= 1'b0;
+        end else if (current_state == EXECUTE && thumb_mode && decode_thumb_instr_type == THUMB_BL_HIGH) begin
+            // Store BL high part result
+            thumb_bl_target <= decode_pc + {{9{decode_thumb_offset11[10]}}, decode_thumb_offset11, 12'b0};
+            thumb_bl_pending <= 1'b1;
+        end else if (current_state == EXECUTE && thumb_mode && decode_thumb_instr_type == THUMB_BL_LOW) begin
+            // Clear pending after BL low part completes
+            thumb_bl_pending <= 1'b0;
         end
     end
     
@@ -210,16 +238,52 @@ module arm7tdmi_top (
         thumb_switch = 1'b0;
         
         if (current_state == EXECUTE && condition_passed) begin
-            if (decode_is_branch) begin
-                // Normal branch (B/BL)
-                branch_taken = 1'b1;
-                branch_target = decode_pc + {{6{decode_branch_offset[23]}}, decode_branch_offset, 2'b00};
-                save_lr = decode_branch_link;  // Save return address for BL
-            end else if (branch_exchange) begin
-                // Branch and Exchange (BX)
-                branch_taken = 1'b1;
-                branch_target = {reg_rm_data[31:1], 1'b0};  // Clear LSB for ARM mode
-                thumb_switch = reg_rm_data[0];  // LSB determines Thumb/ARM mode
+            if (thumb_mode) begin
+                // Thumb branch handling
+                case (decode_thumb_instr_type)
+                    THUMB_BRANCH_COND: begin
+                        // Thumb conditional branch
+                        branch_taken = 1'b1;
+                        // Sign-extend 8-bit offset and shift left by 1 (Thumb instructions are 16-bit aligned)
+                        branch_target = decode_pc + {{23{decode_thumb_offset8[7]}}, decode_thumb_offset8, 1'b0};
+                    end
+                    THUMB_BRANCH_UNCOND: begin
+                        // Thumb unconditional branch (regular B instruction)
+                        branch_taken = 1'b1;
+                        // Sign-extend 11-bit offset and shift left by 1  
+                        branch_target = decode_pc + {{20{decode_thumb_offset11[10]}}, decode_thumb_offset11, 1'b0};
+                        save_lr = 1'b0;  // Regular branch doesn't save LR
+                    end
+                    THUMB_BL_HIGH: begin
+                        // BL prefix - no branch taken yet, state updated in sequential block
+                        branch_taken = 1'b0;
+                    end
+                    THUMB_BL_LOW: begin
+                        // BL suffix - complete the branch with link
+                        if (thumb_bl_pending) begin
+                            branch_taken = 1'b1;
+                            // Add low part offset to previously computed target
+                            branch_target = thumb_bl_target + {decode_thumb_offset11, 1'b0};
+                            save_lr = 1'b1;  // Save return address for BL
+                        end
+                    end
+                    default: begin
+                        // No branch
+                    end
+                endcase
+            end else begin
+                // ARM branch handling
+                if (decode_is_branch) begin
+                    // Normal branch (B/BL)
+                    branch_taken = 1'b1;
+                    branch_target = decode_pc + {{6{decode_branch_offset[23]}}, decode_branch_offset, 2'b00};
+                    save_lr = decode_branch_link;  // Save return address for BL
+                end else if (branch_exchange) begin
+                    // Branch and Exchange (BX)
+                    branch_taken = 1'b1;
+                    branch_target = {reg_rm_data[31:1], 1'b0};  // Clear LSB for ARM mode
+                    thumb_switch = reg_rm_data[0];  // LSB determines Thumb/ARM mode
+                end
             end
         end
     end
@@ -265,14 +329,76 @@ module arm7tdmi_top (
     assign mem_operation_active = (current_state == MEMORY) && 
                                  (decode_is_memory || 
                                   (decode_instr_type == INSTR_HALFWORD_DT) ||
-                                  (decode_instr_type == INSTR_SINGLE_SWAP)) && 
+                                  (decode_instr_type == INSTR_SINGLE_SWAP) ||
+                                  (thumb_mode && (decode_thumb_instr_type == THUMB_LOAD_STORE ||
+                                                 decode_thumb_instr_type == THUMB_LOAD_STORE_IMM ||
+                                                 decode_thumb_instr_type == THUMB_LOAD_STORE_HW ||
+                                                 decode_thumb_instr_type == THUMB_PC_REL_LOAD ||
+                                                 decode_thumb_instr_type == THUMB_SP_REL_LOAD ||
+                                                 decode_thumb_instr_type == THUMB_LOAD_STORE_MULT))) && 
                                  decode_valid && condition_passed;
     assign halfword_operation = (decode_instr_type == INSTR_HALFWORD_DT);
     assign swap_operation = (decode_instr_type == INSTR_SINGLE_SWAP);
     assign swap_byte = swap_operation && decode_mem_byte;
     
     // Calculate memory address (base + offset)
-    assign mem_address = reg_rn_data + (decode_imm_en ? {20'b0, decode_immediate} : reg_rm_data);
+    logic [31:0] thumb_mem_address;
+    
+    always_comb begin
+        if (thumb_mode) begin
+            // Thumb memory address calculation
+            case (decode_thumb_instr_type)
+                THUMB_LOAD_STORE: begin
+                    // [Rn + Rm] - register offset
+                    thumb_mem_address = reg_rn_data + reg_rm_data;
+                end
+                THUMB_LOAD_STORE_IMM: begin
+                    // [Rn + immediate*4] for word, [Rn + immediate] for byte
+                    thumb_mem_address = reg_rn_data + {27'b0, decode_thumb_imm5} << (decode_mem_byte ? 0 : 2);
+                end
+                THUMB_LOAD_STORE_HW: begin
+                    // [Rn + immediate*2] for halfword
+                    thumb_mem_address = reg_rn_data + {27'b0, decode_thumb_imm5, 1'b0};
+                end
+                THUMB_PC_REL_LOAD: begin
+                    // [PC + immediate*4] - PC-relative
+                    thumb_mem_address = (decode_pc & 32'hFFFFFFFC) + {22'b0, decode_thumb_imm8, 2'b00};
+                end
+                THUMB_SP_REL_LOAD: begin
+                    // [SP + immediate*4] - SP-relative
+                    // For now, use reg_rn_data assuming it's set to R13 by decode
+                    thumb_mem_address = reg_rn_data + {22'b0, decode_thumb_imm8, 2'b00};
+                end
+                default: begin
+                    thumb_mem_address = reg_rn_data + reg_rm_data;
+                end
+            endcase
+        end else begin
+            thumb_mem_address = 32'b0;  // Not used in ARM mode
+        end
+    end
+    
+    // ARM memory addressing calculation
+    logic [31:0] arm_mem_offset;
+    
+    always_comb begin
+        if (decode_imm_en) begin
+            // Immediate offset
+            arm_mem_offset = {20'b0, decode_immediate};
+        end else begin
+            // Register offset with optional shift
+            if (decode_shift_amount != 5'b0) begin
+                // Use shifted register as offset
+                arm_mem_offset = shifted_operand;
+            end else begin
+                // Plain register offset
+                arm_mem_offset = reg_rm_data;
+            end
+        end
+    end
+    
+    assign mem_address = thumb_mode ? thumb_mem_address : 
+                        (reg_rn_data + (decode_mem_up ? arm_mem_offset : -arm_mem_offset));
     
     // Load data processing for different sizes
     always_comb begin
@@ -507,10 +633,232 @@ module arm7tdmi_top (
     assign actual_rd_addr = write_lr ? 4'd14 : 
                            (block_reg_we || block_base_reg_we) ? 
                            (block_base_reg_we ? block_base_reg_addr : block_reg_addr) : 
-                           (mul_hi_write_pending) ? decode_rn : decode_rd;  // RdHi address for long multiply
+                           (mul_hi_write_pending) ? decode_rn : 
+                           (thumb_mode) ? {1'b0, decode_thumb_rd} : decode_rd;  // RdHi address for long multiply
     
-    assign actual_rn_addr = block_active ? block_reg_addr : decode_rn;
-    assign actual_rm_addr = block_active ? block_reg_addr : decode_rm;
+    assign actual_rn_addr = block_active ? block_reg_addr : 
+                           (thumb_mode) ? {1'b0, decode_thumb_rn} : decode_rn;
+    assign actual_rm_addr = block_active ? block_reg_addr : 
+                           decode_shift_reg ? decode_shift_rs :  // Use Rs for register-controlled shift
+                           (thumb_mode) ? {1'b0, decode_thumb_rs} : decode_rm;
+    
+    // ALU operand generation
+    always_comb begin
+        // Default ALU operands
+        alu_operand_a = reg_rn_data;
+        alu_operand_b = decode_imm_en ? {20'b0, decode_immediate} : 
+                       (decode_shift_amount != 5'b0 && !decode_shift_reg) ? shifted_operand : reg_rm_data;
+        alu_carry_in = (decode_imm_en || decode_shift_amount == 5'b0) ? 
+                      reg_cpsr_out[CPSR_C_BIT] : shifter_carry_out;
+        
+        if (thumb_mode) begin
+            // Thumb ALU operand generation
+            case (decode_thumb_instr_type)
+                THUMB_SHIFT: begin
+                    // Shift operations: Rd = Rs shifted by immediate  
+                    alu_operand_a = reg_rm_data;  // Use rs (thumb_rs maps to rm)
+                    alu_operand_b = {27'b0, decode_thumb_imm5}; // Shift amount
+                end
+                THUMB_ALU_IMM: begin
+                    // ADD/SUB immediate: Rd = Rn +/- immediate
+                    alu_operand_a = reg_rn_data;  // Base register 
+                    alu_operand_b = {29'b0, decode_thumb_imm5[2:0]}; // 3-bit immediate
+                end
+                THUMB_CMP_MOV_IMM: begin
+                    // MOV/CMP/ADD/SUB with 8-bit immediate
+                    alu_operand_a = reg_rn_data;  // Current register value for CMP/ADD/SUB
+                    alu_operand_b = {24'b0, decode_thumb_imm8}; // 8-bit immediate
+                end
+                THUMB_ALU_REG: begin
+                    // Register ALU operations
+                    alu_operand_a = reg_rn_data;  // Destination register (also source)
+                    alu_operand_b = reg_rm_data;  // Source register
+                end
+                THUMB_ALU_HI: begin
+                    // Hi register operations  
+                    alu_operand_a = reg_rn_data;  // Destination/source register
+                    alu_operand_b = reg_rm_data;  // Source register
+                end
+                THUMB_PC_REL_LOAD: begin
+                    // PC-relative address calculation
+                    alu_operand_a = reg_pc_out & 32'hFFFFFFFC; // Word-aligned PC
+                    alu_operand_b = {22'b0, decode_thumb_imm8, 2'b00}; // Word offset
+                end
+                THUMB_GET_REL_ADDR: begin
+                    // Get relative address (ADD rd, PC/SP, #imm)
+                    if (fetch_instruction[11]) begin
+                        // SP-relative
+                        alu_operand_a = reg_rn_data; // SP (mapped to rn)
+                    end else begin
+                        // PC-relative  
+                        alu_operand_a = reg_pc_out & 32'hFFFFFFFC;
+                    end
+                    alu_operand_b = {22'b0, decode_thumb_imm8, 2'b00}; // Word offset
+                end
+                THUMB_ADD_SUB_SP: begin
+                    // Add/subtract to SP
+                    alu_operand_a = reg_rn_data; // SP 
+                    alu_operand_b = {25'b0, decode_thumb_imm8[6:0]}; // 7-bit immediate
+                end
+                default: begin
+                    // Use ARM operands as fallback
+                    alu_operand_a = reg_rn_data;
+                    alu_operand_b = decode_imm_en ? {20'b0, decode_immediate} : reg_rm_data;
+                end
+            endcase
+        end else begin
+            // ARM ALU operand generation  
+            alu_operand_a = reg_rn_data;
+            if (decode_imm_en) begin
+                // Immediate operand
+                alu_operand_b = {20'b0, decode_immediate};
+            end else begin
+                // Register operand (may need shifting)
+                alu_operand_b = reg_rm_data; // TODO: Add shifter support
+            end
+        end
+    end
+    
+    // Thumb ALU signals (separate from ARM ALU)
+    logic [31:0] thumb_alu_result;
+    logic thumb_alu_carry_out, thumb_alu_overflow, thumb_alu_negative, thumb_alu_zero;
+    
+    // Thumb ALU operations
+    always_comb begin
+        thumb_alu_result = 32'b0;
+        thumb_alu_carry_out = 1'b0;
+        thumb_alu_overflow = 1'b0;
+        thumb_alu_negative = 1'b0;
+        thumb_alu_zero = 1'b0;
+        
+        if (thumb_mode) begin
+            // Thumb ALU operations
+            case (decode_thumb_instr_type)
+                THUMB_SHIFT: begin
+                    // Shift operations
+                    case (fetch_instruction[12:11])
+                        2'b00: {thumb_alu_carry_out, thumb_alu_result} = {1'b0, alu_operand_a} << alu_operand_b[4:0]; // LSL
+                        2'b01: {thumb_alu_result, thumb_alu_carry_out} = {alu_operand_a, 1'b0} >> alu_operand_b[4:0]; // LSR
+                        2'b10: thumb_alu_result = $signed(alu_operand_a) >>> alu_operand_b[4:0]; // ASR
+                        default: thumb_alu_result = alu_operand_a; // Invalid
+                    endcase
+                end
+                THUMB_ALU_IMM: begin
+                    // ADD/SUB immediate
+                    if (fetch_instruction[9]) begin
+                        // SUB
+                        {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a - alu_operand_b;
+                    end else begin
+                        // ADD
+                        {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a + alu_operand_b;
+                    end
+                end
+                THUMB_CMP_MOV_IMM: begin
+                    // MOV/CMP/ADD/SUB immediate
+                    case (fetch_instruction[12:11])
+                        2'b00: thumb_alu_result = alu_operand_b; // MOV
+                        2'b01: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a - alu_operand_b; // CMP
+                        2'b10: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a + alu_operand_b; // ADD  
+                        2'b11: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a - alu_operand_b; // SUB
+                    endcase
+                end
+                THUMB_ALU_REG: begin
+                    // Register ALU operations
+                    case (fetch_instruction[9:6])
+                        4'b0000: thumb_alu_result = alu_operand_a & alu_operand_b; // AND
+                        4'b0001: thumb_alu_result = alu_operand_a ^ alu_operand_b; // EOR
+                        4'b0010: {thumb_alu_result, thumb_alu_carry_out} = {alu_operand_a, 1'b0} >> alu_operand_b[4:0]; // LSR
+                        4'b0011: thumb_alu_result = $signed(alu_operand_a) >>> alu_operand_b[4:0]; // ASR
+                        4'b0100: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a + alu_operand_b + alu_carry_in; // ADC
+                        4'b0101: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a - alu_operand_b - ~alu_carry_in; // SBC
+                        4'b0110: {thumb_alu_carry_out, thumb_alu_result} = {1'b0, alu_operand_a} << alu_operand_b[4:0]; // LSL
+                        4'b0111: thumb_alu_result = alu_operand_a | alu_operand_b; // ORR
+                        4'b1000: thumb_alu_result = alu_operand_a * alu_operand_b; // MUL (simplified)
+                        4'b1001: thumb_alu_result = alu_operand_a & ~alu_operand_b; // BIC
+                        4'b1010: thumb_alu_result = ~alu_operand_b; // MVN
+                        4'b1011: {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a - alu_operand_b; // TST, CMP, etc.
+                        default: thumb_alu_result = alu_operand_a + alu_operand_b; // Default ADD
+                    endcase
+                end
+                THUMB_ALU_HI, THUMB_PC_REL_LOAD, THUMB_GET_REL_ADDR, THUMB_ADD_SUB_SP: begin
+                    // Simple addition for address calculations
+                    {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a + alu_operand_b;
+                end
+                default: begin
+                    // Default addition
+                    {thumb_alu_carry_out, thumb_alu_result} = alu_operand_a + alu_operand_b;
+                end
+            endcase
+            
+            // Set Thumb flags
+            thumb_alu_negative = thumb_alu_result[31];
+            thumb_alu_zero = (thumb_alu_result == 32'b0);
+            // thumb_alu_overflow calculation would be more complex, simplified for now
+            thumb_alu_overflow = 1'b0;
+        end
+    end
+    
+    // ALU operation selection for Thumb/ARM modes
+    logic [3:0] effective_alu_op;
+    
+    always_comb begin
+        if (thumb_mode) begin
+            // Convert Thumb operations to ARM ALU operations
+            case (decode_thumb_instr_type)
+                THUMB_SHIFT: begin
+                    case (fetch_instruction[12:11])
+                        2'b00: effective_alu_op = ALU_MOV; // LSL (handled by shifter)
+                        2'b01: effective_alu_op = ALU_MOV; // LSR (handled by shifter)
+                        2'b10: effective_alu_op = ALU_MOV; // ASR (handled by shifter)
+                        default: effective_alu_op = ALU_MOV;
+                    endcase
+                end
+                THUMB_ALU_IMM: begin
+                    // ADD/SUB immediate
+                    if (fetch_instruction[9]) begin
+                        effective_alu_op = ALU_SUB; // SUB
+                    end else begin
+                        effective_alu_op = ALU_ADD; // ADD
+                    end
+                end
+                THUMB_CMP_MOV_IMM: begin
+                    // MOV/CMP/ADD/SUB immediate
+                    case (fetch_instruction[12:11])
+                        2'b00: effective_alu_op = ALU_MOV; // MOV
+                        2'b01: effective_alu_op = ALU_CMP; // CMP
+                        2'b10: effective_alu_op = ALU_ADD; // ADD  
+                        2'b11: effective_alu_op = ALU_SUB; // SUB
+                    endcase
+                end
+                THUMB_ALU_REG: begin
+                    // Register ALU operations
+                    case (fetch_instruction[9:6])
+                        4'b0000: effective_alu_op = ALU_AND; // AND
+                        4'b0001: effective_alu_op = ALU_EOR; // EOR
+                        4'b0010: effective_alu_op = ALU_MOV; // LSR (handled by shifter)
+                        4'b0011: effective_alu_op = ALU_MOV; // ASR (handled by shifter)
+                        4'b0100: effective_alu_op = ALU_ADC; // ADC
+                        4'b0101: effective_alu_op = ALU_SBC; // SBC
+                        4'b0110: effective_alu_op = ALU_MOV; // LSL (handled by shifter)
+                        4'b0111: effective_alu_op = ALU_ORR; // ORR
+                        4'b1000: effective_alu_op = ALU_ADD; // MUL (simplified as ADD)
+                        4'b1001: effective_alu_op = ALU_BIC; // BIC
+                        4'b1010: effective_alu_op = ALU_MVN; // MVN
+                        4'b1011: effective_alu_op = ALU_CMP; // TST/CMP
+                        default: effective_alu_op = ALU_ADD; // Default ADD
+                    endcase
+                end
+                THUMB_ALU_HI, THUMB_PC_REL_LOAD, THUMB_GET_REL_ADDR, THUMB_ADD_SUB_SP: begin
+                    effective_alu_op = ALU_ADD; // Address calculations
+                end
+                default: begin
+                    effective_alu_op = ALU_ADD; // Default
+                end
+            endcase
+        end else begin
+            effective_alu_op = decode_alu_op; // Use ARM ALU operation
+        end
+    end
     
     // PC and CPSR write logic
     always_comb begin
@@ -761,6 +1109,8 @@ module arm7tdmi_top (
         .set_flags      (decode_set_flags),
         .shift_type     (decode_shift_type),
         .shift_amount   (decode_shift_amount),
+        .shift_reg      (decode_shift_reg),
+        .shift_rs       (decode_shift_rs),
         .is_branch      (decode_is_branch),
         .branch_offset  (decode_branch_offset),
         .branch_link    (decode_branch_link),
@@ -780,6 +1130,14 @@ module arm7tdmi_top (
         .cp_opcode1     (decode_cp_opcode1),
         .cp_opcode2     (decode_cp_opcode2),
         .cp_load        (decode_cp_load),
+        .thumb_instr_type (decode_thumb_instr_type),
+        .thumb_rd       (decode_thumb_rd),
+        .thumb_rs       (decode_thumb_rs),
+        .thumb_rn       (decode_thumb_rn),
+        .thumb_imm8     (decode_thumb_imm8),
+        .thumb_imm5     (decode_thumb_imm5),
+        .thumb_offset11 (decode_thumb_offset11),
+        .thumb_offset8  (decode_thumb_offset8),
         .pc_out         (decode_pc),
         .decode_valid   (decode_valid),
         .stall          (stall),
@@ -815,7 +1173,7 @@ module arm7tdmi_top (
     arm7tdmi_alu u_alu (
         .clk            (clk),
         .rst_n          (rst_n),
-        .alu_op         (decode_alu_op),
+        .alu_op         (effective_alu_op),
         .set_flags      (decode_set_flags),
         .operand_a      (alu_operand_a),
         .operand_b      (alu_operand_b),
@@ -874,11 +1232,29 @@ module arm7tdmi_top (
         .zero           (mul_zero)
     );
     
+    // Register-controlled shift support
+    logic [4:0] effective_shift_amount;
+    logic [31:0] effective_shift_data;
+    
+    always_comb begin
+        if (decode_shift_reg) begin
+            // Register-controlled shift: use Rs[7:0] as shift amount
+            // Rs is read via rm port, actual Rm needs to be read separately
+            effective_shift_amount = reg_rm_data[4:0];  // Rs[4:0] for shift amount
+            // For now, use a simplified approach - this would need multi-cycle implementation
+            effective_shift_data = 32'b0;  // TODO: Need to read actual Rm register
+        end else begin
+            // Immediate shift
+            effective_shift_amount = decode_shift_amount;
+            effective_shift_data = reg_rm_data;  // Rm is read normally
+        end
+    end
+    
     // Instantiate Shifter
     arm7tdmi_shifter u_shifter (
-        .data_in        (reg_rm_data),
+        .data_in        (effective_shift_data),
         .shift_type     (decode_shift_type),
-        .shift_amount   (decode_shift_amount),
+        .shift_amount   (effective_shift_amount),
         .carry_in       (reg_cpsr_out[CPSR_C_BIT]),
         .data_out       (shifted_operand),
         .carry_out      (shifter_carry_out)

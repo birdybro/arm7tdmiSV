@@ -14,7 +14,7 @@ module arm7tdmi_shifter (
         data_out = data_in;
         carry_out = carry_in;
         
-        if (shift_amount != 5'b0) begin
+        if (shift_amount != 5'b0 || (shift_type == SHIFT_ROR && shift_amount == 5'b0)) begin
             case (shift_type)
                 SHIFT_LSL: begin  // Logical Shift Left
                     if (shift_amount <= 32) begin

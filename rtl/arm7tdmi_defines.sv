@@ -121,4 +121,26 @@ package arm7tdmi_pkg;
         CP_MRC = 3'b100   // Move to ARM from Coprocessor
     } cp_op_t;
     
+    // Thumb instruction types  
+    typedef enum logic [4:0] {
+        THUMB_ALU_IMM     = 5'b00000,  // ALU with immediate (ADD/SUB)
+        THUMB_ALU_REG     = 5'b00001,  // ALU register operations
+        THUMB_SHIFT       = 5'b00010,  // Shift operations
+        THUMB_CMP_MOV_IMM = 5'b00011,  // Compare/Move immediate
+        THUMB_ALU_HI      = 5'b00100,  // ALU operations with high registers
+        THUMB_PC_REL_LOAD = 5'b00101,  // PC-relative load
+        THUMB_LOAD_STORE  = 5'b00110,  // Load/Store register offset
+        THUMB_LOAD_STORE_IMM = 5'b00111, // Load/Store immediate offset
+        THUMB_LOAD_STORE_HW  = 5'b01000, // Load/Store halfword
+        THUMB_SP_REL_LOAD    = 5'b01001, // SP-relative load/store
+        THUMB_GET_REL_ADDR   = 5'b01010, // Get relative address
+        THUMB_ADD_SUB_SP     = 5'b01011, // Add/Subtract to SP
+        THUMB_PUSH_POP       = 5'b01100, // Push/Pop multiple
+        THUMB_LOAD_STORE_MULT = 5'b01101, // Load/Store multiple
+        THUMB_BRANCH_COND    = 5'b01110, // Conditional branch
+        THUMB_BRANCH_UNCOND  = 5'b01111, // Unconditional branch
+        THUMB_BL_HIGH        = 5'b10000, // BL high part (H=10)
+        THUMB_BL_LOW         = 5'b10001  // BL low part (H=11)
+    } thumb_instr_type_t;
+    
 endpackage

@@ -91,6 +91,48 @@ coprocessor_decode: coprocessor_decode_tb.vvp
 coprocessor_decode_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_decode_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_decode_tb.sv
 
+# Thumb decode test
+thumb_decode: thumb_decode_tb.vvp
+	vvp thumb_decode_tb.vvp
+
+thumb_decode_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv thumb_decode_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv thumb_decode_tb.sv
+
+# Thumb execution test
+thumb_exec: thumb_exec_tb.vvp
+	vvp thumb_exec_tb.vvp
+
+thumb_exec_tb.vvp: $(RTL_SOURCES) thumb_exec_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) thumb_exec_tb.sv
+
+# Shifter test
+shifter_test: shifter_test_tb.vvp
+	vvp shifter_test_tb.vvp
+
+shifter_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_shifter.sv shifter_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_shifter.sv shifter_test_tb.sv
+
+# Addressing mode test
+addressing_test: addressing_test_tb.vvp
+	vvp addressing_test_tb.vvp
+
+addressing_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_shifter.sv addressing_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_shifter.sv addressing_test_tb.sv
+
+# Completeness verification test
+completeness_test: completeness_test_tb.vvp
+	vvp completeness_test_tb.vvp
+
+completeness_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv completeness_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv completeness_test_tb.sv
+
+# Thumb BL instruction test
+thumb_bl_test: thumb_bl_test_tb.vvp
+	vvp thumb_bl_test_tb.vvp
+
+thumb_bl_test_tb.vvp: $(RTL_SOURCES) thumb_bl_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) thumb_bl_test_tb.sv
+
 # Compile the design
 compile: $(VVP_FILE)
 

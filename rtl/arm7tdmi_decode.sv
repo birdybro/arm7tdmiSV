@@ -22,6 +22,8 @@ module arm7tdmi_decode (
     output logic        set_flags, // Update condition flags
     output shift_type_t shift_type,
     output logic [4:0]  shift_amount,
+    output logic        shift_reg,    // Use register for shift amount
+    output logic [3:0]  shift_rs,    // Register containing shift amount
     
     // Branch instruction outputs
     output logic        is_branch,
@@ -49,6 +51,16 @@ module arm7tdmi_decode (
     output logic [2:0]  cp_opcode1,    // Coprocessor opcode 1
     output logic [2:0]  cp_opcode2,    // Coprocessor opcode 2 (for CDP)
     output logic        cp_load,       // 1 for load, 0 for store (LDC/STC)
+    
+    // Thumb instruction outputs
+    output thumb_instr_type_t thumb_instr_type, // Thumb instruction type
+    output logic [2:0]  thumb_rd,      // Thumb destination register
+    output logic [2:0]  thumb_rs,      // Thumb source register
+    output logic [2:0]  thumb_rn,      // Thumb operand register
+    output logic [7:0]  thumb_imm8,    // Thumb 8-bit immediate
+    output logic [4:0]  thumb_imm5,    // Thumb 5-bit immediate
+    output logic [10:0] thumb_offset11, // Thumb 11-bit branch offset
+    output logic [7:0]  thumb_offset8,  // Thumb 8-bit branch offset
     
     // Output to execute stage
     output logic [31:0] pc_out,
@@ -167,8 +179,93 @@ module arm7tdmi_decode (
                 end
             endcase
         end else begin
-            // TODO: Implement Thumb instruction decode
-            instr_type = INSTR_UNDEFINED;
+            // Thumb instruction decode (16-bit instructions)
+            case (instruction[15:13])
+                3'b000: begin
+                    if (instruction[12:11] == 2'b11) begin
+                        // ADD/SUB immediate
+                        instr_type = INSTR_DATA_PROC;
+                    end else begin
+                        // Shift by immediate
+                        instr_type = INSTR_DATA_PROC;
+                    end
+                end
+                3'b001: begin
+                    // Move/Compare/Add/Subtract immediate
+                    instr_type = INSTR_DATA_PROC;
+                end
+                3'b010: begin
+                    if (instruction[12:10] == 3'b000) begin
+                        // ALU operations
+                        instr_type = INSTR_DATA_PROC;
+                    end else if (instruction[12:10] == 3'b001) begin
+                        // Hi register operations/Branch exchange
+                        if (instruction[9:8] == 2'b11 && instruction[7] == 1'b1) begin
+                            instr_type = INSTR_BRANCH_EX;  // BX instruction
+                        end else begin
+                            instr_type = INSTR_DATA_PROC;
+                        end
+                    end else begin
+                        // PC-relative load
+                        instr_type = INSTR_SINGLE_DT;
+                    end
+                end
+                3'b011: begin
+                    // Load/Store register offset
+                    instr_type = INSTR_SINGLE_DT;
+                end
+                3'b100: begin
+                    if (instruction[12]) begin
+                        // Load/Store halfword
+                        instr_type = INSTR_HALFWORD_DT;
+                    end else begin
+                        // Load/Store immediate offset
+                        instr_type = INSTR_SINGLE_DT;
+                    end
+                end
+                3'b101: begin
+                    if (instruction[12]) begin
+                        // SP-relative load/store
+                        instr_type = INSTR_SINGLE_DT;
+                    end else begin
+                        // Get relative address (ADD to PC/SP)
+                        instr_type = INSTR_DATA_PROC;
+                    end
+                end
+                3'b110: begin
+                    if (instruction[12]) begin
+                        if (instruction[11:8] == 4'b0100) begin
+                            // Push/Pop
+                            instr_type = INSTR_BLOCK_DT;
+                        end else begin
+                            // Miscellaneous instructions
+                            instr_type = INSTR_DATA_PROC;
+                        end
+                    end else begin
+                        // Add/Subtract to SP
+                        instr_type = INSTR_DATA_PROC;
+                    end
+                end
+                3'b111: begin
+                    if (instruction[12]) begin
+                        if (instruction[11:8] == 4'b1111) begin
+                            // Software interrupt
+                            instr_type = INSTR_SWI;
+                        end else begin
+                            // Conditional branch
+                            instr_type = INSTR_BRANCH;
+                        end
+                    end else begin
+                        if (instruction[11]) begin
+                            // Unconditional branch
+                            instr_type = INSTR_BRANCH;
+                        end else begin
+                            // Load/Store multiple
+                            instr_type = INSTR_BLOCK_DT;
+                        end
+                    end
+                end
+            endcase
         end
     end
     
@@ -186,9 +283,11 @@ module arm7tdmi_decode (
     assign imm_en = i_bit && (instr_type == INSTR_DATA_PROC);
     assign set_flags = s_bit && (instr_type == INSTR_DATA_PROC);
     
-    // Shift decode
+    // Shift decode - ARM data processing instructions
     assign shift_type = shift_type_field;
-    assign shift_amount = shift_amt_field;
+    assign shift_reg = !imm_en && (instr_type == INSTR_DATA_PROC) && instruction[4] && instruction[7] == 1'b0;
+    assign shift_rs = instruction[11:8];  // Rs register for register-controlled shifts
+    assign shift_amount = shift_reg ? 5'b0 : shift_amt_field;  // Use Rs[7:0] when shift_reg is true
     
     // Branch decode
     assign is_branch = (instr_type == INSTR_BRANCH);
@@ -253,6 +352,138 @@ module arm7tdmi_decode (
                     cp_opcode1 = instruction[23:21]; // Opcode 1
                     cp_opcode2 = instruction[7:5];   // Opcode 2
                 end
+            end
+        end
+    end
+    
+    // Thumb instruction decode
+    always_comb begin
+        thumb_instr_type = THUMB_ALU_REG;
+        thumb_rd = 3'b0;
+        thumb_rs = 3'b0;
+        thumb_rn = 3'b0;
+        thumb_imm8 = 8'b0;
+        thumb_imm5 = 5'b0;
+        thumb_offset11 = 11'b0;
+        thumb_offset8 = 8'b0;
+        
+        if (thumb_mode) begin
+            // Check for BL instruction first (top-level 11110/11111 patterns)
+            if (instruction[15:11] == 5'b11110) begin
+                // BL/BLX prefix - high part (H=10)
+                thumb_instr_type = THUMB_BL_HIGH;
+                thumb_offset11 = instruction[10:0]; // High offset
+            end else if (instruction[15:11] == 5'b11111) begin
+                // BL suffix - low part (H=11)  
+                thumb_instr_type = THUMB_BL_LOW;
+                thumb_offset11 = instruction[10:0]; // Low offset
+            end else begin
+                // Extract common fields
+                thumb_rd = instruction[2:0];   // Destination register (low 3 bits)
+                thumb_rs = instruction[5:3];   // Source register
+                thumb_rn = instruction[8:6];   // Operand register
+                
+                case (instruction[15:13])
+                3'b000: begin
+                    if (instruction[12:11] == 2'b11) begin
+                        // ADD/SUB immediate  
+                        thumb_instr_type = THUMB_ALU_IMM;
+                        thumb_imm5 = {2'b0, instruction[8:6]}; // 3-bit immediate
+                    end else begin
+                        // Shift by immediate
+                        thumb_instr_type = THUMB_SHIFT;
+                        thumb_imm5 = instruction[10:6];
+                    end
+                end
+                3'b001: begin
+                    // Move/Compare/Add/Subtract immediate
+                    thumb_instr_type = THUMB_CMP_MOV_IMM;
+                    thumb_rd = instruction[10:8];  // 3-bit register field
+                    thumb_imm8 = instruction[7:0];
+                end
+                3'b010: begin
+                    if (instruction[12:10] == 3'b000) begin
+                        // ALU operations
+                        thumb_instr_type = THUMB_ALU_REG;
+                    end else if (instruction[12:10] == 3'b001) begin
+                        // Hi register operations
+                        thumb_instr_type = THUMB_ALU_HI;
+                        thumb_rd = {instruction[7], instruction[2:0]}; // 4-bit register
+                        thumb_rs = instruction[6:3];  // 4-bit register
+                    end else begin
+                        // PC-relative load
+                        thumb_instr_type = THUMB_PC_REL_LOAD;
+                        thumb_rd = instruction[10:8];
+                        thumb_imm8 = instruction[7:0];
+                    end
+                end
+                3'b011: begin
+                    // Load/Store register offset
+                    thumb_instr_type = THUMB_LOAD_STORE;
+                end
+                3'b100: begin
+                    if (instruction[12]) begin
+                        // Load/Store halfword
+                        thumb_instr_type = THUMB_LOAD_STORE_HW;
+                        thumb_imm5 = instruction[10:6];
+                    end else begin
+                        // Load/Store immediate offset
+                        thumb_instr_type = THUMB_LOAD_STORE_IMM;
+                        thumb_imm5 = instruction[10:6];
+                    end
+                end
+                3'b101: begin
+                    if (instruction[12]) begin
+                        // SP-relative load/store
+                        thumb_instr_type = THUMB_SP_REL_LOAD;
+                        thumb_rd = instruction[10:8];
+                        thumb_imm8 = instruction[7:0];
+                    end else begin
+                        // Get relative address
+                        thumb_instr_type = THUMB_GET_REL_ADDR;
+                        thumb_rd = instruction[10:8];
+                        thumb_imm8 = instruction[7:0];
+                    end
+                end
+                3'b110: begin
+                    if (instruction[12]) begin
+                        if (instruction[11:8] == 4'b0100) begin
+                            // Push/Pop
+                            thumb_instr_type = THUMB_PUSH_POP;
+                        end else begin
+                            // Add/Subtract to SP
+                            thumb_instr_type = THUMB_ADD_SUB_SP;
+                        end
+                    end else begin
+                        // Add/Subtract to SP
+                        thumb_instr_type = THUMB_ADD_SUB_SP;
+                        thumb_imm8 = {1'b0, instruction[6:0]};
+                    end
+                end
+                3'b111: begin
+                    if (instruction[12]) begin
+                        if (instruction[11:8] == 4'b1111) begin
+                            // Software interrupt
+                            thumb_imm8 = instruction[7:0];
+                        end else begin
+                            // Conditional branch
+                            thumb_instr_type = THUMB_BRANCH_COND;
+                            thumb_offset8 = instruction[7:0];
+                        end
+                    end else begin
+                        if (instruction[11]) begin
+                            // Regular unconditional branch
+                            thumb_instr_type = THUMB_BRANCH_UNCOND;
+                            thumb_offset11 = instruction[10:0];
+                        end else begin
+                            // Load/Store multiple
+                            thumb_instr_type = THUMB_LOAD_STORE_MULT;
+                            thumb_rd = instruction[10:8]; // Base register
+                            thumb_imm8 = instruction[7:0]; // Register list
+                        end
+                    end
+                end
+                endcase
             end
         end
     end
