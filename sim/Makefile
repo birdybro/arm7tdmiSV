@@ -56,6 +56,41 @@ multiply: multiply_tb.vvp
 multiply_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_multiply.sv multiply_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_multiply.sv multiply_tb.sv
 
+# PSR transfer test
+psr: psr_tb.vvp
+	vvp psr_tb.vvp
+
+psr_tb.vvp: $(RTL_SOURCES) psr_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) psr_tb.sv
+
+# PSR decode test
+psr_decode: psr_decode_tb.vvp
+	vvp psr_decode_tb.vvp
+
+psr_decode_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv psr_decode_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv psr_decode_tb.sv
+
+# Complete multiply test
+multiply_complete: multiply_complete_tb.vvp
+	vvp multiply_complete_tb.vvp
+
+multiply_complete_tb.vvp: $(RTL_SOURCES) multiply_complete_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) multiply_complete_tb.sv
+
+# Coprocessor test
+coprocessor: coprocessor_tb.vvp
+	vvp coprocessor_tb.vvp
+
+coprocessor_tb.vvp: $(RTL_SOURCES) coprocessor_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) coprocessor_tb.sv
+
+# Coprocessor decode test
+coprocessor_decode: coprocessor_decode_tb.vvp
+	vvp coprocessor_decode_tb.vvp
+
+coprocessor_decode_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_decode_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_decode_tb.sv
+
 # Compile the design
 compile: $(VVP_FILE)
 

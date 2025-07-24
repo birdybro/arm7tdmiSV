@@ -33,7 +33,8 @@ package arm7tdmi_pkg;
         INSTR_BLOCK_DT    = 4'b1000,
         INSTR_BRANCH      = 4'b1001,
         INSTR_COPROCESSOR = 4'b1010,
-        INSTR_SWI         = 4'b1011
+        INSTR_SWI         = 4'b1011,
+        INSTR_PSR_TRANSFER = 4'b1100
     } instr_type_t;
     
     // ALU operations
@@ -110,5 +111,14 @@ package arm7tdmi_pkg;
     parameter CPSR_I_BIT = 7;   // IRQ disable
     parameter CPSR_F_BIT = 6;   // FIQ disable
     parameter CPSR_T_BIT = 5;   // Thumb state
+    
+    // Coprocessor instruction types
+    typedef enum logic [2:0] {
+        CP_CDP = 3'b000,  // Coprocessor Data Processing
+        CP_LDC = 3'b001,  // Load Coprocessor
+        CP_STC = 3'b010,  // Store Coprocessor  
+        CP_MCR = 3'b011,  // Move to Coprocessor from ARM
+        CP_MRC = 3'b100   // Move to ARM from Coprocessor
+    } cp_op_t;
     
 endpackage

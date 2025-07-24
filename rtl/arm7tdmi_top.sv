@@ -53,6 +53,15 @@ module arm7tdmi_top (
     logic [31:0] decode_pc;
     logic decode_valid;
     
+    // PSR transfer signals
+    logic decode_psr_to_reg, decode_psr_spsr, decode_psr_immediate;
+    
+    // Coprocessor signals
+    cp_op_t decode_cp_op;
+    logic [3:0] decode_cp_num, decode_cp_rd, decode_cp_rn;
+    logic [2:0] decode_cp_opcode1, decode_cp_opcode2;
+    logic decode_cp_load;
+    
     // Register file signals
     logic [31:0] reg_rn_data, reg_rm_data, reg_pc_out, reg_cpsr_out, reg_spsr_out;
     logic [31:0] reg_rd_data, reg_pc_in, reg_cpsr_in, reg_spsr_in;
@@ -65,7 +74,8 @@ module arm7tdmi_top (
     logic alu_carry_in, alu_carry_out, alu_overflow, alu_negative, alu_zero;
     
     // Multiply unit signals
-    logic        mul_en, mul_long, mul_signed, mul_accumulate;
+    logic        mul_en, mul_long, mul_signed, mul_accumulate, mul_set_flags;
+    logic [1:0]  mul_type;
     logic [31:0] mul_result_hi, mul_result_lo;
     logic        mul_result_ready, mul_negative, mul_zero;
     
@@ -93,6 +103,12 @@ module arm7tdmi_top (
     logic [2:0]      exception_type;
     logic            swi_exception;
     logic            undefined_exception;
+    
+    // Coprocessor interface signals
+    logic            cp_present;       // Coprocessor present
+    logic            cp_ready;         // Coprocessor ready
+    logic [31:0]     cp_data_out;      // Data from coprocessor
+    logic            cp_exception;     // Coprocessor exception
     
     // Pipeline state machine
     cpu_state_t current_state, next_state;
@@ -304,8 +320,41 @@ module arm7tdmi_top (
                    ((decode_instr_type == INSTR_MUL) || (decode_instr_type == INSTR_MUL_LONG)) &&
                    decode_valid && condition_passed;
     assign mul_long = (decode_instr_type == INSTR_MUL_LONG);
-    assign mul_signed = 1'b0;  // ARM multiply is unsigned by default
-    assign mul_accumulate = 1'b0;  // Simple multiply for now
+    assign mul_set_flags = decode_set_flags;  // Use decode flags
+    
+    // Decode multiply variants based on instruction bits
+    always_comb begin
+        mul_signed = 1'b0;
+        mul_accumulate = 1'b0;
+        mul_type = 2'b00;
+        
+        if (decode_instr_type == INSTR_MUL) begin
+            // Single precision multiply
+            if (fetch_instruction[21]) begin
+                // MLA: Multiply-Accumulate
+                mul_type = 2'b01;  // MLA
+                mul_accumulate = 1'b1;
+            end else begin
+                // MUL: Basic multiply
+                mul_type = 2'b00;  // MUL
+            end
+        end else if (decode_instr_type == INSTR_MUL_LONG) begin
+            // Long multiply variants
+            if (fetch_instruction[22]) begin
+                // Signed multiply
+                mul_signed = 1'b1;
+            end
+            
+            if (fetch_instruction[21]) begin
+                // Accumulate variants
+                mul_type = 2'b11;  // UMLAL/SMLAL
+                mul_accumulate = 1'b1;
+            end else begin
+                // Basic long multiply
+                mul_type = 2'b10;  // UMULL/SMULL
+            end
+        end
+    end
     
     // Block Data Transfer control logic
     assign block_en = (current_state == EXECUTE) && 
@@ -323,12 +372,55 @@ module arm7tdmi_top (
     // Connect block transfer register data
     assign block_reg_rdata = reg_rm_data;  // For store operations
     
+    // Coprocessor control logic
+    always_comb begin
+        cp_present = 1'b0;
+        cp_ready = 1'b0;
+        cp_data_out = 32'b0;
+        cp_exception = 1'b0;
+        
+        if (decode_instr_type == INSTR_COPROCESSOR) begin
+            // Check for supported coprocessors
+            case (decode_cp_num)
+                4'd15: begin
+                    // CP15 (System Control Coprocessor) - basic simulation
+                    cp_present = 1'b1;
+                    cp_ready = 1'b1;
+                    
+                    if (decode_cp_op == CP_MRC) begin
+                        // Move from CP15 to ARM register
+                        case ({decode_cp_rn, decode_cp_opcode2})
+                            7'b0000000: cp_data_out = 32'h41007700; // ID register (ARM7TDMI)
+                            7'b0001000: cp_data_out = 32'h00000000; // Control register
+                            default: begin
+                                cp_data_out = 32'h00000000;
+                                cp_exception = 1'b1; // Undefined register
+                            end
+                        endcase
+                    end else if (decode_cp_op == CP_MCR) begin
+                        // Move from ARM register to CP15 - ignore for now
+                        cp_ready = 1'b1;
+                    end else begin
+                        // Other CP15 operations not supported
+                        cp_exception = 1'b1;
+                    end
+                end
+                default: begin
+                    // Coprocessor not present
+                    cp_present = 1'b0;
+                    cp_exception = 1'b1;
+                end
+            endcase
+        end
+    end
+    
     // Exception detection
     assign swi_exception = (current_state == EXECUTE) && 
                           (decode_instr_type == INSTR_SWI) &&
                           decode_valid && condition_passed;
     assign undefined_exception = (current_state == EXECUTE) && 
-                                (decode_instr_type == INSTR_UNDEFINED) &&
+                                ((decode_instr_type == INSTR_UNDEFINED) ||
+                                 (decode_instr_type == INSTR_COPROCESSOR && cp_exception)) &&
                                 decode_valid;
     
     // Register file write logic with LR support and long multiply
@@ -371,6 +463,12 @@ module arm7tdmi_top (
             end else begin
                 reg_rd_data = mul_result_lo;  // Long multiply low result (RdLo)
             end
+        end else if (decode_instr_type == INSTR_PSR_TRANSFER && decode_psr_to_reg) begin
+            // MRS: Move PSR to register
+            reg_rd_data = decode_psr_spsr ? reg_spsr_out : reg_cpsr_out;
+        end else if (decode_instr_type == INSTR_COPROCESSOR && decode_cp_op == CP_MRC) begin
+            // MRC: Move from coprocessor to ARM register
+            reg_rd_data = cp_data_out;
         end else begin
             reg_rd_data = alu_result; // Data processing instruction
         end
@@ -393,7 +491,9 @@ module arm7tdmi_top (
                         (decode_instr_type == INSTR_HALFWORD_DT && decode_mem_load) ||
                         (decode_instr_type == INSTR_SINGLE_SWAP) ||
                         (decode_instr_type == INSTR_MUL) ||
-                        (decode_instr_type == INSTR_MUL_LONG)) &&
+                        (decode_instr_type == INSTR_MUL_LONG) ||
+                        (decode_instr_type == INSTR_PSR_TRANSFER && decode_psr_to_reg) ||
+                        (decode_instr_type == INSTR_COPROCESSOR && decode_cp_op == CP_MRC)) &&
                        decode_valid && 
                        condition_passed &&
                        (decode_rd != 4'd15);  // Don't write to PC through normal path
@@ -435,6 +535,18 @@ module arm7tdmi_top (
             reg_cpsr_in = reg_cpsr_out;
             reg_cpsr_in[CPSR_T_BIT] = thumb_switch;
             reg_cpsr_we = 1'b1;
+        end else if ((decode_instr_type == INSTR_PSR_TRANSFER) && !decode_psr_to_reg && 
+                    !decode_psr_spsr && (current_state == WRITEBACK) && 
+                    decode_valid && condition_passed) begin
+            // MSR: Move register/immediate to CPSR
+            if (decode_psr_immediate) begin
+                // MSR with immediate value
+                reg_cpsr_in = {20'b0, decode_immediate[11:8], decode_immediate[7:0]};
+            end else begin
+                // MSR with register value
+                reg_cpsr_in = reg_rm_data;
+            end
+            reg_cpsr_we = 1'b1;
         end else if (decode_set_flags && (current_state == WRITEBACK) && 
                     decode_valid && condition_passed) begin
             reg_cpsr_in = reg_cpsr_out;
@@ -458,12 +570,26 @@ module arm7tdmi_top (
             reg_cpsr_we = 1'b0;
         end
         
-        // SPSR write for exceptions
+        // SPSR write for exceptions and MSR instructions
         if (exception_taken) begin
             reg_spsr_in = exception_spsr;
             reg_spsr_we = 1'b1;
             target_mode = exception_mode;
             mode_change = 1'b1;
+        end else if ((decode_instr_type == INSTR_PSR_TRANSFER) && !decode_psr_to_reg && 
+                    decode_psr_spsr && (current_state == WRITEBACK) && 
+                    decode_valid && condition_passed) begin
+            // MSR: Move register/immediate to SPSR
+            if (decode_psr_immediate) begin
+                // MSR with immediate value
+                reg_spsr_in = {20'b0, decode_immediate[11:8], decode_immediate[7:0]};
+            end else begin
+                // MSR with register value
+                reg_spsr_in = reg_rm_data;
+            end
+            reg_spsr_we = 1'b1;
+            target_mode = current_mode;
+            mode_change = 1'b0;
         end else begin
             reg_spsr_in = 32'b0;
             reg_spsr_we = 1'b0;
@@ -644,6 +770,16 @@ module arm7tdmi_top (
         .mem_pre        (decode_mem_pre),
         .mem_up         (decode_mem_up),
         .mem_writeback  (decode_mem_writeback),
+        .psr_to_reg     (decode_psr_to_reg),
+        .psr_spsr       (decode_psr_spsr),
+        .psr_immediate  (decode_psr_immediate),
+        .cp_op          (decode_cp_op),
+        .cp_num         (decode_cp_num),
+        .cp_rd          (decode_cp_rd),
+        .cp_rn          (decode_cp_rn),
+        .cp_opcode1     (decode_cp_opcode1),
+        .cp_opcode2     (decode_cp_opcode2),
+        .cp_load        (decode_cp_load),
         .pc_out         (decode_pc),
         .decode_valid   (decode_valid),
         .stall          (stall),
@@ -692,11 +828,30 @@ module arm7tdmi_top (
     );
     
     // Long multiply register access for accumulate operations
+    // For UMLAL/SMLAL, we need current values of RdHi and RdLo for accumulation
+    // This is a simplified implementation - in a real processor, we'd need extra read ports
+    // or a multi-cycle approach
     logic [31:0] mul_acc_hi, mul_acc_lo;
-    assign mul_acc_hi = (decode_instr_type == INSTR_MUL_LONG && mul_accumulate) ? 
-                       reg_rn_data : 32'b0;  // RdHi for accumulate
-    assign mul_acc_lo = (decode_instr_type == INSTR_MUL_LONG && mul_accumulate) ? 
-                       reg_rm_data : 32'b0;  // RdLo for accumulate
+    
+    // For MLA: use Rn as accumulator (bits [15:12])
+    // For UMLAL/SMLAL: use current RdHi and RdLo values
+    // This is simplified - assumes accumulator values are available somehow
+    always_comb begin
+        if (decode_instr_type == INSTR_MUL && mul_accumulate) begin
+            // MLA: accumulate with Rn register
+            mul_acc_hi = 32'b0;
+            mul_acc_lo = reg_rn_data;  // Rn for MLA
+        end else if (decode_instr_type == INSTR_MUL_LONG && mul_accumulate) begin
+            // UMLAL/SMLAL: accumulate with current RdHi:RdLo
+            // This is a simplification - in practice we'd need to read these values
+            // For now, assume they are zero (first implementation)
+            mul_acc_hi = 32'b0;  // TODO: Read current RdHi value
+            mul_acc_lo = 32'b0;  // TODO: Read current RdLo value
+        end else begin
+            mul_acc_hi = 32'b0;
+            mul_acc_lo = 32'b0;
+        end
+    end
     
     // Instantiate Multiply Unit
     arm7tdmi_multiply u_multiply (

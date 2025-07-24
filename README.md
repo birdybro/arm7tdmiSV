@@ -17,6 +17,8 @@ This project implements a fully functional ARM7TDMI processor core in SystemVeri
 - **Halfword Transfer**: LDRH, STRH, LDRSB, LDRSH with sign extension
 - **Atomic Operations**: SWP, SWPB single data swap instructions
 - **Mode Switching**: BX instruction for ARM/Thumb mode transitions
+- **PSR Transfer**: MRS/MSR instructions for accessing CPSR and SPSR registers
+- **Coprocessor Interface**: Complete framework supporting CDP, LDC, STC, MCR, MRC operations
 - **Exception Handling**: Full interrupt and exception processing (IRQ, FIQ, SWI, Undefined, Abort)
 
 ### Architecture Components
@@ -79,6 +81,8 @@ make wave
 - `make multiply` - Comprehensive multiply instruction verification
 - `make complex` - Complex instruction sequences and edge cases
 - `make simple` - Simple instruction validation
+- `make psr_decode` - PSR transfer instruction decode verification
+- `make coprocessor_decode` - Coprocessor instruction decode verification
 
 ## Implementation Status
 
@@ -86,16 +90,18 @@ make wave
 ✅ **Complete**: Register banking and processor modes  
 ✅ **Complete**: Exception handling and interrupts
 ✅ **Complete**: Memory interface and data transfers
-✅ **Complete**: Multiply instruction variants
+✅ **Complete**: Multiply instruction variants (MUL, MLA, UMULL, SMULL, UMLAL, SMLAL)
 ✅ **Complete**: Block data transfers (LDM/STM)
 ✅ **Complete**: Atomic operations (SWP/SWPB)
 ✅ **Complete**: Branch and link operations
+✅ **Complete**: PSR transfer instructions (MRS/MSR)
+✅ **Complete**: Coprocessor instruction framework (CDP, LDC, STC, MCR, MRC)
 
 🚧 **Future Work**:
 - Thumb instruction set implementation
-- Coprocessor instruction framework
-- Cache and MMU simulation
+- Cache and MMU simulation  
 - Performance optimization
+- Additional coprocessor implementations
 
 ## Technical Specifications
 

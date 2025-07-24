@@ -36,6 +36,20 @@ module arm7tdmi_decode (
     output logic        mem_up,     // Add offset
     output logic        mem_writeback,
     
+    // PSR transfer instruction outputs
+    output logic        psr_to_reg,    // 1 for MRS, 0 for MSR
+    output logic        psr_spsr,      // 1 for SPSR, 0 for CPSR
+    output logic        psr_immediate, // 1 for immediate MSR
+    
+    // Coprocessor instruction outputs
+    output cp_op_t      cp_op,         // Coprocessor operation type
+    output logic [3:0]  cp_num,        // Coprocessor number (0-15)
+    output logic [3:0]  cp_rd,         // Coprocessor destination register
+    output logic [3:0]  cp_rn,         // Coprocessor operand register
+    output logic [2:0]  cp_opcode1,    // Coprocessor opcode 1
+    output logic [2:0]  cp_opcode2,    // Coprocessor opcode 2 (for CDP)
+    output logic        cp_load,       // 1 for load, 0 for store (LDC/STC)
+    
     // Output to execute stage
     output logic [31:0] pc_out,
     output logic        decode_valid,
@@ -117,13 +131,28 @@ module arm7tdmi_decode (
                         end else begin
                             instr_type = INSTR_MUL_LONG;
                         end
+                    end else if ((instruction[24:21] == 4'b1000 || instruction[24:21] == 4'b1010) && 
+                                instruction[20] == 1'b0 && instruction[19:16] == 4'b1111 && instruction[11:0] == 12'b000000000000) begin
+                        // MRS: Move PSR to register (check before SWP)
+                        instr_type = INSTR_PSR_TRANSFER;
+                    end else if ((instruction[24:21] == 4'b1001 || instruction[24:21] == 4'b1011) && 
+                                instruction[11:4] == 8'b00000000) begin
+                        // MSR: Move register to PSR
+                        instr_type = INSTR_PSR_TRANSFER;
                     end else if (instruction[24:21] == 4'b1000 && instruction[7:4] == 4'b0000) begin
                         instr_type = INSTR_SINGLE_SWAP;
                     end else begin
                         instr_type = INSTR_DATA_PROC;
                     end
                 end
-                3'b001: instr_type = INSTR_DATA_PROC;
+                3'b001: begin
+                    if (instruction[27:23] == 5'b00110 && instruction[21:20] == 2'b10) begin
+                        // MSR: Move immediate to PSR
+                        instr_type = INSTR_PSR_TRANSFER;
+                    end else begin
+                        instr_type = INSTR_DATA_PROC;
+                    end
+                end
                 3'b010: instr_type = INSTR_SINGLE_DT;
                 3'b011: instr_type = INSTR_SINGLE_DT;
                 3'b100: instr_type = INSTR_BLOCK_DT;
@@ -173,6 +202,60 @@ module arm7tdmi_decode (
     assign mem_pre = p_bit;
     assign mem_up = u_bit;
     assign mem_writeback = w_bit;
+    
+    // PSR transfer decode
+    assign psr_to_reg = (instr_type == INSTR_PSR_TRANSFER) && !instruction[21];  // MRS = L=0, MSR = L=1
+    assign psr_spsr = (instr_type == INSTR_PSR_TRANSFER) && instruction[22];     // SPSR = R=1, CPSR = R=0  
+    assign psr_immediate = (instr_type == INSTR_PSR_TRANSFER) && instruction[25]; // Immediate MSR
+    
+    // Coprocessor decode
+    always_comb begin
+        cp_op = CP_CDP;
+        cp_num = 4'b0;
+        cp_rd = 4'b0;
+        cp_rn = 4'b0;
+        cp_opcode1 = 3'b0;
+        cp_opcode2 = 3'b0;
+        cp_load = 1'b0;
+        
+        if (instr_type == INSTR_COPROCESSOR) begin
+            cp_num = instruction[11:8];  // Coprocessor number
+            
+            if (instruction[27:25] == 3'b110) begin
+                // LDC/STC - Coprocessor data transfer
+                cp_rd = instruction[15:12];     // CRd
+                cp_opcode1 = instruction[23:21]; // Opcode
+                cp_load = instruction[20];       // L bit
+                
+                if (cp_load) begin
+                    cp_op = CP_LDC;
+                end else begin
+                    cp_op = CP_STC;
+                end
+            end else if (instruction[27:25] == 3'b111) begin
+                if (instruction[4]) begin
+                    // MCR/MRC - Coprocessor register transfer
+                    cp_rd = instruction[15:12];     // Rd (ARM register)
+                    cp_rn = instruction[19:16];     // CRn (coprocessor register)
+                    cp_opcode1 = instruction[23:21]; // Opcode 1
+                    cp_opcode2 = instruction[7:5];   // Opcode 2
+                    
+                    if (instruction[20]) begin
+                        cp_op = CP_MRC;  // Move to ARM from coprocessor
+                    end else begin
+                        cp_op = CP_MCR;  // Move to coprocessor from ARM
+                    end
+                end else begin
+                    // CDP - Coprocessor data processing
+                    cp_op = CP_CDP;
+                    cp_rd = instruction[15:12];     // CRd
+                    cp_rn = instruction[19:16];     // CRn
+                    cp_opcode1 = instruction[23:21]; // Opcode 1
+                    cp_opcode2 = instruction[7:5];   // Opcode 2
+                end
+            end
+        end
+    end
     
     // Outputs
     assign pc_out = pc_reg;

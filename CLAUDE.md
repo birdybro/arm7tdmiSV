@@ -32,6 +32,8 @@ The ARM7TDMI core implementation is now comprehensive and includes:
 - **Halfword Data Transfer**: LDRH, STRH, LDRSB, LDRSH
 - **Single Data Swap**: SWP, SWPB atomic operations
 - **Branch Exchange**: BX for ARM/Thumb mode switching
+- **PSR Transfer**: MRS/MSR for CPSR and SPSR access
+- **Coprocessor Instructions**: CDP, LDC, STC, MCR, MRC with CP15 basic support
 - **Exception Handling**: SWI, IRQ, FIQ, Undefined, Abort exceptions
 
 ### Architecture Components
@@ -42,12 +44,15 @@ The ARM7TDMI core implementation is now comprehensive and includes:
 - **Block Transfer Unit**: Multi-register load/store operations
 - **Exception Handler**: Priority-based exception processing
 - **Memory Interface**: Unified memory interface with byte enables
+- **Coprocessor Interface**: Extensible framework with basic CP15 implementation
 
 ### Verification
 - Multiple testbenches for different instruction categories
 - Comprehensive multiply unit verification
 - Memory operation testing
 - Exception flow validation
+- PSR transfer instruction testing
+- Coprocessor instruction decode verification
 
 ## Testing and Simulation
 
@@ -56,6 +61,8 @@ The project uses Icarus Verilog for simulation with the following test targets:
 - `make multiply` - Multiply unit specific tests
 - `make complex` - Complex instruction sequences
 - `make simple` - Simple instruction tests
+- `make psr_decode` - PSR transfer instruction decode tests
+- `make coprocessor_decode` - Coprocessor instruction decode tests
 
 ## Code Validation
 
