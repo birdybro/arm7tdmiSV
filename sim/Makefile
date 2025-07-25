@@ -126,12 +126,103 @@ completeness_test: completeness_test_tb.vvp
 completeness_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv completeness_test_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv completeness_test_tb.sv
 
+# Debug decode test
+debug_decode: debug_decode_tb.vvp
+	vvp debug_decode_tb.vvp
+
+debug_decode_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv debug_decode_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv debug_decode_tb.sv
+
 # Thumb BL instruction test
 thumb_bl_test: thumb_bl_test_tb.vvp
 	vvp thumb_bl_test_tb.vvp
 
 thumb_bl_test_tb.vvp: $(RTL_SOURCES) thumb_bl_test_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) thumb_bl_test_tb.sv
+
+# Basic execution test
+basic_execution: basic_execution_tb.vvp
+	vvp basic_execution_tb.vvp
+
+basic_execution_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv basic_execution_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv basic_execution_tb.sv
+
+# Register file and flag validation test
+regfile_flag_test: regfile_flag_test_tb.vvp
+	vvp regfile_flag_test_tb.vvp
+
+regfile_flag_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_regfile.sv regfile_flag_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_regfile.sv regfile_flag_test_tb.sv
+
+# Memory operations test
+memory_test: memory_test_tb.vvp
+	vvp memory_test_tb.vvp
+
+memory_test_tb.vvp: $(RTL_SOURCES) memory_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) memory_test_tb.sv
+
+# Memory interface test
+memory_interface_test: memory_interface_test_tb.vvp
+	vvp memory_interface_test_tb.vvp
+
+memory_interface_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv memory_interface_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv memory_interface_test_tb.sv
+
+# Halfword operations test
+halfword_test: halfword_test_tb.vvp
+	vvp halfword_test_tb.vvp
+
+halfword_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv halfword_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv halfword_test_tb.sv
+
+# Block data transfer test
+block_dt_test: block_dt_test_tb.vvp
+	vvp block_dt_test_tb.vvp
+
+block_dt_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_block_dt.sv block_dt_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv $(RTL_DIR)/arm7tdmi_block_dt.sv block_dt_test_tb.sv
+
+# Swap operations test
+swap_test: swap_test_tb.vvp
+	vvp swap_test_tb.vvp
+
+swap_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv swap_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv swap_test_tb.sv
+
+# Multiply execution test
+multiply_exec_test: multiply_exec_test_tb.vvp
+	vvp multiply_exec_test_tb.vvp
+
+multiply_exec_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv multiply_exec_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv multiply_exec_test_tb.sv
+
+# Branch execution test
+branch_exec_test: branch_exec_test_tb.vvp
+	vvp branch_exec_test_tb.vvp
+
+branch_exec_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv branch_exec_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv branch_exec_test_tb.sv
+
+# Enhanced coprocessor test
+coprocessor_enhanced_test: coprocessor_enhanced_test_tb.vvp
+	vvp coprocessor_enhanced_test_tb.vvp
+
+coprocessor_enhanced_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_enhanced_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv coprocessor_enhanced_test_tb.sv
+
+# Exception handling test
+exception_handling_test: exception_handling_test_tb.vvp
+	vvp exception_handling_test_tb.vvp
+
+exception_handling_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv exception_handling_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv exception_handling_test_tb.sv
+
+# Condition codes test
+condition_codes_test: condition_codes_test_tb.vvp
+	vvp condition_codes_test_tb.vvp
+
+condition_codes_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv condition_codes_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv condition_codes_test_tb.sv
 
 # Compile the design
 compile: $(VVP_FILE)

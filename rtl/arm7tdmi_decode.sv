@@ -137,13 +137,7 @@ module arm7tdmi_decode (
         if (!thumb_mode) begin  // ARM mode
             casez (instruction[27:25])
                 3'b000: begin
-                    if (instruction[7:4] == 4'b1001) begin
-                        if (instruction[24:21] == 4'b0000) begin
-                            instr_type = INSTR_MUL;
-                        end else begin
-                            instr_type = INSTR_MUL_LONG;
-                        end
-                    end else if ((instruction[24:21] == 4'b1000 || instruction[24:21] == 4'b1010) && 
+                    if ((instruction[24:21] == 4'b1000 || instruction[24:21] == 4'b1010) && 
                                 instruction[20] == 1'b0 && instruction[19:16] == 4'b1111 && instruction[11:0] == 12'b000000000000) begin
                         // MRS: Move PSR to register (check before SWP)
                         instr_type = INSTR_PSR_TRANSFER;
@@ -151,8 +145,23 @@ module arm7tdmi_decode (
                                 instruction[11:4] == 8'b00000000) begin
                         // MSR: Move register to PSR
                         instr_type = INSTR_PSR_TRANSFER;
-                    end else if (instruction[24:21] == 4'b1000 && instruction[7:4] == 4'b0000) begin
+                    end else if (instruction[27:23] == 5'b00010 && instruction[21:20] == 2'b00 && instruction[11:4] == 8'b00001001) begin
+                        // SWP and SWPB - bits[27:23]=00010, bits[21:20]=00, bits[11:4]=00001001
                         instr_type = INSTR_SINGLE_SWAP;
+                    end else if (instruction[7:4] == 4'b1001) begin
+                        if (instruction[24:21] == 4'b0000 || instruction[24:21] == 4'b0001) begin
+                            // MUL (0000) and MLA (0001) are single multiply instructions
+                            instr_type = INSTR_MUL;
+                        end else begin
+                            // UMULL, UMLAL, SMULL, SMLAL are long multiply instructions
+                            instr_type = INSTR_MUL_LONG;
+                        end
+                    end else if ((instruction[7:4] == 4'b1011) || (instruction[7:4] == 4'b1101) || (instruction[7:4] == 4'b1111)) begin
+                        // Halfword data transfer: LDRH (1011), LDRSB (1101), LDRSH (1111)
+                        instr_type = INSTR_HALFWORD_DT;
+                    end else if (instruction[27:4] == 24'b000100101111111111110001) begin
+                        // BX: Branch and Exchange - specific pattern match
+                        instr_type = INSTR_BRANCH_EX;
                     end else begin
                         instr_type = INSTR_DATA_PROC;
                     end
@@ -280,7 +289,7 @@ module arm7tdmi_decode (
     assign rn = rn_field;
     assign rm = rm_field;
     assign immediate = imm_field;
-    assign imm_en = i_bit && (instr_type == INSTR_DATA_PROC);
+    assign imm_en = (i_bit && (instr_type == INSTR_DATA_PROC)) || (!i_bit && (instr_type == INSTR_SINGLE_DT)) || (instruction[22] && (instr_type == INSTR_HALFWORD_DT));
     assign set_flags = s_bit && (instr_type == INSTR_DATA_PROC);
     
     // Shift decode - ARM data processing instructions
@@ -295,7 +304,8 @@ module arm7tdmi_decode (
     assign branch_link = l_bit && is_branch;
     
     // Memory decode
-    assign is_memory = (instr_type == INSTR_SINGLE_DT) || (instr_type == INSTR_BLOCK_DT);
+    assign is_memory = (instr_type == INSTR_SINGLE_DT) || (instr_type == INSTR_HALFWORD_DT) || 
+                       (instr_type == INSTR_BLOCK_DT) || (instr_type == INSTR_SINGLE_SWAP);
     assign mem_load = l_bit_mem;
     assign mem_byte = b_bit;
     assign mem_pre = p_bit;
@@ -410,6 +420,9 @@ module arm7tdmi_decode (
                         thumb_instr_type = THUMB_ALU_HI;
                         thumb_rd = {instruction[7], instruction[2:0]}; // 4-bit register
                         thumb_rs = instruction[6:3];  // 4-bit register
+                    end else if (instruction[12:10] == 3'b101) begin
+                        // Load/Store register offset
+                        thumb_instr_type = THUMB_LOAD_STORE;
                     end else begin
                         // PC-relative load
                         thumb_instr_type = THUMB_PC_REL_LOAD;
@@ -418,11 +431,12 @@ module arm7tdmi_decode (
                     end
                 end
                 3'b011: begin
-                    // Load/Store register offset
-                    thumb_instr_type = THUMB_LOAD_STORE;
+                    // Load/Store with immediate offset (5-bit)
+                    thumb_instr_type = THUMB_LOAD_STORE_IMM;
+                    thumb_imm5 = instruction[10:6];
                 end
                 3'b100: begin
-                    if (instruction[12]) begin
+                    if (instruction[11]) begin
                         // Load/Store halfword
                         thumb_instr_type = THUMB_LOAD_STORE_HW;
                         thumb_imm5 = instruction[10:6];
@@ -450,14 +464,20 @@ module arm7tdmi_decode (
                         if (instruction[11:8] == 4'b0100) begin
                             // Push/Pop
                             thumb_instr_type = THUMB_PUSH_POP;
+                        end else if (instruction[11:8] == 4'b1111) begin
+                            // Software interrupt
+                            thumb_instr_type = THUMB_ALU_REG; // Placeholder, should be SWI
+                            thumb_imm8 = instruction[7:0];
                         end else begin
-                            // Add/Subtract to SP
-                            thumb_instr_type = THUMB_ADD_SUB_SP;
+                            // Conditional branch
+                            thumb_instr_type = THUMB_BRANCH_COND;
+                            thumb_offset8 = instruction[7:0];
                         end
                     end else begin
-                        // Add/Subtract to SP
-                        thumb_instr_type = THUMB_ADD_SUB_SP;
-                        thumb_imm8 = {1'b0, instruction[6:0]};
+                        // Load/Store multiple
+                        thumb_instr_type = THUMB_LOAD_STORE_MULT;
+                        thumb_rd = instruction[10:8];
+                        thumb_imm8 = instruction[7:0];
                     end
                 end
                 3'b111: begin
@@ -471,16 +491,9 @@ module arm7tdmi_decode (
                             thumb_offset8 = instruction[7:0];
                         end
                     end else begin
-                        if (instruction[11]) begin
-                            // Regular unconditional branch
-                            thumb_instr_type = THUMB_BRANCH_UNCOND;
-                            thumb_offset11 = instruction[10:0];
-                        end else begin
-                            // Load/Store multiple
-                            thumb_instr_type = THUMB_LOAD_STORE_MULT;
-                            thumb_rd = instruction[10:8]; // Base register
-                            thumb_imm8 = instruction[7:0]; // Register list
-                        end
+                        // Unconditional branch
+                        thumb_instr_type = THUMB_BRANCH_UNCOND;
+                        thumb_offset11 = instruction[10:0];
                     end
                 end
                 endcase
