@@ -1,7 +1,7 @@
 // Debug decode test for specific failing instructions
 `timescale 1ns/1ps
 
-import arm7tdmi_pkg::*;
+// import arm7tdmi_pkg::*;
 
 module debug_decode_tb;
     
@@ -19,13 +19,13 @@ module debug_decode_tb;
     logic thumb_mode = 0;
     
     // Decode outputs
-    condition_t decode_condition;
-    instr_type_t decode_instr_type; 
-    alu_op_t decode_alu_op;
+    logic [3:0] decode_condition;
+    logic [3:0] decode_instr_type; 
+    logic [3:0] decode_alu_op;
     logic [3:0] decode_rd, decode_rn, decode_rm;
     logic [11:0] decode_immediate;
     logic decode_imm_en, decode_set_flags;
-    shift_type_t decode_shift_type;
+    logic [1:0] decode_shift_type;
     logic [4:0] decode_shift_amount;
     logic decode_shift_reg;
     logic [3:0] decode_shift_rs;
@@ -34,11 +34,11 @@ module debug_decode_tb;
     logic decode_is_memory, decode_mem_load, decode_mem_byte;
     logic decode_mem_pre, decode_mem_up, decode_mem_writeback;
     logic decode_psr_to_reg, decode_psr_spsr, decode_psr_immediate;
-    cp_op_t decode_cp_op;
+    logic [2:0] decode_cp_op;
     logic [3:0] decode_cp_num, decode_cp_rd, decode_cp_rn;
     logic [2:0] decode_cp_opcode1, decode_cp_opcode2;
     logic decode_cp_load;
-    thumb_instr_type_t decode_thumb_instr_type;
+    logic [4:0] decode_thumb_instr_type;
     logic [2:0] decode_thumb_rd, decode_thumb_rs, decode_thumb_rn;
     logic [7:0] decode_thumb_imm8, decode_thumb_offset8;
     logic [4:0] decode_thumb_imm5;
@@ -101,7 +101,7 @@ module debug_decode_tb;
         .decode_valid   (decode_valid)
     );
     
-    task test_instruction(input [31:0] instr, input string name, input instr_type_t expected_type);
+    task test_instruction(input [31:0] instr, input string name, input logic [3:0] expected_type);
         instruction = instr;
         @(posedge clk);
         $display("Instruction: %s (0x%08x = %b)", name, instr, instr);

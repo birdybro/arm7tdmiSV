@@ -1,0 +1,131 @@
+$date
+	Fri Jul 25 09:40:10 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module cache_replacement_simple_test_tb $end
+$var wire 32 ! rr_replacements [31:0] $end
+$var wire 32 " random_replacements [31:0] $end
+$var wire 1 # mem_write $end
+$var wire 32 $ mem_wdata [31:0] $end
+$var wire 1 % mem_req $end
+$var wire 4 & mem_byte_en [3:0] $end
+$var wire 32 ' mem_addr [31:0] $end
+$var wire 32 ( lru_replacements [31:0] $end
+$var wire 32 ) lfu_replacements [31:0] $end
+$var wire 1 * cpu_ready $end
+$var wire 32 + cpu_rdata [31:0] $end
+$var wire 1 , cpu_hit $end
+$var wire 1 - coherency_write $end
+$var wire 1 . coherency_req $end
+$var wire 1 / coherency_ready $end
+$var wire 32 0 coherency_addr [31:0] $end
+$var wire 32 1 cache_misses [31:0] $end
+$var wire 32 2 cache_hits [31:0] $end
+$var wire 32 3 cache_evictions [31:0] $end
+$var wire 1 4 cache_busy $end
+$var reg 1 5 cache_enable $end
+$var reg 1 6 cache_flush $end
+$var reg 1 7 clk $end
+$var reg 32 8 cpu_addr [31:0] $end
+$var reg 4 9 cpu_byte_en [3:0] $end
+$var reg 1 : cpu_req $end
+$var reg 2 ; cpu_size [1:0] $end
+$var reg 32 < cpu_wdata [31:0] $end
+$var reg 1 = cpu_write $end
+$var reg 32 > mem_rdata [31:0] $end
+$var reg 1 ? mem_ready $end
+$var reg 2 @ replacement_select [1:0] $end
+$var reg 1 A rst_n $end
+$var integer 32 B test_count [31:0] $end
+$var integer 32 C test_passed [31:0] $end
+$scope module u_dcache $end
+$var wire 1 4 cache_busy $end
+$var wire 1 5 cache_enable $end
+$var wire 1 6 cache_flush $end
+$var wire 1 7 clk $end
+$var wire 32 D coherency_addr [31:0] $end
+$var wire 1 / coherency_ready $end
+$var wire 1 . coherency_req $end
+$var wire 1 - coherency_write $end
+$var wire 32 E cpu_addr [31:0] $end
+$var wire 4 F cpu_byte_en [3:0] $end
+$var wire 1 , cpu_hit $end
+$var wire 1 * cpu_ready $end
+$var wire 1 : cpu_req $end
+$var wire 2 G cpu_size [1:0] $end
+$var wire 32 H cpu_wdata [31:0] $end
+$var wire 1 = cpu_write $end
+$var wire 32 I mem_rdata [31:0] $end
+$var wire 1 ? mem_ready $end
+$var wire 2 J replacement_select [1:0] $end
+$var wire 1 A rst_n $end
+$var wire 2 K word_offset [1:0] $end
+$var wire 2 L byte_offset [1:0] $end
+$var wire 27 M addr_tag [26:0] $end
+$var wire 4 N addr_offset [3:0] $end
+$var wire 1 O addr_index $end
+$var reg 32 P cache_evictions [31:0] $end
+$var reg 1 Q cache_hit_internal $end
+$var reg 32 R cache_hits [31:0] $end
+$var reg 32 S cache_misses [31:0] $end
+$var reg 32 T cpu_rdata [31:0] $end
+$var reg 2 U fill_counter [1:0] $end
+$var reg 1 V hit_way $end
+$var reg 16 W lfsr [15:0] $end
+$var reg 32 X lfu_replacements [31:0] $end
+$var reg 32 Y lru_replacements [31:0] $end
+$var reg 32 Z mem_addr [31:0] $end
+$var reg 4 [ mem_byte_en [3:0] $end
+$var reg 1 % mem_req $end
+$var reg 32 \ mem_wdata [31:0] $end
+$var reg 1 # mem_write $end
+$var reg 1 ] miss_index $end
+$var reg 27 ^ miss_tag [26:0] $end
+$var reg 2 _ miss_word_offset [1:0] $end
+$var reg 3 ` next_state [2:0] $end
+$var reg 32 a random_replacements [31:0] $end
+$var reg 1 b replace_way $end
+$var reg 32 c rr_replacements [31:0] $end
+$var reg 32 d selected_word [31:0] $end
+$var reg 3 e state [2:0] $end
+$var reg 32 f write_data_masked [31:0] $end
+$var reg 2 g writeback_counter [1:0] $end
+$var reg 1 h writeback_index $end
+$var reg 27 i writeback_tag [26:0] $end
+$var reg 1 j writeback_way $end
+$scope function get_lfu_way $end
+$var reg 1 k lfu_way $end
+$var reg 8 l min_count [7:0] $end
+$var reg 1 m set_index $end
+$scope begin $ivl_for_loop2 $end
+$var integer 32 n i [31:0] $end
+$upscope $end
+$upscope $end
+$scope function get_lru_way $end
+$var reg 1 o lru_way $end
+$var reg 1 p max_order $end
+$var reg 1 q set_index $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 r i [31:0] $end
+$upscope $end
+$upscope $end
+$scope function get_random_way $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 s i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop3 $end
+$var integer 32 t i [31:0] $end
+$scope begin $ivl_for_loop4 $end
+$var integer 32 u j [31:0] $end
+$upscope $end
+$upscope $end
+$scope begin $ivl_for_loop5 $end
+$var integer 32 v i [31:0] $end
+$scope begin $ivl_for_loop6 $end
+$var integer 32 

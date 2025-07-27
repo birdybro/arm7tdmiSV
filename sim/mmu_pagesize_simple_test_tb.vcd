@@ -1,0 +1,535 @@
+$date
+	Fri Jul 25 09:26:14 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module mmu_pagesize_simple_test_tb $end
+$var wire 32 ! tlb_misses [31:0] $end
+$var wire 32 " tlb_hits [31:0] $end
+$var wire 32 # page_faults [31:0] $end
+$var wire 1 $ mmu_busy $end
+$var wire 1 % mem_write $end
+$var wire 32 & mem_wdata [31:0] $end
+$var wire 2 ' mem_size [1:0] $end
+$var wire 1 ( mem_req $end
+$var wire 32 ) mem_paddr [31:0] $end
+$var wire 1 * cpu_ready $end
+$var wire 32 + cpu_rdata [31:0] $end
+$var wire 1 , cpu_abort $end
+$var wire 32 - asid_switches [31:0] $end
+$var reg 1 . cache_enable $end
+$var reg 1 / clk $end
+$var reg 1 0 cpu_req $end
+$var reg 2 1 cpu_size [1:0] $end
+$var reg 32 2 cpu_vaddr [31:0] $end
+$var reg 32 3 cpu_wdata [31:0] $end
+$var reg 1 4 cpu_write $end
+$var reg 8 5 current_asid [7:0] $end
+$var reg 4 6 domain_access [3:0] $end
+$var reg 20 7 large_idx [19:0] $end
+$var reg 1 8 mem_abort $end
+$var reg 32 9 mem_rdata [31:0] $end
+$var reg 1 : mem_ready $end
+$var reg 1 ; mmu_enable $end
+$var reg 1 < rst_n $end
+$var reg 20 = section_idx [19:0] $end
+$var reg 20 > small_idx [19:0] $end
+$var reg 20 ? tiny_idx [19:0] $end
+$var reg 32 @ tlb_flush_addr [31:0] $end
+$var reg 1 A tlb_flush_all $end
+$var reg 1 B tlb_flush_asid $end
+$var reg 8 C tlb_flush_asid_val [7:0] $end
+$var reg 1 D tlb_flush_entry $end
+$var reg 1 E tlb_flush_global $end
+$var reg 32 F ttb_base [31:0] $end
+$var integer 32 G test_count [31:0] $end
+$var integer 32 H test_passed [31:0] $end
+$scope module u_mmu $end
+$var wire 1 . cache_enable $end
+$var wire 1 / clk $end
+$var wire 1 , cpu_abort $end
+$var wire 32 I cpu_rdata [31:0] $end
+$var wire 1 * cpu_ready $end
+$var wire 1 0 cpu_req $end
+$var wire 2 J cpu_size [1:0] $end
+$var wire 32 K cpu_vaddr [31:0] $end
+$var wire 32 L cpu_wdata [31:0] $end
+$var wire 1 4 cpu_write $end
+$var wire 8 M current_asid [7:0] $end
+$var wire 4 N domain_access [3:0] $end
+$var wire 1 8 mem_abort $end
+$var wire 32 O mem_rdata [31:0] $end
+$var wire 1 : mem_ready $end
+$var wire 1 $ mmu_busy $end
+$var wire 1 ; mmu_enable $end
+$var wire 1 < rst_n $end
+$var wire 32 P tlb_flush_addr [31:0] $end
+$var wire 1 A tlb_flush_all $end
+$var wire 1 B tlb_flush_asid $end
+$var wire 8 Q tlb_flush_asid_val [7:0] $end
+$var wire 1 D tlb_flush_entry $end
+$var wire 1 E tlb_flush_global $end
+$var wire 32 R ttb_base [31:0] $end
+$var wire 10 S va_tiny_page_offset [9:0] $end
+$var wire 20 T va_tiny_page_index [19:0] $end
+$var wire 12 U va_small_page_offset [11:0] $end
+$var wire 20 V va_small_page_index [19:0] $end
+$var wire 20 W va_section_offset [19:0] $end
+$var wire 20 X va_section_index [19:0] $end
+$var wire 8 Y va_page_sub [7:0] $end
+$var wire 16 Z va_large_page_offset [15:0] $end
+$var wire 20 [ va_large_page_index [19:0] $end
+$var wire 32 \ l2_addr [31:0] $end
+$var wire 32 ] l1_addr [31:0] $end
+$var wire 1 ^ asid_changed $end
+$var reg 32 _ asid_switches [31:0] $end
+$var reg 1 ` domain_ok $end
+$var reg 32 a final_paddr [31:0] $end
+$var reg 32 b l1_pte [31:0] $end
+$var reg 32 c l2_pte [31:0] $end
+$var reg 32 d mem_paddr [31:0] $end
+$var reg 1 ( mem_req $end
+$var reg 2 e mem_size [1:0] $end
+$var reg 32 f mem_wdata [31:0] $end
+$var reg 1 % mem_write $end
+$var reg 3 g next_state [2:0] $end
+$var reg 32 h page_faults [31:0] $end
+$var reg 1 i permission_ok $end
+$var reg 8 j prev_asid [7:0] $end
+$var reg 3 k state [2:0] $end
+$var reg 1 l tlb_hit $end
+$var reg 3 m tlb_hit_index [2:0] $end
+$var reg 32 n tlb_hits [31:0] $end
+$var reg 32 o tlb_misses [31:0] $end
+$var reg 3 p tlb_next_replace [2:0] $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 q i [31:0] $end
+$scope begin $unm_blk_2 $end
+$var reg 1 r page_match $end
+$upscope $end
+$upscope $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 s i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop2 $end
+$var integer 32 t i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop3 $end
+$var integer 32 u i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop4 $end
+$var integer 32 v i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop5 $end
+$var integer 32 w i [31:0] $end
+$upscope $end
+$upscope $end
+$scope task test_address_parsing $end
+$var reg 32 x expected_large_idx [31:0] $end
+$var reg 32 y expected_section_idx [31:0] $end
+$var reg 32 z expected_small_idx [31:0] $end
+$var reg 32 { expected_tiny_idx [31:0] $end
+$var reg 32 | vaddr [31:0] $end
+$upscope $end
+$scope task test_passthrough $end
+$var reg 32 } vaddr [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx }
+bx |
+bx {
+bx z
+bx y
+bx x
+b0 w
+b0 v
+b0 u
+b0 t
+b1000 s
+0r
+b1000 q
+b0 p
+b0 o
+b0 n
+b0 m
+0l
+b0 k
+b0 j
+0i
+b0 h
+b0 g
+b0 f
+b10 e
+b0 d
+bx c
+bx b
+b0 a
+0`
+b0 _
+1^
+b10000000000000000 ]
+bx0000000000 \
+b0 [
+b0 Z
+b0 Y
+b0 X
+b0 W
+b0 V
+b0 U
+b0 T
+b0 S
+b10000000000000000 R
+b0 Q
+b0 P
+b0 O
+b1 N
+b1 M
+b0 L
+b0 K
+b10 J
+b0 I
+b0 H
+b0 G
+b10000000000000000 F
+0E
+0D
+b0 C
+0B
+0A
+b0 @
+bx ?
+bx >
+bx =
+0<
+0;
+1:
+b0 9
+08
+bx 7
+b1 6
+b1 5
+04
+b0 3
+b0 2
+b10 1
+00
+0/
+1.
+b0 -
+0,
+b0 +
+1*
+b0 )
+0(
+b10 '
+b0 &
+0%
+0$
+b0 #
+b0 "
+b0 !
+$end
+#5000
+b1000 s
+1/
+#10000
+0/
+#15000
+b1000 s
+1/
+#20000
+0/
+#25000
+b1000 s
+1/
+#30000
+0/
+#35000
+b1000 s
+1/
+#40000
+0/
+#45000
+b11011110101011011011111011101111 +
+b11011110101011011011111011101111 I
+b11011110101011011011111011101111 9
+b11011110101011011011111011101111 O
+b1 -
+b1 _
+0^
+b1 j
+1<
+1/
+#50000
+0/
+#55000
+1/
+#60000
+0/
+#65000
+1/
+#70000
+0/
+#75000
+1/
+#80000
+0/
+#85000
+1/
+#90000
+0/
+#95000
+b1001000110100010101 T
+b10010001101000101011001111000 )
+b10010001101000101011001111000 d
+b1000 q
+b10010001101000101011001111000 a
+b10000010010001100 ]
+b100100011 X
+b1000101011001111000 W
+b1001000110100 [
+b101011001111000 Z
+b10010001101000101 V
+b11001111000 U
+b1001111000 S
+bx0100010100 \
+b1000101 Y
+b10010001101000101011001111000 2
+b10010001101000101011001111000 K
+b1 G
+b1011010 {
+b10010001101000101 z
+b1001000110100 x
+b100100011 y
+b10010001101000101011001111000 |
+1/
+#100000
+0/
+#105000
+b0 T
+b1000000000000000000000000000000 )
+b1000000000000000000000000000000 d
+b1000 q
+b1000000000000000000000000000000 a
+b10001000000000000 ]
+b10000000000 X
+b0 W
+b100000000000000 [
+b0 Z
+b1000000000000000000 V
+b0 U
+b0 S
+bx0000000000 \
+b0 Y
+b1000000000000000000000000000000 2
+b1000000000000000000000000000000 K
+b10 G
+b0 {
+b1000000000000000000 z
+b100000000000000 x
+b10000000000 y
+b1000000000000000000000000000000 |
+b1001000110100010101 ?
+b10010001101000101 >
+b1001000110100 7
+b100100011 =
+1/
+#110000
+0/
+#115000
+b1000000000001000000 T
+b1010000000000010000000000000000 )
+b1010000000000010000000000000000 d
+b1000 q
+b1010000000000010000000000000000 a
+b10001010000000000 ]
+b10100000000 X
+b10000000000000000 W
+b101000000000001 [
+b1010000000000010000 V
+bx0001000000 \
+b10000 Y
+b1010000000000010000000000000000 2
+b1010000000000010000000000000000 K
+b11 G
+b1000000 {
+b1010000000000010000 z
+b101000000000001 x
+b10100000000 y
+b1010000000000010000000000000000 |
+b1 H
+b0 ?
+b1000000000000000000 >
+b100000000000000 7
+b10000000000 =
+1/
+#120000
+0/
+#125000
+b1000000000001000101 T
+b1010000000000010001010000000000 )
+b1010000000000010001010000000000 d
+b1000 q
+b1010000000000010001010000000000 a
+b10001010000000000 W
+b1010000000000 Z
+b1010000000000010001 V
+b10000000000 U
+bx0001000100 \
+b10001 Y
+b1010000000000010001010000000000 2
+b1010000000000010001010000000000 K
+b100 G
+b1000101 {
+b1010000000000010001 z
+b1010000000000010001010000000000 |
+b1000000000001000000 ?
+b1010000000000010000 >
+b101000000000001 7
+b10100000000 =
+1/
+#130000
+0/
+#135000
+0*
+b1001000110100010101 T
+b100 g
+b10010001101000101011001111000 )
+b10010001101000101011001111000 d
+b1000 q
+b10010001101000101011001111000 a
+b10000010010001100 ]
+b100100011 X
+b1000101011001111000 W
+b1001000110100 [
+b101011001111000 Z
+b10010001101000101 V
+b11001111000 U
+b1001111000 S
+bx0100010100 \
+b1000101 Y
+10
+b10010001101000101011001111000 2
+b10010001101000101011001111000 K
+b101 G
+b10010001101000101011001111000 }
+b1000000000001000101 ?
+b1010000000000010001 >
+1/
+#140000
+0/
+#145000
+b100 k
+1*
+b1000 q
+b0 g
+00
+b10 H
+1/
+#150000
+0/
+#155000
+0*
+b0 k
+b11101100101010000 T
+b100 g
+0(
+b10000111011001010100001100100001 )
+b10000111011001010100001100100001 d
+b1000 q
+b10000111011001010100001100100001 a
+b10010000111011000 ]
+b100001110110 X
+b1010100001100100001 W
+b1000011101100101 [
+b100001100100001 Z
+b10000111011001010100 V
+b1100100001 U
+b1100100001 S
+bx0101010000 \
+b1010100 Y
+10
+b10000111011001010100001100100001 2
+b10000111011001010100001100100001 K
+b110 G
+b10000111011001010100001100100001 }
+1/
+#160000
+0/
+#165000
+b100 k
+1*
+b1000 q
+b0 g
+00
+b11 H
+1/
+#170000
+0/
+#175000
+0*
+b0 k
+b10101111001101111011 T
+b100 g
+0(
+b10101011110011011110111100000000 )
+b10101011110011011110111100000000 d
+b1000 q
+b10101011110011011110111100000000 a
+b10010101011110000 ]
+b101010111100 X
+b11011110111100000000 W
+b1010101111001101 [
+b1110111100000000 Z
+b10101011110011011110 V
+b111100000000 U
+b1100000000 S
+bx1101111000 \
+b11011110 Y
+10
+b10101011110011011110111100000000 2
+b10101011110011011110111100000000 K
+b111 G
+b10101011110011011110111100000000 }
+1/
+#180000
+0/
+#185000
+b100 k
+1*
+b1000 q
+b0 g
+00
+b100 H
+1/
+#190000
+0/
+#195000
+b0 k
+b1000 q
+b0 g
+1A
+b1000 G
+1/
+#200000
+0/
+#205000
+b1000 q
+0A
+1/
+#210000
+0/
+#215000
+b101 H
+1/
+#220000
+0/
+#225000
+1/

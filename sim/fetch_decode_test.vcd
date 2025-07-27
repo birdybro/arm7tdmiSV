@@ -1,0 +1,607 @@
+$date
+	Sun Jul 27 09:32:23 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module fetch_decode_test $end
+$var wire 2 ! imem_size [1:0] $end
+$var wire 32 " imem_wdata [31:0] $end
+$var wire 1 # imem_write $end
+$var wire 32 $ pc_out [31:0] $end
+$var wire 32 % instruction [31:0] $end
+$var wire 1 & instr_valid $end
+$var wire 32 ' imem_vaddr [31:0] $end
+$var wire 1 ( imem_req $end
+$var wire 32 ) fetch_abort_addr [31:0] $end
+$var wire 1 * fetch_abort $end
+$var reg 4 + alu_op [3:0] $end
+$var reg 1 , branch_taken $end
+$var reg 32 - branch_target [31:0] $end
+$var reg 1 . clk $end
+$var reg 4 / condition [3:0] $end
+$var reg 1 0 fetch_en $end
+$var reg 1 1 flush $end
+$var reg 1 2 high_vectors $end
+$var reg 1 3 imem_abort $end
+$var reg 32 4 imem_rdata [31:0] $end
+$var reg 1 5 imem_ready $end
+$var reg 1 6 imm_en $end
+$var reg 12 7 immediate [11:0] $end
+$var reg 4 8 rd [3:0] $end
+$var reg 4 9 rm [3:0] $end
+$var reg 4 : rn [3:0] $end
+$var reg 1 ; rst_n $end
+$var reg 1 < stall $end
+$var reg 1 = thumb_mode $end
+$var integer 32 > test_count [31:0] $end
+$var integer 32 ? test_passed [31:0] $end
+$scope module u_fetch $end
+$var wire 1 , branch_taken $end
+$var wire 32 @ branch_target [31:0] $end
+$var wire 1 . clk $end
+$var wire 32 A fetch_abort_addr [31:0] $end
+$var wire 1 0 fetch_en $end
+$var wire 1 B fetch_needed $end
+$var wire 1 1 flush $end
+$var wire 1 2 high_vectors $end
+$var wire 1 3 imem_abort $end
+$var wire 32 C imem_rdata [31:0] $end
+$var wire 1 5 imem_ready $end
+$var wire 2 D imem_size [1:0] $end
+$var wire 32 E imem_vaddr [31:0] $end
+$var wire 32 F imem_wdata [31:0] $end
+$var wire 1 # imem_write $end
+$var wire 1 & instr_valid $end
+$var wire 32 G instruction [31:0] $end
+$var wire 32 H pc_out [31:0] $end
+$var wire 1 I prefetch_shift $end
+$var wire 1 ; rst_n $end
+$var wire 1 < stall $end
+$var wire 1 = thumb_mode $end
+$var wire 1 ( imem_req $end
+$var wire 1 * fetch_abort $end
+$var reg 3 J current_state [2:0] $end
+$var reg 32 K extracted_instruction [31:0] $end
+$var reg 32 L fetch_addr [31:0] $end
+$var reg 3 M next_state [2:0] $end
+$var reg 32 N pc [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 O i [31:0] $end
+$upscope $end
+$scope task test_fetch_decode $end
+$var reg 4 P expected_alu_op [3:0] $end
+$var reg 32 Q expected_instr [31:0] $end
+$var reg 32 R expected_pc [31:0] $end
+$var reg 4 S expected_rd [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx S
+bx R
+bx Q
+bx P
+b1000000000000 O
+b0 N
+b1 M
+b0 L
+b0 K
+b0 J
+0I
+b0 H
+b0 G
+b0 F
+b0 E
+b10 D
+b0 C
+1B
+b0 A
+b0 @
+b0 ?
+b0 >
+0=
+0<
+0;
+b0 :
+b0 9
+b0 8
+b0 7
+06
+05
+b0 4
+03
+02
+01
+10
+b0 /
+0.
+b0 -
+0,
+b0 +
+0*
+b0 )
+0(
+b0 '
+0&
+b0 %
+b0 $
+0#
+b0 "
+b10 !
+$end
+#5000
+1.
+#10000
+0.
+#15000
+1.
+#20000
+0.
+#25000
+1.
+#30000
+0.
+#35000
+1.
+#40000
+0.
+#45000
+b10 M
+15
+1(
+b1 J
+1;
+1.
+#50000
+0.
+#55000
+1I
+1&
+b100 )
+b100 A
+b100 '
+b100 E
+b100 L
+b1 M
+0(
+b10 J
+b11100011101000000000000000000001 4
+b11100011101000000000000000000001 C
+1.
+#60000
+0.
+#65000
+0I
+0&
+b10 M
+1(
+b1 J
+b100 $
+b100 H
+b100 N
+1.
+#70000
+0.
+#75000
+1I
+1&
+16
+b1 7
+b1 9
+b1101 +
+b1110 /
+b1 M
+b1000 )
+b1000 A
+b1000 '
+b1000 E
+b1000 L
+b11100011101000000000000000000001 %
+b11100011101000000000000000000001 G
+b11100011101000000000000000000001 K
+0(
+b10 J
+b11100011101000000001000000000010 4
+b11100011101000000001000000000010 C
+1.
+#80000
+0.
+#85000
+0I
+0&
+06
+b0 7
+b0 9
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b1000 $
+b1000 H
+b1000 N
+1.
+#90000
+0.
+#95000
+1I
+1&
+16
+b10 7
+b10 9
+b1 8
+b1101 +
+b1110 /
+b1 M
+b1100 )
+b1100 A
+b1100 '
+b1100 E
+b1100 L
+b11100011101000000001000000000010 %
+b11100011101000000001000000000010 G
+b11100011101000000001000000000010 K
+0(
+b10 J
+b11100000100000000010000000000001 4
+b11100000100000000010000000000001 C
+b1 >
+b0 S
+b1101 P
+b0 R
+b11100011101000000000000000000001 Q
+1.
+#100000
+0.
+#105000
+0I
+0&
+06
+b0 7
+b0 9
+b0 8
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b1100 $
+b1100 H
+b1100 N
+1.
+#110000
+0.
+#115000
+1I
+1&
+b1 7
+b1 9
+b10 8
+b100 +
+b1110 /
+b1 M
+b10000 )
+b10000 A
+b10000 '
+b10000 E
+b10000 L
+b11100000100000000010000000000001 %
+b11100000100000000010000000000001 G
+b11100000100000000010000000000001 K
+0(
+b10 J
+b11100011101000000011000000000011 4
+b11100011101000000011000000000011 C
+1.
+#120000
+0.
+#125000
+0I
+0&
+b0 7
+b0 9
+b0 8
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b10000 $
+b10000 H
+b10000 N
+b10 >
+b1 S
+b100 R
+b11100011101000000001000000000010 Q
+1.
+#130000
+0.
+#135000
+1I
+1&
+16
+b11 7
+b11 9
+b11 8
+b1101 +
+b1110 /
+b1 M
+b10100 )
+b10100 A
+b10100 '
+b10100 E
+b10100 L
+b11100011101000000011000000000011 %
+b11100011101000000011000000000011 G
+b11100011101000000011000000000011 K
+0(
+b10 J
+b11100001101000000100000000000000 4
+b11100001101000000100000000000000 C
+1.
+#140000
+0.
+#145000
+0I
+0&
+06
+b0 7
+b0 9
+b0 8
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b10100 $
+b10100 H
+b10100 N
+1.
+#150000
+0.
+#155000
+1I
+1&
+b100 8
+b1101 +
+b1110 /
+b1 M
+b11000 )
+b11000 A
+b11000 '
+b11000 E
+b11000 L
+b11100001101000000100000000000000 %
+b11100001101000000100000000000000 G
+b11100001101000000100000000000000 K
+0(
+b10 J
+b11100001101000000000000000000000 4
+b11100001101000000000000000000000 C
+b11 >
+b10 S
+b100 P
+b1000 R
+b11100000100000000010000000000001 Q
+1.
+#160000
+0.
+#165000
+0I
+0&
+b0 8
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b11000 $
+b11000 H
+b11000 N
+1.
+#170000
+0.
+#175000
+1I
+1&
+b1101 +
+b1110 /
+b1 M
+b11100 )
+b11100 A
+b11100 '
+b11100 E
+b11100 L
+b11100001101000000000000000000000 %
+b11100001101000000000000000000000 G
+b11100001101000000000000000000000 K
+0(
+b10 J
+1.
+#180000
+0.
+#185000
+0I
+0&
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b11100 $
+b11100 H
+b11100 N
+b100 >
+b11 S
+b1101 P
+b1100 R
+b11100011101000000011000000000011 Q
+1.
+#190000
+0.
+#195000
+1I
+1&
+b1101 +
+b1110 /
+b1 M
+b100000 )
+b100000 A
+b100000 '
+b100000 E
+b100000 L
+b11100001101000000000000000000000 %
+b11100001101000000000000000000000 G
+b11100001101000000000000000000000 K
+0(
+b10 J
+1.
+#200000
+0.
+#205000
+0I
+0&
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b100000 $
+b100000 H
+b100000 N
+1.
+#210000
+0.
+#215000
+1I
+1&
+b1101 +
+b1110 /
+b1 M
+b100100 )
+b100100 A
+b100100 '
+b100100 E
+b100100 L
+b11100001101000000000000000000000 %
+b11100001101000000000000000000000 G
+b11100001101000000000000000000000 K
+0(
+b10 J
+1.
+#220000
+0.
+#225000
+0I
+0&
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b100100 $
+b100100 H
+b100100 N
+1.
+#230000
+0.
+#235000
+1I
+1&
+b1101 +
+b1110 /
+b1 M
+b101000 )
+b101000 A
+b101000 '
+b101000 E
+b101000 L
+b11100001101000000000000000000000 %
+b11100001101000000000000000000000 G
+b11100001101000000000000000000000 K
+0(
+b10 J
+1.
+#240000
+0.
+#245000
+0I
+0&
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b101000 $
+b101000 H
+b101000 N
+1.
+#250000
+0.
+#255000
+1I
+1&
+b1101 +
+b1110 /
+b1 M
+b101100 )
+b101100 A
+b101100 '
+b101100 E
+b101100 L
+b11100001101000000000000000000000 %
+b11100001101000000000000000000000 G
+b11100001101000000000000000000000 K
+0(
+b10 J
+1.
+#260000
+0.
+#265000
+0I
+0&
+b0 +
+b0 /
+b0 %
+b0 G
+b0 K
+b10 M
+1(
+b1 J
+b101100 $
+b101100 H
+b101100 N
+1.

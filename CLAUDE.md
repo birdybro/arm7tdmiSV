@@ -51,6 +51,7 @@ The ARM7TDMI core implementation is now comprehensive with extensive validation 
 - **Memory Interface**: Unified memory interface with byte enables and enhanced addressing modes
 - **Coprocessor Interface**: Extensible framework with basic CP15 implementation
 - **Thumb Support**: Complete Thumb instruction decode and execution with ARM/Thumb interworking
+- **EmbeddedICE Debug Unit**: JTAG-based debug infrastructure with hardware breakpoints and watchpoints
 
 ### Verification Status
 - **19 comprehensive test suites** covering all major instruction categories
@@ -96,6 +97,12 @@ The project uses Icarus Verilog for simulation with comprehensive test coverage:
 - `make shifter_test` - Advanced shifter operation verification
 - `make addressing_test` - Memory addressing mode validation
 - `make completeness_test` - Comprehensive instruction set coverage analysis
+
+### Debug and Development Tests
+- `make embeddedice_test` - EmbeddedICE debug unit with JTAG interface (40% pass rate - initial implementation)
+- `make register_shift_test` - Register-controlled shift validation (100% pass rate)
+- `make block_user_mode_test` - Block transfer user mode access control (100% pass rate)
+- `make exception_handling_test` - Exception handling with undefined instruction detection (100% pass rate)
 
 ## Code Validation
 

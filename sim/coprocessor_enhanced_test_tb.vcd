@@ -1,0 +1,258 @@
+$date
+	Thu Jul 24 21:48:17 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module coprocessor_enhanced_test_tb $end
+$var wire 1 ! decode_valid $end
+$var wire 1 " decode_set_flags $end
+$var wire 4 # decode_rn [3:0] $end
+$var wire 4 $ decode_rm [3:0] $end
+$var wire 4 % decode_rd [3:0] $end
+$var wire 32 & decode_pc [31:0] $end
+$var wire 1 ' decode_mem_writeback $end
+$var wire 1 ( decode_mem_up $end
+$var wire 1 ) decode_mem_pre $end
+$var wire 1 * decode_mem_load $end
+$var wire 1 + decode_mem_byte $end
+$var wire 1 , decode_is_memory $end
+$var wire 4 - decode_instr_type [3:0] $end
+$var wire 12 . decode_immediate [11:0] $end
+$var wire 1 / decode_imm_en $end
+$var wire 4 0 decode_cp_rn [3:0] $end
+$var wire 4 1 decode_cp_rd [3:0] $end
+$var wire 3 2 decode_cp_opcode2 [2:0] $end
+$var wire 3 3 decode_cp_opcode1 [2:0] $end
+$var wire 3 4 decode_cp_op [2:0] $end
+$var wire 4 5 decode_cp_num [3:0] $end
+$var wire 1 6 decode_cp_load $end
+$var wire 4 7 decode_condition [3:0] $end
+$var wire 4 8 decode_alu_op [3:0] $end
+$var reg 1 9 clk $end
+$var reg 1 : flush $end
+$var reg 1 ; instr_valid $end
+$var reg 32 < instruction [31:0] $end
+$var reg 32 = pc_in [31:0] $end
+$var reg 1 > rst_n $end
+$var reg 1 ? stall $end
+$var reg 1 @ test_passed $end
+$var reg 1 A thumb_mode $end
+$var integer 32 B tests_passed [31:0] $end
+$var integer 32 C tests_run [31:0] $end
+$scope module u_decode $end
+$var wire 1 D branch_link $end
+$var wire 24 E branch_offset [23:0] $end
+$var wire 1 9 clk $end
+$var wire 4 F condition [3:0] $end
+$var wire 1 ! decode_valid $end
+$var wire 1 : flush $end
+$var wire 1 / imm_en $end
+$var wire 12 G immediate [11:0] $end
+$var wire 1 ; instr_valid $end
+$var wire 32 H instruction [31:0] $end
+$var wire 1 , is_memory $end
+$var wire 1 + mem_byte $end
+$var wire 1 * mem_load $end
+$var wire 1 ) mem_pre $end
+$var wire 1 ( mem_up $end
+$var wire 1 ' mem_writeback $end
+$var wire 32 I pc_in [31:0] $end
+$var wire 32 J pc_out [31:0] $end
+$var wire 1 K psr_immediate $end
+$var wire 1 L psr_spsr $end
+$var wire 1 M psr_to_reg $end
+$var wire 4 N rd [3:0] $end
+$var wire 4 O rm [3:0] $end
+$var wire 4 P rn [3:0] $end
+$var wire 1 > rst_n $end
+$var wire 1 " set_flags $end
+$var wire 1 Q shift_reg $end
+$var wire 2 R shift_type [1:0] $end
+$var wire 1 ? stall $end
+$var wire 1 A thumb_mode $end
+$var wire 1 S w_bit $end
+$var wire 1 T u_bit $end
+$var wire 2 U shift_type_field [1:0] $end
+$var wire 4 V shift_rs [3:0] $end
+$var wire 5 W shift_amt_field [4:0] $end
+$var wire 5 X shift_amount [4:0] $end
+$var wire 1 Y s_bit $end
+$var wire 4 Z rn_field [3:0] $end
+$var wire 4 [ rm_field [3:0] $end
+$var wire 4 \ rd_field [3:0] $end
+$var wire 1 ] p_bit $end
+$var wire 6 ^ op_code [5:0] $end
+$var wire 2 _ op_class [1:0] $end
+$var wire 1 ` l_bit_mem $end
+$var wire 1 a l_bit $end
+$var wire 1 b is_branch $end
+$var wire 12 c imm_field [11:0] $end
+$var wire 1 d i_bit $end
+$var wire 4 e cond_field [3:0] $end
+$var wire 24 f branch_offset_field [23:0] $end
+$var wire 1 g b_bit $end
+$var wire 4 h alu_op [3:0] $end
+$var reg 1 6 cp_load $end
+$var reg 4 i cp_num [3:0] $end
+$var reg 3 j cp_op [2:0] $end
+$var reg 3 k cp_opcode1 [2:0] $end
+$var reg 3 l cp_opcode2 [2:0] $end
+$var reg 4 m cp_rd [3:0] $end
+$var reg 4 n cp_rn [3:0] $end
+$var reg 4 o instr_type [3:0] $end
+$var reg 32 p pc_reg [31:0] $end
+$var reg 5 q thumb_imm5 [4:0] $end
+$var reg 8 r thumb_imm8 [7:0] $end
+$var reg 5 s thumb_instr_type [4:0] $end
+$var reg 11 t thumb_offset11 [10:0] $end
+$var reg 8 u thumb_offset8 [7:0] $end
+$var reg 3 v thumb_rd [2:0] $end
+$var reg 3 w thumb_rn [2:0] $end
+$var reg 3 x thumb_rs [2:0] $end
+$var reg 1 y valid_reg $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 z i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 { i [31:0] $end
+$upscope $end
+$scope task test_coprocessor_instruction $end
+$var reg 4 | expected_cp_num [3:0] $end
+$var reg 3 } expected_op [2:0] $end
+$var reg 3 ~ expected_opc1 [2:0] $end
+$var reg 3 !" expected_opc2 [2:0] $end
+$var reg 4 "" expected_rd [3:0] $end
+$var reg 4 #" expected_rn [3:0] $end
+$var reg 32 $" instr [31:0] $end
+$upscope $end
+$scope task test_cp15_system_op $end
+$var reg 32 %" instr [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx %"
+bx $"
+bx #"
+bx ""
+bx !"
+bx ~
+bx }
+bx |
+b10000 {
+b10000 z
+0y
+b0 x
+b0 w
+b0 v
+b0 u
+b0 t
+b1 s
+b0 r
+b0 q
+b0 p
+b111 o
+b0 n
+b0 m
+b0 l
+b0 k
+b0 j
+b0 i
+bx h
+xg
+bx f
+bx e
+xd
+bx c
+0b
+xa
+x`
+bx _
+bx ^
+x]
+bx \
+bx [
+bx Z
+xY
+bx X
+bx W
+bx V
+bx U
+xT
+xS
+bx R
+0Q
+bx P
+bx O
+bx N
+0M
+0L
+0K
+b0 J
+b1000000000000 I
+bx H
+bx G
+bx F
+bx E
+0D
+b0 C
+b0 B
+0A
+x@
+0?
+0>
+b1000000000000 =
+bx <
+1;
+0:
+09
+bx 8
+bx 7
+06
+b0 5
+b0 4
+b0 3
+b0 2
+b0 1
+b0 0
+0/
+bx .
+b111 -
+0,
+x+
+x*
+x)
+x(
+x'
+b0 &
+bx %
+bx $
+bx #
+0"
+0!
+$end
+#5000
+19
+#10000
+09
+#15000
+1!
+1y
+b1000000000000 &
+b1000000000000 J
+b1000000000000 p
+1>
+19
+#20000
+09
+#25000
+19
+#30000
+09
+#35000

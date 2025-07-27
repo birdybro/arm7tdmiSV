@@ -84,6 +84,13 @@ coprocessor: coprocessor_tb.vvp
 coprocessor_tb.vvp: $(RTL_SOURCES) coprocessor_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) coprocessor_tb.sv
 
+# Coprocessor interface test  
+coprocessor_test: coprocessor_test_tb.vvp
+	vvp coprocessor_test_tb.vvp
+
+coprocessor_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_coprocessor.sv coprocessor_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_coprocessor.sv coprocessor_test_tb.sv
+
 # Coprocessor decode test
 coprocessor_decode: coprocessor_decode_tb.vvp
 	vvp coprocessor_decode_tb.vvp
@@ -217,12 +224,152 @@ exception_handling_test: exception_handling_test_tb.vvp
 exception_handling_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv exception_handling_test_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv exception_handling_test_tb.sv
 
+# Block user mode test
+block_user_mode_test: block_user_mode_test_tb.vvp
+	vvp block_user_mode_test_tb.vvp
+
+block_user_mode_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv block_user_mode_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv block_user_mode_test_tb.sv
+
+# Register shift test
+register_shift_test: register_shift_test_tb.vvp
+	vvp register_shift_test_tb.vvp
+
+register_shift_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv register_shift_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv register_shift_test_tb.sv
+
+# EmbeddedICE debug test
+embeddedice_test: embeddedice_test_tb.vvp
+	vvp embeddedice_test_tb.vvp
+
+embeddedice_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_embeddedice.sv $(RTL_DIR)/arm7tdmi_jtag_tap.sv $(RTL_DIR)/arm7tdmi_scan_chain.sv $(RTL_DIR)/arm7tdmi_boundary_scan.sv $(RTL_DIR)/arm7tdmi_debug_wrapper.sv embeddedice_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_embeddedice.sv $(RTL_DIR)/arm7tdmi_jtag_tap.sv $(RTL_DIR)/arm7tdmi_scan_chain.sv $(RTL_DIR)/arm7tdmi_boundary_scan.sv $(RTL_DIR)/arm7tdmi_debug_wrapper.sv embeddedice_test_tb.sv
+
 # Condition codes test
 condition_codes_test: condition_codes_test_tb.vvp
 	vvp condition_codes_test_tb.vvp
 
 condition_codes_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv condition_codes_test_tb.sv
 	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv condition_codes_test_tb.sv
+
+# Comprehensive Thumb instruction test
+thumb_comprehensive_test: thumb_comprehensive_test_tb.vvp
+	vvp thumb_comprehensive_test_tb.vvp
+
+thumb_comprehensive_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv thumb_comprehensive_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_decode.sv thumb_comprehensive_test_tb.sv
+
+# Instruction cache test
+icache_test: icache_test_tb.vvp
+	vvp icache_test_tb.vvp
+
+icache_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_icache.sv icache_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_icache.sv icache_test_tb.sv
+
+# MMU test
+mmu_test: mmu_test_tb.vvp
+	vvp mmu_test_tb.vvp
+
+mmu_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_test_tb.sv
+
+# MMU ASID test
+mmu_asid_test: mmu_asid_test_tb.vvp
+	vvp mmu_asid_test_tb.vvp
+
+mmu_asid_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_asid_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_asid_test_tb.sv
+
+# MMU Simple ASID test
+mmu_simple_asid_test: mmu_simple_asid_test_tb.vvp
+	vvp mmu_simple_asid_test_tb.vvp
+
+mmu_simple_asid_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_simple_asid_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_simple_asid_test_tb.sv
+
+# MMU Multiple Page Size test
+mmu_multipage_test: mmu_multipage_test_tb.vvp
+	vvp mmu_multipage_test_tb.vvp
+
+mmu_multipage_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_multipage_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_multipage_test_tb.sv
+
+# MMU Page Size Simple test
+mmu_pagesize_simple_test: mmu_pagesize_simple_test_tb.vvp
+	vvp mmu_pagesize_simple_test_tb.vvp
+
+mmu_pagesize_simple_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_pagesize_simple_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_mmu.sv mmu_pagesize_simple_test_tb.sv
+
+# Cache Replacement Policy test
+cache_replacement_test: cache_replacement_test_tb.vvp
+	vvp cache_replacement_test_tb.vvp
+
+cache_replacement_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv cache_replacement_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv cache_replacement_test_tb.sv
+
+# Cache Replacement Policy Simple test
+cache_replacement_simple_test: cache_replacement_simple_test_tb.vvp
+	vvp cache_replacement_simple_test_tb.vvp
+
+cache_replacement_simple_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv cache_replacement_simple_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv cache_replacement_simple_test_tb.sv
+
+# Cache Performance Monitor test
+cache_perf_monitor_test: cache_perf_monitor_test_tb.vvp
+	vvp cache_perf_monitor_test_tb.vvp
+
+cache_perf_monitor_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_perf_monitor_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_perf_monitor_test_tb.sv
+
+# Cache Integrated Performance test
+cache_integrated_perf_test: cache_integrated_perf_test_tb.vvp
+	vvp cache_integrated_perf_test_tb.vvp
+
+cache_integrated_perf_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_integrated_perf_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_enhanced.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_integrated_perf_test_tb.sv
+
+# Cache Simple Performance test
+cache_simple_perf_test: cache_simple_perf_test_tb.vvp
+	vvp cache_simple_perf_test_tb.vvp
+
+cache_simple_perf_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_simple_perf_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv $(RTL_DIR)/arm7tdmi_cache_perf_monitor.sv cache_simple_perf_test_tb.sv
+
+# Abort test
+abort_test: abort_test_tb.vvp
+	vvp abort_test_tb.vvp
+
+abort_test_tb.vvp: $(RTL_SOURCES) abort_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_SOURCES) abort_test_tb.sv
+
+# Abort simple test
+abort_simple_test: abort_simple_test_tb.vvp
+	vvp abort_simple_test_tb.vvp
+
+abort_simple_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_exception.sv abort_simple_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_exception.sv abort_simple_test_tb.sv
+
+# Multiply accumulation test
+multiply_accum_test: multiply_accum_test_tb.vvp
+	vvp multiply_accum_test_tb.vvp
+
+multiply_accum_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_multiply.sv multiply_accum_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_multiply.sv multiply_accum_test_tb.sv
+
+# Data cache test
+dcache_test: dcache_test_tb.vvp
+	vvp dcache_test_tb.vvp
+
+dcache_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv dcache_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv dcache_test_tb.sv
+
+# Cache coherency test
+cache_coherency_test: cache_coherency_test_tb.vvp
+	vvp cache_coherency_test_tb.vvp
+
+cache_coherency_test_tb.vvp: $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_icache.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv $(RTL_DIR)/arm7tdmi_cache_coherency.sv $(RTL_DIR)/arm7tdmi_cache_subsystem.sv cache_coherency_test_tb.sv
+	$(SIM) $(SIMFLAGS) -o $@ $(RTL_DIR)/arm7tdmi_defines.sv $(RTL_DIR)/arm7tdmi_icache.sv $(RTL_DIR)/arm7tdmi_dcache_simple.sv $(RTL_DIR)/arm7tdmi_cache_coherency.sv $(RTL_DIR)/arm7tdmi_cache_subsystem.sv cache_coherency_test_tb.sv
 
 # Compile the design
 compile: $(VVP_FILE)

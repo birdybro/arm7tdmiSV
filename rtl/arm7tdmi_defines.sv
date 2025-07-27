@@ -140,7 +140,8 @@ package arm7tdmi_pkg;
         THUMB_BRANCH_COND    = 5'b01110, // Conditional branch
         THUMB_BRANCH_UNCOND  = 5'b01111, // Unconditional branch
         THUMB_BL_HIGH        = 5'b10000, // BL high part (H=10)
-        THUMB_BL_LOW         = 5'b10001  // BL low part (H=11)
+        THUMB_BL_LOW         = 5'b10001, // BL low part (H=11)
+        THUMB_SWI            = 5'b10010  // Software interrupt
     } thumb_instr_type_t;
     
 endpackage

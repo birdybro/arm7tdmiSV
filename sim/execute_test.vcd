@@ -1,0 +1,304 @@
+$date
+	Sun Jul 27 09:45:16 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module execute_test $end
+$var reg 4 ! alu_op [3:0] $end
+$var reg 1 " branch_link $end
+$var reg 24 # branch_offset [23:0] $end
+$var reg 1 $ branch_taken $end
+$var reg 32 % branch_target [31:0] $end
+$var reg 1 & clk $end
+$var reg 4 ' condition [3:0] $end
+$var reg 1 ( decode_valid $end
+$var reg 1 ) flush $end
+$var reg 1 * imm_en $end
+$var reg 12 + immediate [11:0] $end
+$var reg 4 , instr_type [3:0] $end
+$var reg 1 - is_branch $end
+$var reg 1 . is_memory $end
+$var reg 1 / mem_byte $end
+$var reg 1 0 mem_load $end
+$var reg 1 1 mem_pre $end
+$var reg 1 2 mem_up $end
+$var reg 1 3 mem_writeback $end
+$var reg 32 4 pc_in [31:0] $end
+$var reg 1 5 psr_immediate $end
+$var reg 1 6 psr_spsr $end
+$var reg 1 7 psr_to_reg $end
+$var reg 4 8 rd [3:0] $end
+$var reg 4 9 reg_write_addr [3:0] $end
+$var reg 1 : reg_write_enable $end
+$var reg 32 ; result [31:0] $end
+$var reg 4 < rm [3:0] $end
+$var reg 4 = rn [3:0] $end
+$var reg 1 > rst_n $end
+$var reg 1 ? set_flags $end
+$var reg 5 @ shift_amount [4:0] $end
+$var reg 1 A shift_reg $end
+$var reg 4 B shift_rs [3:0] $end
+$var reg 2 C shift_type [1:0] $end
+$var reg 1 D stall $end
+$var reg 1 E thumb_mode $end
+$var integer 32 F test_count [31:0] $end
+$var integer 32 G test_passed [31:0] $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 H i [31:0] $end
+$upscope $end
+$scope task test_branch_calculation $end
+$var reg 32 I current_pc [31:0] $end
+$var reg 32 J expected_target [31:0] $end
+$var reg 24 K offset [23:0] $end
+$upscope $end
+$scope task test_condition_code $end
+$var reg 1 L c_flag $end
+$var reg 4 M cond [3:0] $end
+$var reg 1 N expected_execute $end
+$var reg 1 O n_flag $end
+$var reg 1 P v_flag $end
+$var reg 1 Q z_flag $end
+$upscope $end
+$scope task test_data_processing $end
+$var reg 32 R expected_result [31:0] $end
+$var reg 1 S expected_write_enable $end
+$var reg 4 T op [3:0] $end
+$var reg 4 U rd_addr [3:0] $end
+$var reg 4 V rm_val [3:0] $end
+$var reg 4 W rn_val [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx W
+bx V
+bx U
+bx T
+xS
+bx R
+xQ
+xP
+xO
+xN
+bx M
+xL
+bx K
+bx J
+bx I
+b10000 H
+b0 G
+b0 F
+0E
+0D
+b0 C
+b0 B
+0A
+b0 @
+1?
+0>
+b0 =
+b1 <
+bx ;
+x:
+bx 9
+b10 8
+07
+06
+05
+b0 4
+03
+02
+01
+00
+0/
+0.
+0-
+b0 ,
+b1 +
+0*
+0)
+1(
+b1110 '
+0&
+bx %
+x$
+b0 #
+0"
+b100 !
+$end
+#5000
+1&
+#10000
+0&
+#15000
+1&
+#20000
+0&
+#25000
+1&
+#30000
+0&
+#35000
+1&
+#40000
+0&
+#45000
+1>
+1&
+#50000
+0&
+#55000
+1&
+#60000
+0&
+#65000
+1&
+#70000
+0&
+#75000
+1&
+#80000
+0&
+#85000
+1&
+#90000
+0&
+#95000
+b1 F
+1S
+b1000 R
+b10 U
+b1 V
+b0 W
+b100 T
+1&
+#100000
+0&
+#105000
+1&
+#110000
+0&
+#115000
+b11 8
+b10 !
+b10 F
+b10 R
+b11 U
+b10 T
+1&
+#120000
+0&
+#125000
+1&
+#130000
+0&
+#135000
+b1101 !
+b11 F
+b11 R
+b1101 T
+1&
+#140000
+0&
+#145000
+1&
+#150000
+0&
+#155000
+b10 8
+b1010 !
+b100 F
+0S
+b0 R
+b10 U
+b1010 T
+1&
+#160000
+0&
+#165000
+1&
+#170000
+0&
+#175000
+b1 #
+1-
+b1001 ,
+b1100 J
+b0 I
+b1 K
+b11 G
+b1110 '
+b1000 F
+1N
+0P
+0L
+0Q
+0O
+b1110 M
+1&
+#180000
+0&
+#185000
+1&
+#190000
+0&
+#195000
+b10000 4
+b111111111111111111111111 #
+b1001 F
+b10100 J
+b10000 I
+b111111111111111111111111 K
+1-
+1&
+#200000
+0&
+#205000
+1&
+#210000
+0&
+#215000
+b0 <
+b100 !
+b0 ,
+b1010 F
+1S
+b110 R
+b0 V
+b100 T
+0*
+0-
+1&
+#220000
+0&
+#225000
+1&
+#230000
+0&
+#235000
+1&
+#240000
+0&
+#245000
+1&
+#250000
+0&
+#255000
+1&
+#260000
+0&
+#265000
+1&
+#270000
+0&
+#275000
+1&
+#280000
+0&
+#285000
+1&

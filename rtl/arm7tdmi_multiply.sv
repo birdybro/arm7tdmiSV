@@ -39,6 +39,12 @@ module arm7tdmi_multiply (
     // Multiply operation
     logic [63:0] mul_result;
     logic [63:0] final_result;
+    logic [63:0] accumulator;
+    
+    // Addition logic for long multiply accumulate
+    logic [32:0] lo_sum;  // 33-bit to catch carry
+    logic [31:0] hi_sum;
+    logic [63:0] accumulate_result;
     
     // Perform multiplication
     always_comb begin
@@ -49,6 +55,14 @@ module arm7tdmi_multiply (
             // Unsigned multiply
             mul_result = operand_a * operand_b;
         end
+        
+        // Prepare accumulator value
+        accumulator = {acc_hi, acc_lo};
+        
+        // Manual 64-bit addition for accumulate operations
+        lo_sum = {1'b0, mul_result[31:0]} + {1'b0, accumulator[31:0]};
+        hi_sum = mul_result[63:32] + accumulator[63:32] + lo_sum[32];
+        accumulate_result = {hi_sum, lo_sum[31:0]};
         
         // Handle different multiply types
         case (mul_type)
@@ -69,7 +83,11 @@ module arm7tdmi_multiply (
             
             MUL_TYPE_MLAL: begin
                 // UMLAL/SMLAL: RdHi:RdLo = (Rm * Rs) + RdHi:RdLo
-                final_result = mul_result + {acc_hi, acc_lo};
+                final_result = accumulate_result;
+            end
+            
+            default: begin
+                final_result = 64'b0;
             end
         endcase
     end

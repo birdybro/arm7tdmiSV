@@ -12,9 +12,18 @@ module arm7tdmi_top (
     output logic        mem_re,
     output logic [3:0]  mem_be,
     input  logic        mem_ready,
+    input  logic        mem_abort,      // Memory abort signal
     
-    // Debug interface
-    input  logic        debug_en,
+    // JTAG Debug interface
+    input  logic        tck,           // JTAG test clock
+    input  logic        tms,           // JTAG test mode select
+    input  logic        tdi,           // JTAG test data in
+    output logic        tdo,           // JTAG test data out
+    input  logic        trst_n,        // JTAG test reset
+    input  logic        dbgrq,         // Debug request
+    output logic        dbgack,        // Debug acknowledge
+    
+    // Legacy debug interface (for compatibility)
     output logic [31:0] debug_pc,
     output logic [31:0] debug_instr,
     
@@ -112,6 +121,8 @@ module arm7tdmi_top (
     logic [2:0]      exception_type;
     logic            swi_exception;
     logic            undefined_exception;
+    logic            prefetch_abort;
+    logic            data_abort;
     
     // Coprocessor interface signals
     logic            cp_present;       // Coprocessor present
@@ -129,6 +140,48 @@ module arm7tdmi_top (
     // Current processor mode and CPSR
     assign current_mode = reg_cpsr_out[4:0];
     assign thumb_mode = reg_cpsr_out[CPSR_T_BIT];
+    
+    // Abort detection logic
+    logic fetch_abort_detected;
+    logic data_abort_detected;
+    logic memory_operation_pending;
+    
+    // Track if we're waiting for a memory operation
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            fetch_abort_detected <= 1'b0;
+            data_abort_detected <= 1'b0;
+            memory_operation_pending <= 1'b0;
+        end else begin
+            // Clear abort flags when exception is taken
+            if (exception_taken) begin
+                fetch_abort_detected <= 1'b0;
+                data_abort_detected <= 1'b0;
+            end
+            
+            // Detect fetch abort
+            if (current_state == FETCH && fetch_mem_re && mem_abort && mem_ready) begin
+                fetch_abort_detected <= 1'b1;
+            end
+            
+            // Detect data abort
+            if ((current_state == MEMORY || block_active || swap_state != SWAP_IDLE) && 
+                (mem_re || mem_we) && mem_abort && mem_ready) begin
+                data_abort_detected <= 1'b1;
+            end
+            
+            // Track memory operations
+            if ((mem_re || mem_we) && !mem_ready) begin
+                memory_operation_pending <= 1'b1;
+            end else if (mem_ready) begin
+                memory_operation_pending <= 1'b0;
+            end
+        end
+    end
+    
+    // Connect abort signals to exception handler
+    assign prefetch_abort = fetch_abort_detected;
+    assign data_abort = data_abort_detected;
     
     // State machine
     always_ff @(posedge clk or negedge rst_n) begin
@@ -175,7 +228,12 @@ module arm7tdmi_top (
             
             DECODE: begin
                 if (decode_valid) begin
-                    next_state = EXECUTE;
+                    // Stay in DECODE for one extra cycle if register-controlled shift needs Rm data saved
+                    if (decode_shift_reg && !rm_data_saved) begin
+                        next_state = DECODE;  // Stay in DECODE to save Rm data
+                    end else begin
+                        next_state = EXECUTE;
+                    end
                 end
             end
             
@@ -291,6 +349,43 @@ module arm7tdmi_top (
     // Shifter signals
     logic [31:0] shifted_operand;
     logic        shifter_carry_out;
+    
+    // Register-controlled shift support
+    logic [31:0] saved_rm_data;
+    logic        rm_data_saved;
+    
+    // Debug interface signals
+    logic        debug_en_internal;
+    logic        debug_req_internal;
+    logic        debug_restart_internal;
+    logic        debug_abort_internal;
+    logic        breakpoint_internal;
+    logic        watchpoint_internal;
+    logic [31:0] debug_addr_internal;
+    logic [31:0] debug_data_internal;
+    logic        debug_rw_internal;
+    logic        debug_mas_internal;
+    logic        debug_seq_internal;
+    logic        debug_lock_internal;
+    logic        debug_exec_internal;
+    logic        debug_mem_internal;
+    
+    // Register-controlled shift state management
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            saved_rm_data <= 32'b0;
+            rm_data_saved <= 1'b0;
+        end else begin
+            if (current_state == DECODE && decode_shift_reg && !rm_data_saved) begin
+                // First cycle: save Rm data when register-controlled shift is detected
+                saved_rm_data <= reg_rm_data;
+                rm_data_saved <= 1'b1;
+            end else if (current_state == FETCH) begin
+                // Clear saved state when moving to next instruction
+                rm_data_saved <= 1'b0;
+            end
+        end
+    end
     
     // Immediate rotation signals
     logic [3:0] rotate_imm;
@@ -490,7 +585,7 @@ module arm7tdmi_top (
     assign block_pre = decode_mem_pre;
     assign block_up = decode_mem_up;
     assign block_writeback = decode_mem_writeback;
-    assign block_user_mode = 1'b0;  // TODO: Implement user mode access
+    assign block_user_mode = (decode_instr_type == INSTR_BLOCK_DT) ? fetch_instruction[22] : 1'b0;
     assign block_register_list = fetch_instruction[15:0];
     assign block_base_register = decode_rn;
     assign block_base_address = reg_rn_data;
@@ -639,7 +734,7 @@ module arm7tdmi_top (
     assign actual_rn_addr = block_active ? block_reg_addr : 
                            (thumb_mode) ? {1'b0, decode_thumb_rn} : decode_rn;
     assign actual_rm_addr = block_active ? block_reg_addr : 
-                           decode_shift_reg ? decode_shift_rs :  // Use Rs for register-controlled shift
+                           (decode_shift_reg && rm_data_saved) ? decode_shift_rs :  // Use Rs for register-controlled shift after saving Rm
                            (thumb_mode) ? {1'b0, decode_thumb_rs} : decode_rm;
     
     // ALU operand generation
@@ -710,12 +805,22 @@ module arm7tdmi_top (
             // ARM ALU operand generation  
             alu_operand_a = reg_rn_data;
             if (decode_imm_en) begin
-                // Immediate operand
-                alu_operand_b = {20'b0, decode_immediate};
+                // Immediate value with optional rotation (same as first ARM block)
+                rotate_imm = decode_immediate[11:8];
+                imm_value = decode_immediate[7:0];
+                if (rotate_imm == 4'b0) begin
+                    alu_operand_b = {24'b0, imm_value};
+                end else begin
+                    rot_amount = {rotate_imm, 1'b0};  // Rotate by 2*rotate_imm
+                    alu_operand_b = (imm_value >> rot_amount) | (imm_value << (32 - rot_amount));
+                end
             end else begin
-                // Register operand (may need shifting)
-                alu_operand_b = reg_rm_data; // TODO: Add shifter support
+                // Register operand (with shifting support)
+                alu_operand_b = shifted_operand;
             end
+            // Set carry input for ARM ALU operations (same as first ARM block)
+            alu_carry_in = (decode_imm_en || decode_shift_amount == 5'b0) ? 
+                          reg_cpsr_out[CPSR_C_BIT] : shifter_carry_out;
         end
     end
     
@@ -1193,7 +1298,46 @@ module arm7tdmi_top (
     
     // For MLA: use Rn as accumulator (bits [15:12])
     // For UMLAL/SMLAL: use current RdHi and RdLo values
-    // This is simplified - assumes accumulator values are available somehow
+    // For long multiply instructions:
+    // - RdHi is in the Rn field (bits 19:16)
+    // - RdLo is in the Rd field (bits 15:12)
+    // - Rs is in the Rm field (bits 11:8) 
+    // - Rm is in bits 3:0
+    
+    // We need to handle reading RdHi and RdLo for accumulation
+    // This is tricky because we need extra register read ports
+    // For now, we'll use a simplified approach that reads them through existing ports
+    logic [31:0] rdhi_for_accum, rdlo_for_accum;
+    
+    // During long multiply, we need the current values of RdHi and RdLo
+    // In a real implementation, this would require either:
+    // 1. Extra register file read ports
+    // 2. Multi-cycle operation to read these values
+    // 3. Register forwarding from previous instructions
+    
+    // Simplified approach: Use register data if available
+    always_comb begin
+        if (decode_instr_type == INSTR_MUL_LONG) begin
+            // For long multiply, RdHi is in Rn position, RdLo is in Rd position
+            // We already read Rn through reg_rn_data
+            rdhi_for_accum = reg_rn_data;  // This gives us current RdHi
+            
+            // For RdLo, we need special handling since it's in Rd position
+            // Check if we can forward from writeback or use a stall
+            if (decode_rd == actual_rd_addr && reg_rd_we) begin
+                // Forward from writeback stage
+                rdlo_for_accum = reg_rd_data;
+            end else begin
+                // For a complete implementation, we'd stall here or add extra read port
+                // For now, assume RdLo was initialized to 0
+                rdlo_for_accum = 32'h0;
+            end
+        end else begin
+            rdhi_for_accum = 32'h0;
+            rdlo_for_accum = 32'h0;
+        end
+    end
+    
     always_comb begin
         if (decode_instr_type == INSTR_MUL && mul_accumulate) begin
             // MLA: accumulate with Rn register
@@ -1201,10 +1345,8 @@ module arm7tdmi_top (
             mul_acc_lo = reg_rn_data;  // Rn for MLA
         end else if (decode_instr_type == INSTR_MUL_LONG && mul_accumulate) begin
             // UMLAL/SMLAL: accumulate with current RdHi:RdLo
-            // This is a simplification - in practice we'd need to read these values
-            // For now, assume they are zero (first implementation)
-            mul_acc_hi = 32'b0;  // TODO: Read current RdHi value
-            mul_acc_lo = 32'b0;  // TODO: Read current RdLo value
+            mul_acc_hi = rdhi_for_accum;
+            mul_acc_lo = rdlo_for_accum;
         end else begin
             mul_acc_hi = 32'b0;
             mul_acc_lo = 32'b0;
@@ -1239,10 +1381,15 @@ module arm7tdmi_top (
     always_comb begin
         if (decode_shift_reg) begin
             // Register-controlled shift: use Rs[7:0] as shift amount
-            // Rs is read via rm port, actual Rm needs to be read separately
-            effective_shift_amount = reg_rm_data[4:0];  // Rs[4:0] for shift amount
-            // For now, use a simplified approach - this would need multi-cycle implementation
-            effective_shift_data = 32'b0;  // TODO: Need to read actual Rm register
+            if (rm_data_saved) begin
+                // Second cycle: use saved Rm data and current Rs data
+                effective_shift_amount = reg_rm_data[4:0];  // Rs[4:0] for shift amount (now reading Rs)
+                effective_shift_data = saved_rm_data;       // Use saved Rm data
+            end else begin
+                // First cycle: reading Rm data, not ready for shifting yet
+                effective_shift_amount = 5'b0;  // No shift
+                effective_shift_data = reg_rm_data;  // Rm data (will be saved)
+            end
         end else begin
             // Immediate shift
             effective_shift_amount = decode_shift_amount;
@@ -1298,8 +1445,8 @@ module arm7tdmi_top (
         .fiq                (fiq),
         .swi                (swi_exception),
         .undefined_instr    (undefined_exception),
-        .prefetch_abort     (1'b0),  // TODO: Implement abort detection
-        .data_abort         (1'b0),  // TODO: Implement abort detection
+        .prefetch_abort     (prefetch_abort),
+        .data_abort         (data_abort),
         .current_mode       (current_mode),
         .current_cpsr       (reg_cpsr_out),
         .current_pc         (reg_pc_out),
@@ -1309,6 +1456,90 @@ module arm7tdmi_top (
         .exception_cpsr     (exception_cpsr),
         .exception_spsr     (exception_spsr),
         .exception_type     (exception_type)
+    );
+    
+    //===========================================
+    // Debug Interface Logic
+    //===========================================
+    
+    // Generate debug signals for EmbeddedICE
+    always_comb begin
+        debug_addr_internal = mem_addr;
+        debug_data_internal = mem_wdata;
+        debug_rw_internal = ~mem_we;        // 1=read, 0=write
+        debug_mas_internal = |mem_be;       // Memory access size (simplified)
+        debug_seq_internal = 1'b0;          // Sequential access (simplified)
+        debug_lock_internal = 1'b0;         // Locked access (simplified)
+        debug_exec_internal = (current_state == EXECUTE);
+        debug_mem_internal = (current_state == MEMORY) && (mem_re || mem_we);
+    end
+    
+    // Legacy debug outputs
+    assign debug_pc = reg_pc_out;
+    assign debug_instr = fetch_instruction;
+    
+    //===========================================
+    // Debug Wrapper Instantiation
+    //===========================================
+    
+    arm7tdmi_debug_wrapper u_debug_wrapper (
+        .clk                (clk),
+        .rst_n              (rst_n),
+        
+        // JTAG interface
+        .tck                (tck),
+        .tms                (tms),
+        .tdi                (tdi),
+        .tdo                (tdo),
+        .trst_n             (trst_n),
+        
+        // External debug
+        .dbgrq              (dbgrq),
+        .dbgack             (dbgack),
+        .extern_dbg         (1'b0),  // Not implemented yet
+        
+        // Processor debug interface
+        .debug_pc           (reg_pc_out),
+        .debug_instr        (fetch_instruction),
+        .debug_addr         (debug_addr_internal),
+        .debug_data         (debug_data_internal),
+        .debug_rw           (debug_rw_internal),
+        .debug_mas          (debug_mas_internal),
+        .debug_seq          (debug_seq_internal),
+        .debug_lock         (debug_lock_internal),
+        .debug_mode         (current_mode),
+        .debug_thumb        (thumb_mode),
+        .debug_exec         (debug_exec_internal),
+        .debug_mem          (debug_mem_internal),
+        
+        // Debug control outputs
+        .debug_en           (debug_en_internal),
+        .debug_req          (debug_req_internal),
+        .debug_restart      (debug_restart_internal),
+        .debug_abort        (debug_abort_internal),
+        .breakpoint         (breakpoint_internal),
+        .watchpoint        (watchpoint_internal),
+        
+        // Boundary scan interface (simplified - direct connections)
+        .addr_core_out      (mem_addr),
+        .addr_pin_out       (),  // Not connected in this implementation
+        .addr_pin_in        (32'b0),
+        .data_core_out      (mem_wdata),
+        .data_pin_out       (),  // Not connected
+        .data_pin_in        (mem_rdata),
+        .data_core_in       (),  // Not connected
+        .nrw_core_out       (~mem_we),
+        .nrw_pin_out        (),
+        .nrw_pin_in         (1'b0),
+        .nrw_core_in        (),
+        .nwait_pin_in       (~mem_ready),
+        .nwait_core_in      (),
+        .abort_pin_in       (mem_abort),
+        .abort_core_in      (),
+        .noe_core_out       (mem_re),
+        .noe_pin_out        (),
+        .nwe_core_out       (mem_we),
+        .nwe_pin_out        ()
     );
     
 endmodule

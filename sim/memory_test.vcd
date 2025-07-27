@@ -1,0 +1,493 @@
+$date
+	Sun Jul 27 09:54:41 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module memory_test $end
+$var wire 1 ! cache_enable $end
+$var wire 1 " reg_write_enable $end
+$var wire 32 # reg_write_data [31:0] $end
+$var wire 4 $ reg_write_addr [3:0] $end
+$var wire 4 % reg_read_addr [3:0] $end
+$var wire 32 & pc_out [31:0] $end
+$var wire 1 ' memory_valid $end
+$var wire 1 ( memory_complete $end
+$var wire 32 ) load_data [31:0] $end
+$var wire 1 * dmem_write $end
+$var wire 32 + dmem_wdata [31:0] $end
+$var wire 32 , dmem_vaddr [31:0] $end
+$var wire 2 - dmem_size [1:0] $end
+$var wire 1 . dmem_req $end
+$var wire 4 / dmem_byte_en [3:0] $end
+$var wire 1 0 data_abort $end
+$var wire 1 1 cache_flush $end
+$var wire 1 2 alignment_fault $end
+$var wire 32 3 abort_address [31:0] $end
+$var reg 32 4 base_address [31:0] $end
+$var reg 4 5 base_register [3:0] $end
+$var reg 1 6 block_en $end
+$var reg 1 7 block_load $end
+$var reg 1 8 block_pre $end
+$var reg 1 9 block_up $end
+$var reg 1 : block_user_mode $end
+$var reg 1 ; block_writeback $end
+$var reg 1 < cache_busy $end
+$var reg 1 = cache_hit $end
+$var reg 1 > clk $end
+$var reg 1 ? dmem_abort $end
+$var reg 32 @ dmem_rdata [31:0] $end
+$var reg 1 A dmem_ready $end
+$var reg 1 B execute_valid $end
+$var reg 1 C flush $end
+$var reg 4 D instr_type [3:0] $end
+$var reg 1 E mem_byte $end
+$var reg 1 F mem_halfword $end
+$var reg 1 G mem_load $end
+$var reg 1 H mem_pre $end
+$var reg 1 I mem_req $end
+$var reg 1 J mem_signed $end
+$var reg 2 K mem_size [1:0] $end
+$var reg 1 L mem_up $end
+$var reg 1 M mem_write $end
+$var reg 1 N mem_writeback $end
+$var reg 32 O memory_address [31:0] $end
+$var reg 32 P pc_in [31:0] $end
+$var reg 32 Q reg_read_data [31:0] $end
+$var reg 16 R register_list [15:0] $end
+$var reg 1 S rst_n $end
+$var reg 1 T stall $end
+$var reg 32 U store_data [31:0] $end
+$var integer 32 V test_count [31:0] $end
+$var integer 32 W test_passed [31:0] $end
+$scope module u_memory $end
+$var wire 32 X abort_address [31:0] $end
+$var wire 1 Y address_valid $end
+$var wire 1 2 alignment_fault $end
+$var wire 32 Z base_address [31:0] $end
+$var wire 4 [ base_register [3:0] $end
+$var wire 4 \ block_base_reg_addr [3:0] $end
+$var wire 32 ] block_base_reg_data [31:0] $end
+$var wire 1 ^ block_base_reg_we $end
+$var wire 1 _ block_dt_active $end
+$var wire 1 ` block_dt_complete $end
+$var wire 1 a block_dt_en $end
+$var wire 1 6 block_en $end
+$var wire 1 7 block_load $end
+$var wire 32 b block_mem_addr [31:0] $end
+$var wire 1 c block_mem_re $end
+$var wire 32 d block_mem_wdata [31:0] $end
+$var wire 1 e block_mem_we $end
+$var wire 1 8 block_pre $end
+$var wire 4 f block_reg_addr [3:0] $end
+$var wire 32 g block_reg_wdata [31:0] $end
+$var wire 1 h block_reg_we $end
+$var wire 1 9 block_up $end
+$var wire 1 : block_user_mode $end
+$var wire 1 ; block_writeback $end
+$var wire 1 < cache_busy $end
+$var wire 1 ! cache_enable $end
+$var wire 1 1 cache_flush $end
+$var wire 1 = cache_hit $end
+$var wire 1 > clk $end
+$var wire 1 0 data_abort $end
+$var wire 1 ? dmem_abort $end
+$var wire 32 i dmem_rdata [31:0] $end
+$var wire 1 A dmem_ready $end
+$var wire 32 j effective_address [31:0] $end
+$var wire 1 B execute_valid $end
+$var wire 1 C flush $end
+$var wire 1 k halfword_aligned $end
+$var wire 4 l instr_type [3:0] $end
+$var wire 32 m load_data [31:0] $end
+$var wire 1 E mem_byte $end
+$var wire 1 F mem_halfword $end
+$var wire 1 G mem_load $end
+$var wire 1 H mem_pre $end
+$var wire 1 I mem_req $end
+$var wire 1 J mem_signed $end
+$var wire 2 n mem_size [1:0] $end
+$var wire 1 L mem_up $end
+$var wire 1 M mem_write $end
+$var wire 1 N mem_writeback $end
+$var wire 32 o memory_address [31:0] $end
+$var wire 1 ' memory_valid $end
+$var wire 32 p pc_in [31:0] $end
+$var wire 32 q pc_out [31:0] $end
+$var wire 32 r reg_read_data [31:0] $end
+$var wire 16 s register_list [15:0] $end
+$var wire 1 S rst_n $end
+$var wire 1 T stall $end
+$var wire 32 t store_data [31:0] $end
+$var wire 1 u transfer_complete $end
+$var wire 1 v word_aligned $end
+$var wire 1 ( memory_complete $end
+$var reg 32 w aligned_load_data [31:0] $end
+$var reg 32 x aligned_store_data [31:0] $end
+$var reg 1 y alignment_error $end
+$var reg 4 z byte_enables [3:0] $end
+$var reg 4 { dmem_byte_en [3:0] $end
+$var reg 1 . dmem_req $end
+$var reg 2 | dmem_size [1:0] $end
+$var reg 32 } dmem_vaddr [31:0] $end
+$var reg 32 ~ dmem_wdata [31:0] $end
+$var reg 1 * dmem_write $end
+$var reg 1 !" is_block_transfer $end
+$var reg 1 "" is_single_transfer $end
+$var reg 1 #" is_swap_operation $end
+$var reg 3 $" mem_next_state [2:0] $end
+$var reg 3 %" mem_state [2:0] $end
+$var reg 1 &" memory_operation $end
+$var reg 32 '" pc_reg [31:0] $end
+$var reg 4 (" reg_read_addr [3:0] $end
+$var reg 4 )" reg_write_addr [3:0] $end
+$var reg 32 *" reg_write_data [31:0] $end
+$var reg 1 " reg_write_enable $end
+$var reg 1 +" valid_reg $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 ," i [31:0] $end
+$upscope $end
+$scope task test_alignment_fault $end
+$var reg 32 -" addr [31:0] $end
+$var reg 2 ." size [1:0] $end
+$upscope $end
+$scope task test_load_operation $end
+$var reg 32 /" addr [31:0] $end
+$var reg 32 0" expected_data [31:0] $end
+$var reg 1 1" signed_op $end
+$var reg 2 2" size [1:0] $end
+$upscope $end
+$scope task test_store_operation $end
+$var reg 32 3" addr [31:0] $end
+$var reg 32 4" data [31:0] $end
+$var reg 2 5" size [1:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx 5"
+bx 4"
+bx 3"
+bx 2"
+x1"
+bx 0"
+bx /"
+bx ."
+bx -"
+b1000000000000 ,"
+0+"
+b0 *"
+b0 )"
+b1 ("
+b0 '"
+1&"
+b0 %"
+b0 $"
+0#"
+1""
+0!"
+b0 ~
+b0 }
+b0 |
+b0 {
+b1111 z
+0y
+b10010001101000101011001111000 x
+b10101011110011011110111100000001 w
+1v
+0u
+b10010001101000101011001111000 t
+b0 s
+b11011110101011011011111011101111 r
+b0 q
+b100000000 p
+b1000000000000 o
+b10 n
+b10101011110011011110111100000001 m
+b110 l
+1k
+b1000000000000 j
+b10101011110011011110111100000001 i
+0h
+b10101011110011011110111100000001 g
+b0 f
+0e
+b11011110101011011011111011101111 d
+0c
+b1000000000000 b
+0a
+1`
+0_
+0^
+b1000000000000 ]
+b1 \
+b1 [
+b1000000000000 Z
+1Y
+b1000000000000 X
+b0 W
+b0 V
+b10010001101000101011001111000 U
+0T
+0S
+b0 R
+b11011110101011011011111011101111 Q
+b100000000 P
+b1000000000000 O
+0N
+0M
+1L
+b10 K
+0J
+1I
+1H
+1G
+0F
+0E
+b110 D
+0C
+1B
+1A
+b10101011110011011110111100000001 @
+0?
+0>
+1=
+0<
+0;
+0:
+09
+08
+07
+06
+b1 5
+b1000000000000 4
+b1000000000000 3
+02
+01
+00
+b0 /
+0.
+b0 -
+b0 ,
+b0 +
+0*
+b10101011110011011110111100000001 )
+0(
+0'
+b0 &
+b1 %
+b0 $
+b0 #
+0"
+1!
+$end
+#5000
+1>
+#10000
+0>
+#15000
+1>
+#20000
+0>
+#25000
+1>
+#30000
+0>
+#35000
+1>
+#40000
+0>
+#45000
+b1 $"
+1'
+1+"
+b100000000 &
+b100000000 q
+b100000000 '"
+1S
+1>
+#50000
+0>
+#55000
+b1111 /
+b1111 {
+b10010001101000101011001111000 +
+b10010001101000101011001111000 ~
+b10 -
+b10 |
+1.
+b1000000000000 ,
+b1000000000000 }
+b1111 z
+b100 $"
+b1 %"
+1>
+#60000
+0>
+#65000
+b0 /
+b0 {
+b0 +
+b0 ~
+b0 -
+b0 |
+0.
+b0 ,
+b0 }
+1"
+b11011110101011011011111011101111 #
+b11011110101011011011111011101111 *"
+b1 $
+b1 )"
+b0 %
+b0 ("
+b0 $"
+b1111 z
+b11011110101011011011111011101111 )
+b11011110101011011011111011101111 m
+b11011110101011011011111011101111 w
+1u
+1(
+b100 %"
+b11011110101011011011111011101111 g
+b11011110101011011011111011101111 @
+b11011110101011011011111011101111 i
+1>
+#70000
+0>
+#75000
+b1111 z
+0"
+b0 #
+b0 *"
+b0 $
+b0 )"
+b1 %
+b1 ("
+b1 $"
+0u
+0(
+b0 %"
+1>
+#80000
+0>
+#85000
+b1111 /
+b1111 {
+b10010001101000101011001111000 +
+b10010001101000101011001111000 ~
+b10 -
+b10 |
+1.
+b1000000000000 ,
+b1000000000000 }
+b1111 z
+b100 $"
+b1 %"
+1>
+#90000
+0>
+#95000
+b0 /
+b0 {
+b0 +
+b0 ~
+b0 -
+b0 |
+0.
+b0 ,
+b0 }
+b1111 z
+1"
+b11011110101011011011111011101111 #
+b11011110101011011011111011101111 *"
+b1 $
+b1 )"
+b0 %
+b0 ("
+b0 $"
+1u
+1(
+b100 %"
+b1 V
+b11011110101011011011111011101111 0"
+01"
+b10 2"
+b1000000000000 /"
+1>
+#100000
+0>
+#105000
+b1111 z
+0"
+b0 #
+b0 *"
+b0 $
+b0 )"
+b1 %
+b1 ("
+b1 $"
+0u
+0(
+b0 %"
+1>
+#110000
+0>
+#115000
+b1111 /
+b1111 {
+b10010001101000101011001111000 +
+b10010001101000101011001111000 ~
+b10 -
+b10 |
+1.
+b1000000000000 ,
+b1000000000000 }
+b1111 z
+0'
+0+"
+b1 %"
+b100 $"
+0&"
+0B
+0I
+1>
+#120000
+0>
+#125000
+b0 /
+b0 {
+b0 +
+b0 ~
+b0 -
+b0 |
+0.
+1"
+b11011110101011011011111011101111 #
+b11011110101011011011111011101111 *"
+b1 $
+b1 )"
+b0 %
+b0 ("
+1u
+1(
+b100 %"
+1'
+1+"
+b0 ,
+b0 }
+1&"
+b0 $"
+b1111 z
+1B
+1I
+b1000000000100 3
+b1000000000100 X
+b1000000000100 j
+b1000000000100 O
+b10

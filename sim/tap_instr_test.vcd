@@ -1,0 +1,272 @@
+$date
+	Fri Jul 25 14:17:20 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tap_instr_test $end
+$var wire 1 ! tdo $end
+$var wire 1 " ice_select $end
+$var wire 4 # current_ir [3:0] $end
+$var reg 1 $ tck $end
+$var reg 1 % tdi $end
+$var reg 1 & tms $end
+$var reg 1 ' trst_n $end
+$scope module u_tap $end
+$var wire 4 ( current_ir [3:0] $end
+$var wire 1 ) ice_tdo $end
+$var wire 1 * scan_n_tdo $end
+$var wire 1 $ tck $end
+$var wire 1 % tdi $end
+$var wire 1 & tms $end
+$var wire 1 ' trst_n $end
+$var wire 1 + update_ir $end
+$var wire 1 , update_dr $end
+$var wire 1 - test_logic_reset $end
+$var wire 1 . shift_ir $end
+$var wire 1 / shift_dr $end
+$var wire 1 0 select_ir_scan $end
+$var wire 1 1 select_dr_scan $end
+$var wire 1 2 run_test_idle $end
+$var wire 1 3 pause_ir $end
+$var wire 1 4 pause_dr $end
+$var wire 1 5 exit2_ir $end
+$var wire 1 6 exit2_dr $end
+$var wire 1 7 exit1_ir $end
+$var wire 1 8 exit1_dr $end
+$var wire 1 9 capture_ir $end
+$var wire 1 : capture_dr $end
+$var reg 1 ; bypass_reg $end
+$var reg 1 < bypass_select $end
+$var reg 1 " ice_select $end
+$var reg 1 = idcode_select $end
+$var reg 32 > idcode_shift_reg [31:0] $end
+$var reg 4 ? instruction_reg [3:0] $end
+$var reg 4 @ ir_shift_reg [3:0] $end
+$var reg 1 A scan_n_select $end
+$var reg 4 B tap_next_state [3:0] $end
+$var reg 4 C tap_state [3:0] $end
+$var reg 1 ! tdo $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b0 C
+b1 B
+0A
+b0 @
+b1110 ?
+b111100100100110000001000001 >
+1=
+0<
+0;
+0:
+09
+08
+07
+06
+05
+04
+03
+02
+01
+00
+0/
+0.
+1-
+0,
+0+
+0*
+0)
+b1110 (
+0'
+0&
+0%
+0$
+b1110 #
+0"
+0!
+$end
+#10000
+1$
+#20000
+0$
+#30000
+1$
+#40000
+0$
+#50000
+1$
+#60000
+0$
+#70000
+1$
+#80000
+0$
+#90000
+0-
+12
+b1 C
+1'
+1$
+#100000
+0$
+#110000
+1$
+#120000
+0$
+#130000
+b10 B
+1&
+1$
+#140000
+0$
+#150000
+b1001 B
+02
+11
+b10 C
+1$
+#160000
+0$
+#170000
+b0 B
+01
+10
+b1001 C
+1$
+#180000
+0$
+#190000
+1-
+00
+b0 C
+1$
+#200000
+0$
+#210000
+1$
+#220000
+0$
+#230000
+1$
+#240000
+0$
+#250000
+b1 B
+0&
+1$
+#260000
+0$
+#270000
+0-
+12
+b1 C
+b10 B
+1&
+1$
+#280000
+0$
+#290000
+b1001 B
+02
+11
+b10 C
+1$
+#300000
+0$
+#310000
+01
+10
+b1001 C
+b1010 B
+0&
+1$
+#320000
+0$
+#330000
+b1011 B
+00
+19
+b1010 C
+1$
+#340000
+0$
+#350000
+1=
+1!
+09
+1.
+b1011 C
+b1 @
+1$
+#360000
+0$
+#370000
+1=
+0!
+b1000 @
+1%
+1$
+#380000
+0$
+#390000
+1=
+b1100 @
+b1100 B
+1&
+1$
+#400000
+0$
+#410000
+b1111 B
+1=
+b1110 @
+0.
+17
+b1100 C
+1$
+#420000
+0$
+#430000
+07
+1+
+b1111 C
+b1 B
+0&
+1$
+#440000
+0$
+#450000
+12
+0+
+b1 C
+1$
+#460000
+0$
+#470000
+1$
+#480000
+0$
+#490000
+1$
+#500000
+0$
+#510000
+1$
+#520000
+0$
+#530000
+1$
+#540000
+0$
+#550000
+1$
+#560000
+0$
+#570000
+1$

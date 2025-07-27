@@ -1,8 +1,8 @@
-import arm7tdmi_pkg::*;
+// import arm7tdmi_pkg::*;
 
 module arm7tdmi_shifter (
     input  logic [31:0]    data_in,
-    input  shift_type_t    shift_type,
+    input  logic [1:0]     shift_type,
     input  logic [4:0]     shift_amount,
     input  logic           carry_in,
     
@@ -14,9 +14,9 @@ module arm7tdmi_shifter (
         data_out = data_in;
         carry_out = carry_in;
         
-        if (shift_amount != 5'b0 || (shift_type == SHIFT_ROR && shift_amount == 5'b0)) begin
+        if (shift_amount != 5'b0 || (shift_type == 2'b11 && shift_amount == 5'b0)) begin
             case (shift_type)
-                SHIFT_LSL: begin  // Logical Shift Left
+                2'b00: begin  // SHIFT_LSL - Logical Shift Left
                     if (shift_amount <= 32) begin
                         data_out = data_in << shift_amount;
                         carry_out = (shift_amount <= 32) ? data_in[32-shift_amount] : 1'b0;
@@ -26,7 +26,7 @@ module arm7tdmi_shifter (
                     end
                 end
                 
-                SHIFT_LSR: begin  // Logical Shift Right
+                2'b01: begin  // SHIFT_LSR - Logical Shift Right
                     if (shift_amount < 32) begin
                         data_out = data_in >> shift_amount;
                         carry_out = data_in[shift_amount-1];
@@ -39,7 +39,7 @@ module arm7tdmi_shifter (
                     end
                 end
                 
-                SHIFT_ASR: begin  // Arithmetic Shift Right
+                2'b10: begin  // SHIFT_ASR - Arithmetic Shift Right
                     if (shift_amount < 32) begin
                         data_out = $signed(data_in) >>> shift_amount;
                         carry_out = data_in[shift_amount-1];
@@ -49,7 +49,7 @@ module arm7tdmi_shifter (
                     end
                 end
                 
-                SHIFT_ROR: begin  // Rotate Right
+                2'b11: begin  // SHIFT_ROR - Rotate Right
                     if (shift_amount == 0) begin
                         // RRX - Rotate Right Extended (through carry)
                         data_out = {carry_in, data_in[31:1]};

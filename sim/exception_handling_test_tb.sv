@@ -4,6 +4,15 @@
 import arm7tdmi_pkg::*;
 
 module exception_handling_test_tb;
+
+    // Local mode constants (to avoid enum cast issues)
+    localparam [4:0] MODE_USER       = 5'b10000;
+    localparam [4:0] MODE_FIQ        = 5'b10001;
+    localparam [4:0] MODE_IRQ        = 5'b10010;
+    localparam [4:0] MODE_SUPERVISOR = 5'b10011;
+    localparam [4:0] MODE_ABORT      = 5'b10111;
+    localparam [4:0] MODE_UNDEFINED  = 5'b11011;
+    localparam [4:0] MODE_SYSTEM     = 5'b11111;
     
     // Clock and reset
     logic clk = 0;
@@ -52,8 +61,8 @@ module exception_handling_test_tb;
     // Exception handling state
     logic [31:0] exception_vector;
     logic exception_taken;
-    processor_mode_t current_mode;
-    processor_mode_t exception_mode;
+    logic [4:0] current_mode;
+    logic [4:0] exception_mode;
     
     // CPSR simulation
     logic [31:0] cpsr;
@@ -147,7 +156,7 @@ module exception_handling_test_tb;
     always_comb begin
         exception_taken = 1'b0;
         exception_vector = 32'h0;
-        exception_mode = MODE_SYSTEM;
+        exception_mode = 5'b11111; // MODE_SYSTEM
         
         // ARM7TDMI exception priority order (highest to lowest)
         if (reset_exception) begin
@@ -183,7 +192,7 @@ module exception_handling_test_tb;
     
     // CPSR mode field extraction
     always_comb begin
-        current_mode = processor_mode_t'(cpsr[4:0]);
+        current_mode = cpsr[4:0];  // Direct assignment instead of cast
     end
     
     // Test task for SWI instructions

@@ -1,0 +1,378 @@
+$date
+	Thu Jul 24 14:15:42 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module psr_decode_tb $end
+$var wire 2 ! shift_type [1:0] $end
+$var wire 5 " shift_amount [4:0] $end
+$var wire 1 # set_flags $end
+$var wire 4 $ rn [3:0] $end
+$var wire 4 % rm [3:0] $end
+$var wire 4 & rd [3:0] $end
+$var wire 1 ' psr_to_reg $end
+$var wire 1 ( psr_spsr $end
+$var wire 1 ) psr_immediate $end
+$var wire 32 * pc_out [31:0] $end
+$var wire 1 + mem_writeback $end
+$var wire 1 , mem_up $end
+$var wire 1 - mem_pre $end
+$var wire 1 . mem_load $end
+$var wire 1 / mem_byte $end
+$var wire 1 0 is_memory $end
+$var wire 1 1 is_branch $end
+$var wire 4 2 instr_type [3:0] $end
+$var wire 12 3 immediate [11:0] $end
+$var wire 1 4 imm_en $end
+$var wire 1 5 decode_valid $end
+$var wire 4 6 condition [3:0] $end
+$var wire 24 7 branch_offset [23:0] $end
+$var wire 1 8 branch_link $end
+$var wire 4 9 alu_op [3:0] $end
+$var reg 1 : clk $end
+$var reg 1 ; flush $end
+$var reg 1 < instr_valid $end
+$var reg 32 = instruction [31:0] $end
+$var reg 32 > pc_in [31:0] $end
+$var reg 1 ? rst_n $end
+$var reg 1 @ stall $end
+$var reg 1 A thumb_mode $end
+$scope module u_decode $end
+$var wire 1 8 branch_link $end
+$var wire 24 B branch_offset [23:0] $end
+$var wire 1 : clk $end
+$var wire 4 C condition [3:0] $end
+$var wire 1 5 decode_valid $end
+$var wire 1 ; flush $end
+$var wire 1 4 imm_en $end
+$var wire 12 D immediate [11:0] $end
+$var wire 1 < instr_valid $end
+$var wire 32 E instruction [31:0] $end
+$var wire 1 0 is_memory $end
+$var wire 1 / mem_byte $end
+$var wire 1 . mem_load $end
+$var wire 1 - mem_pre $end
+$var wire 1 , mem_up $end
+$var wire 1 + mem_writeback $end
+$var wire 32 F pc_in [31:0] $end
+$var wire 32 G pc_out [31:0] $end
+$var wire 1 ) psr_immediate $end
+$var wire 1 ( psr_spsr $end
+$var wire 1 ' psr_to_reg $end
+$var wire 4 H rd [3:0] $end
+$var wire 4 I rm [3:0] $end
+$var wire 4 J rn [3:0] $end
+$var wire 1 ? rst_n $end
+$var wire 1 # set_flags $end
+$var wire 5 K shift_amount [4:0] $end
+$var wire 2 L shift_type [1:0] $end
+$var wire 1 @ stall $end
+$var wire 1 A thumb_mode $end
+$var wire 1 M w_bit $end
+$var wire 1 N u_bit $end
+$var wire 2 O shift_type_field [1:0] $end
+$var wire 5 P shift_amt_field [4:0] $end
+$var wire 1 Q s_bit $end
+$var wire 4 R rn_field [3:0] $end
+$var wire 4 S rm_field [3:0] $end
+$var wire 4 T rd_field [3:0] $end
+$var wire 1 U p_bit $end
+$var wire 6 V op_code [5:0] $end
+$var wire 2 W op_class [1:0] $end
+$var wire 1 X l_bit_mem $end
+$var wire 1 Y l_bit $end
+$var wire 1 1 is_branch $end
+$var wire 12 Z imm_field [11:0] $end
+$var wire 1 [ i_bit $end
+$var wire 4 \ cond_field [3:0] $end
+$var wire 24 ] branch_offset_field [23:0] $end
+$var wire 1 ^ b_bit $end
+$var wire 4 _ alu_op [3:0] $end
+$var reg 1 ` cp_load $end
+$var reg 4 a cp_num [3:0] $end
+$var reg 3 b cp_op [2:0] $end
+$var reg 3 c cp_opcode1 [2:0] $end
+$var reg 3 d cp_opcode2 [2:0] $end
+$var reg 4 e cp_rd [3:0] $end
+$var reg 4 f cp_rn [3:0] $end
+$var reg 4 g instr_type [3:0] $end
+$var reg 32 h pc_reg [31:0] $end
+$var reg 1 i valid_reg $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0i
+b0 h
+b0 g
+b0 f
+b0 e
+b0 d
+b0 c
+b0 b
+b0 a
+0`
+b0 _
+0^
+b0 ]
+b0 \
+0[
+b0 Z
+0Y
+0X
+b0 W
+b0 V
+0U
+b0 T
+b0 S
+b0 R
+0Q
+b0 P
+b0 O
+0N
+0M
+b0 L
+b0 K
+b0 J
+b0 I
+b0 H
+b0 G
+b0 F
+b0 E
+b0 D
+b0 C
+b0 B
+0A
+0@
+0?
+b0 >
+b0 =
+1<
+0;
+0:
+b0 9
+08
+b0 7
+b0 6
+05
+04
+b0 3
+b0 2
+01
+00
+0/
+0.
+0-
+0,
+0+
+b0 *
+0)
+0(
+0'
+b0 &
+b0 %
+b0 $
+0#
+b0 "
+b0 !
+$end
+#5000
+15
+1i
+1?
+1:
+#10000
+0:
+#15000
+1'
+b1100 2
+b1100 g
+b1110 6
+b1110 C
+b1110 \
+b100001 V
+b1111 $
+b1111 J
+b1111 R
+1Y
+b11110000000000000000 7
+b11110000000000000000 B
+b11110000000000000000 ]
+1-
+1U
+b1000 9
+b1000 _
+b11100001000011110000000000000000 =
+b11100001000011110000000000000000 E
+1:
+#20000
+0:
+#25000
+1:
+#30000
+0:
+#35000
+1(
+b1100 2
+b1100 g
+b101001 V
+b1 &
+b1 H
+b1 T
+b10011110001000000000000 7
+b10011110001000000000000 B
+b10011110001000000000000 ]
+1/
+1^
+b1010 9
+b1010 _
+b11100001010011110001000000000000 =
+b11100001010011110001000000000000 E
+1:
+#40000
+0:
+#45000
+1:
+#50000
+0:
+#55000
+0'
+0(
+b1100 2
+b1100 g
+b100100 V
+b1 $
+b1 J
+b1 R
+b1111 &
+b1111 H
+b1111 T
+b10 %
+b10 I
+b10 S
+b10 3
+b10 D
+b10 Z
+b1000011111000000000010 7
+b1000011111000000000010 B
+b1000011111000000000010 ]
+0/
+0^
+1+
+1M
+b1001 9
+b1001 _
+b11100001001000011111000000000010 =
+b11100001001000011111000000000010 E
+1:
+#60000
+0:
+#65000
+1:
+#70000
+0:
+#75000
+1(
+b1100 2
+b1100 g
+b101100 V
+b11 %
+b11 I
+b11 S
+b11 3
+b11 D
+b11 Z
+b11000011111000000000011 7
+b11000011111000000000011 B
+b11000011111000000000011 ]
+1/
+1^
+b1011 9
+b1011 _
+b11100001011000011111000000000011 =
+b11100001011000011111000000000011 E
+1:
+#80000
+0:
+#85000
+1:
+#90000
+0:
+#95000
+0(
+1)
+b1100 2
+b1100 g
+1[
+b100101 V
+b1111 $
+b1111 J
+b1111 R
+b1111 %
+b1111 I
+b1111 S
+b1111 3
+b1111 D
+b1111 Z
+b1011111111000000001111 7
+b1011111111000000001111 B
+b1011111111000000001111 ]
+0/
+0^
+b1001 9
+b1001 _
+b11100011001011111111000000001111 =
+b11100011001011111111000000001111 E
+1:
+#100000
+0:
+#105000
+1:
+#110000
+0:
+#115000
+0)
+b0 2
+b0 g
+0[
+b10000 V
+b0 $
+b0 J
+b0 R
+b0 &
+b0 H
+b0 T
+b1 %
+b1 I
+b1 S
+b1 3
+b1 D
+b1 Z
+0Y
+b100000000000000000000001 7
+b100000000000000000000001 B
+b100000000000000000000001 ]
+0-
+0U
+1,
+1N
+0+
+0M
+b100 9
+b100 _
+b11100000100000000000000000000001 =
+b11100000100000000000000000000001 E
+1:
+#120000
+0:
+#125000
+1:
+#130000
+0:
+#135000
+1:

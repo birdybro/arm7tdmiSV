@@ -1,4 +1,4 @@
-import arm7tdmi_pkg::*;
+// import arm7tdmi_pkg::*;
 
 module arm7tdmi_decode (
     input  logic        clk,
@@ -11,16 +11,16 @@ module arm7tdmi_decode (
     input  logic        thumb_mode,
     
     // Decoded instruction outputs
-    output condition_t  condition,
-    output instr_type_t instr_type,
-    output alu_op_t     alu_op,
+    output logic [3:0]  condition,
+    output logic [3:0]  instr_type,
+    output logic [3:0]  alu_op,
     output logic [3:0]  rd,      // Destination register
     output logic [3:0]  rn,      // First operand register
     output logic [3:0]  rm,      // Second operand register (if register)
     output logic [11:0] immediate, // Immediate value
     output logic        imm_en,   // Use immediate instead of register
     output logic        set_flags, // Update condition flags
-    output shift_type_t shift_type,
+    output logic [1:0]  shift_type,
     output logic [4:0]  shift_amount,
     output logic        shift_reg,    // Use register for shift amount
     output logic [3:0]  shift_rs,    // Register containing shift amount
@@ -44,7 +44,7 @@ module arm7tdmi_decode (
     output logic        psr_immediate, // 1 for immediate MSR
     
     // Coprocessor instruction outputs
-    output cp_op_t      cp_op,         // Coprocessor operation type
+    output logic [2:0]  cp_op,         // Coprocessor operation type
     output logic [3:0]  cp_num,        // Coprocessor number (0-15)
     output logic [3:0]  cp_rd,         // Coprocessor destination register
     output logic [3:0]  cp_rn,         // Coprocessor operand register
@@ -53,7 +53,7 @@ module arm7tdmi_decode (
     output logic        cp_load,       // 1 for load, 0 for store (LDC/STC)
     
     // Thumb instruction outputs
-    output thumb_instr_type_t thumb_instr_type, // Thumb instruction type
+    output logic [4:0]  thumb_instr_type, // Thumb instruction type
     output logic [2:0]  thumb_rd,      // Thumb destination register
     output logic [2:0]  thumb_rs,      // Thumb source register
     output logic [2:0]  thumb_rn,      // Thumb operand register
@@ -132,7 +132,7 @@ module arm7tdmi_decode (
     
     // Instruction type decode
     always_comb begin
-        instr_type = INSTR_UNDEFINED;
+        instr_type = 4'b0111; // INSTR_UNDEFINED
         
         if (!thumb_mode) begin  // ARM mode
             casez (instruction[27:25])
@@ -162,6 +162,9 @@ module arm7tdmi_decode (
                     end else if (instruction[27:4] == 24'b000100101111111111110001) begin
                         // BX: Branch and Exchange - specific pattern match
                         instr_type = INSTR_BRANCH_EX;
+                    end else if (instruction[27:20] == 8'b00000111) begin
+                        // Undefined instruction space - 0x07xxxxxx patterns are undefined
+                        instr_type = INSTR_UNDEFINED;
                     end else begin
                         instr_type = INSTR_DATA_PROC;
                     end
@@ -175,12 +178,22 @@ module arm7tdmi_decode (
                     end
                 end
                 3'b010: instr_type = INSTR_SINGLE_DT;
-                3'b011: instr_type = INSTR_SINGLE_DT;
+                3'b011: begin
+                    if (instruction[27:20] == 8'b01111111) begin
+                        // Undefined instruction space - 0x07Fxxxxx patterns are undefined
+                        instr_type = INSTR_UNDEFINED;
+                    end else begin
+                        instr_type = INSTR_SINGLE_DT;
+                    end
+                end
                 3'b100: instr_type = INSTR_BLOCK_DT;
                 3'b101: instr_type = INSTR_BRANCH;
                 3'b110: instr_type = INSTR_COPROCESSOR;
                 3'b111: begin
-                    if (instruction[24]) begin
+                    if (instruction[31:28] == 4'b1111) begin
+                        // Instructions with condition field COND_NV (1111) are undefined in ARM7TDMI
+                        instr_type = INSTR_UNDEFINED;
+                    end else if (instruction[24]) begin
                         instr_type = INSTR_SWI;
                     end else begin
                         instr_type = INSTR_COPROCESSOR;
@@ -413,21 +426,21 @@ module arm7tdmi_decode (
                 end
                 3'b010: begin
                     if (instruction[12:10] == 3'b000) begin
-                        // ALU operations
+                        // ALU operations (0100 0xxx)
                         thumb_instr_type = THUMB_ALU_REG;
                     end else if (instruction[12:10] == 3'b001) begin
-                        // Hi register operations
+                        // Hi register operations (0100 1xxx)
                         thumb_instr_type = THUMB_ALU_HI;
                         thumb_rd = {instruction[7], instruction[2:0]}; // 4-bit register
                         thumb_rs = instruction[6:3];  // 4-bit register
-                    end else if (instruction[12:10] == 3'b101) begin
-                        // Load/Store register offset
-                        thumb_instr_type = THUMB_LOAD_STORE;
-                    end else begin
-                        // PC-relative load
+                    end else if (instruction[12:11] == 2'b01) begin
+                        // PC-relative load (01001xxx) 
                         thumb_instr_type = THUMB_PC_REL_LOAD;
                         thumb_rd = instruction[10:8];
                         thumb_imm8 = instruction[7:0];
+                    end else begin
+                        // Load/Store register offset (0101xxxx)
+                        thumb_instr_type = THUMB_LOAD_STORE;
                     end
                 end
                 3'b011: begin
@@ -436,27 +449,36 @@ module arm7tdmi_decode (
                     thumb_imm5 = instruction[10:6];
                 end
                 3'b100: begin
-                    if (instruction[11]) begin
-                        // Load/Store halfword
+                    if (instruction[12:11] == 2'b00) begin
+                        // Load/Store halfword (1000 xxxx)
+                        thumb_instr_type = THUMB_LOAD_STORE_HW;
+                        thumb_imm5 = instruction[10:6];
+                    end else if (instruction[12:11] == 2'b01) begin
+                        // Load/Store halfword load (1000 1xxx)
                         thumb_instr_type = THUMB_LOAD_STORE_HW;
                         thumb_imm5 = instruction[10:6];
                     end else begin
-                        // Load/Store immediate offset
-                        thumb_instr_type = THUMB_LOAD_STORE_IMM;
-                        thumb_imm5 = instruction[10:6];
-                    end
-                end
-                3'b101: begin
-                    if (instruction[12]) begin
-                        // SP-relative load/store
+                        // SP-relative load/store (1001 xxxx)
                         thumb_instr_type = THUMB_SP_REL_LOAD;
                         thumb_rd = instruction[10:8];
                         thumb_imm8 = instruction[7:0];
-                    end else begin
-                        // Get relative address
+                    end
+                end
+                3'b101: begin
+                    if (instruction[12] == 1'b0) begin
+                        // Get relative address (1010 xxxx)
                         thumb_instr_type = THUMB_GET_REL_ADDR;
                         thumb_rd = instruction[10:8];
                         thumb_imm8 = instruction[7:0];
+                    end else if (instruction[11:10] == 2'b00) begin
+                        // ADD/SUB offset to Stack Pointer (1011 00xx)
+                        thumb_instr_type = THUMB_ADD_SUB_SP;
+                    end else if (instruction[11:9] == 3'b010 || instruction[11:9] == 3'b110) begin
+                        // Push/Pop registers (1011 010x, 1011 110x)
+                        thumb_instr_type = THUMB_PUSH_POP;  
+                    end else begin
+                        // Other Format 12 instructions
+                        thumb_instr_type = THUMB_ADD_SUB_SP;
                     end
                 end
                 3'b110: begin
@@ -466,7 +488,7 @@ module arm7tdmi_decode (
                             thumb_instr_type = THUMB_PUSH_POP;
                         end else if (instruction[11:8] == 4'b1111) begin
                             // Software interrupt
-                            thumb_instr_type = THUMB_ALU_REG; // Placeholder, should be SWI
+                            thumb_instr_type = THUMB_SWI;
                             thumb_imm8 = instruction[7:0];
                         end else begin
                             // Conditional branch
@@ -484,6 +506,7 @@ module arm7tdmi_decode (
                     if (instruction[12]) begin
                         if (instruction[11:8] == 4'b1111) begin
                             // Software interrupt
+                            thumb_instr_type = THUMB_SWI;
                             thumb_imm8 = instruction[7:0];
                         end else begin
                             // Conditional branch

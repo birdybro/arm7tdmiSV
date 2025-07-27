@@ -1,0 +1,378 @@
+$date
+	Thu Jul 24 14:01:19 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module psr_tb $end
+$var wire 1 ! mem_ready $end
+$var wire 1 " running $end
+$var wire 1 # mem_we $end
+$var wire 32 $ mem_wdata [31:0] $end
+$var wire 1 % mem_re $end
+$var wire 4 & mem_be [3:0] $end
+$var wire 32 ' mem_addr [31:0] $end
+$var wire 32 ( debug_pc [31:0] $end
+$var wire 32 ) debug_instr [31:0] $end
+$var reg 1 * clk $end
+$var reg 1 + debug_en $end
+$var reg 1 , fiq $end
+$var reg 1 - halt $end
+$var reg 1 . irq $end
+$var reg 32 / mem_rdata [31:0] $end
+$var reg 1 0 rst_n $end
+$scope module u_dut $end
+$var wire 32 1 block_base_address [31:0] $end
+$var wire 4 2 block_base_register [3:0] $end
+$var wire 1 3 block_en $end
+$var wire 1 4 block_load $end
+$var wire 1 5 block_pre $end
+$var wire 32 6 block_reg_rdata [31:0] $end
+$var wire 1 7 block_up $end
+$var wire 1 8 block_user_mode $end
+$var wire 1 9 block_writeback $end
+$var wire 1 * clk $end
+$var wire 32 : data_mem_addr [31:0] $end
+$var wire 1 + debug_en $end
+$var wire 32 ; debug_instr [31:0] $end
+$var wire 32 < debug_pc [31:0] $end
+$var wire 1 , fiq $end
+$var wire 1 - halt $end
+$var wire 1 . irq $end
+$var wire 1 = mem_operation_active $end
+$var wire 32 > mem_rdata [31:0] $end
+$var wire 1 ! mem_ready $end
+$var wire 1 ? mul_accumulate $end
+$var wire 1 @ mul_en $end
+$var wire 1 A mul_set_flags $end
+$var wire 1 B mul_signed $end
+$var wire 32 C reg_pc_out [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 D swap_byte $end
+$var wire 1 E swi_exception $end
+$var wire 1 F undefined_exception $end
+$var wire 1 G write_lr $end
+$var wire 1 H thumb_mode $end
+$var wire 1 I swap_operation $end
+$var wire 1 J shifter_carry_out $end
+$var wire 32 K shifted_operand [31:0] $end
+$var wire 32 L reg_spsr_out [31:0] $end
+$var wire 32 M reg_rn_data [31:0] $end
+$var wire 32 N reg_rm_data [31:0] $end
+$var wire 32 O reg_cpsr_out [31:0] $end
+$var wire 1 P mul_zero $end
+$var wire 1 Q mul_result_ready $end
+$var wire 32 R mul_result_lo [31:0] $end
+$var wire 32 S mul_result_hi [31:0] $end
+$var wire 1 T mul_negative $end
+$var wire 1 U mul_long $end
+$var wire 32 V mul_acc_lo [31:0] $end
+$var wire 32 W mul_acc_hi [31:0] $end
+$var wire 1 # mem_we $end
+$var wire 32 X mem_wdata [31:0] $end
+$var wire 1 % mem_re $end
+$var wire 4 Y mem_be [3:0] $end
+$var wire 32 Z mem_address [31:0] $end
+$var wire 32 [ mem_addr [31:0] $end
+$var wire 32 \ lr_data [31:0] $end
+$var wire 1 ] halfword_operation $end
+$var wire 32 ^ fetch_pc [31:0] $end
+$var wire 1 _ fetch_mem_re $end
+$var wire 32 ` fetch_mem_addr [31:0] $end
+$var wire 32 a fetch_instruction [31:0] $end
+$var wire 1 b fetch_instr_valid $end
+$var wire 32 c exception_vector [31:0] $end
+$var wire 3 d exception_type [2:0] $end
+$var wire 1 e exception_taken $end
+$var wire 32 f exception_spsr [31:0] $end
+$var wire 5 g exception_mode [4:0] $end
+$var wire 32 h exception_cpsr [31:0] $end
+$var wire 1 i decode_valid $end
+$var wire 2 j decode_shift_type [1:0] $end
+$var wire 5 k decode_shift_amount [4:0] $end
+$var wire 1 l decode_set_flags $end
+$var wire 4 m decode_rn [3:0] $end
+$var wire 4 n decode_rm [3:0] $end
+$var wire 4 o decode_rd [3:0] $end
+$var wire 1 p decode_psr_to_reg $end
+$var wire 1 q decode_psr_spsr $end
+$var wire 1 r decode_psr_immediate $end
+$var wire 32 s decode_pc [31:0] $end
+$var wire 1 t decode_mem_writeback $end
+$var wire 1 u decode_mem_up $end
+$var wire 1 v decode_mem_pre $end
+$var wire 1 w decode_mem_load $end
+$var wire 1 x decode_mem_byte $end
+$var wire 1 y decode_is_memory $end
+$var wire 1 z decode_is_branch $end
+$var wire 4 { decode_instr_type [3:0] $end
+$var wire 12 | decode_immediate [11:0] $end
+$var wire 1 } decode_imm_en $end
+$var wire 4 ~ decode_condition [3:0] $end
+$var wire 24 !" decode_branch_offset [23:0] $end
+$var wire 1 "" decode_branch_link $end
+$var wire 4 #" decode_alu_op [3:0] $end
+$var wire 5 $" current_mode [4:0] $end
+$var wire 1 %" condition_passed $end
+$var wire 1 &" branch_exchange $end
+$var wire 16 '" block_register_list [15:0] $end
+$var wire 1 (" block_reg_we $end
+$var wire 32 )" block_reg_wdata [31:0] $end
+$var wire 4 *" block_reg_addr [3:0] $end
+$var wire 1 +" block_mem_we $end
+$var wire 32 ," block_mem_wdata [31:0] $end
+$var wire 1 -" block_mem_re $end
+$var wire 32 ." block_mem_addr [31:0] $end
+$var wire 1 /" block_complete $end
+$var wire 1 0" block_base_reg_we $end
+$var wire 32 1" block_base_reg_data [31:0] $end
+$var wire 4 2" block_base_reg_addr [3:0] $end
+$var wire 1 3" block_active $end
+$var wire 1 4" alu_zero $end
+$var wire 32 5" alu_result [31:0] $end
+$var wire 1 6" alu_overflow $end
+$var wire 1 7" alu_negative $end
+$var wire 1 8" alu_carry_out $end
+$var wire 4 9" actual_rn_addr [3:0] $end
+$var wire 4 :" actual_rm_addr [3:0] $end
+$var wire 4 ;" actual_rd_addr [3:0] $end
+$var reg 1 <" alu_carry_in $end
+$var reg 32 =" alu_operand_a [31:0] $end
+$var reg 32 >" alu_operand_b [31:0] $end
+$var reg 1 ?" branch_taken $end
+$var reg 32 @" branch_target [31:0] $end
+$var reg 3 A" current_state [2:0] $end
+$var reg 4 B" data_mem_be [3:0] $end
+$var reg 1 C" data_mem_re $end
+$var reg 32 D" data_mem_wdata [31:0] $end
+$var reg 1 E" data_mem_we $end
+$var reg 1 F" fetch_en $end
+$var reg 1 G" flush $end
+$var reg 8 H" imm_value [7:0] $end
+$var reg 32 I" load_data [31:0] $end
+$var reg 1 J" mode_change $end
+$var reg 1 K" mul_hi_write_pending $end
+$var reg 3 L" next_state [2:0] $end
+$var reg 32 M" reg_cpsr_in [31:0] $end
+$var reg 1 N" reg_cpsr_we $end
+$var reg 32 O" reg_pc_in [31:0] $end
+$var reg 1 P" reg_pc_we $end
+$var reg 32 Q" reg_rd_data [31:0] $end
+$var reg 1 R" reg_rd_we $end
+$var reg 32 S" reg_spsr_in [31:0] $end
+$var reg 1 T" reg_spsr_we $end
+$var reg 5 U" rot_amount [4:0] $end
+$var reg 4 V" rotate_imm [3:0] $end
+$var reg 1 " running $end
+$var reg 1 W" save_lr $end
+$var reg 1 X" stall $end
+$var reg 2 Y" swap_next_state [1:0] $end
+$var reg 32 Z" swap_read_data [31:0] $end
+$var reg 2 [" swap_state [1:0] $end
+$var reg 5 \" target_mode [4:0] $end
+$var reg 1 ]" thumb_switch $end
+$scope function evaluate_condition $end
+$var reg 1 ^" c $end
+$var reg 4 _" cond [3:0] $end
+$var reg 1 `" n $end
+$var reg 1 a" v $end
+$var reg 1 b" z $end
+$upscope $end
+$scope module u_alu $end
+$var wire 1 <" carry_in $end
+$var wire 1 8" carry_out $end
+$var wire 1 * clk $end
+$var wire 32 c" operand_a [31:0] $end
+$var wire 32 d" operand_b [31:0] $end
+$var wire 1 6" overflow $end
+$var wire 32 e" result [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 4" zero $end
+$var wire 1 l set_flags $end
+$var wire 1 7" negative $end
+$var wire 4 f" alu_op [3:0] $end
+$var reg 1 g" alu_carry $end
+$var reg 1 h" alu_overflow $end
+$var reg 32 i" alu_result [31:0] $end
+$var reg 33 j" extended_result [32:0] $end
+$upscope $end
+$scope module u_block_dt $end
+$var wire 32 k" base_address [31:0] $end
+$var wire 4 l" base_reg_addr [3:0] $end
+$var wire 4 m" base_register [3:0] $end
+$var wire 1 3 block_en $end
+$var wire 1 4 block_load $end
+$var wire 1 5 block_pre $end
+$var wire 1 7 block_up $end
+$var wire 1 8 block_user_mode $end
+$var wire 1 9 block_writeback $end
+$var wire 1 * clk $end
+$var wire 32 n" mem_addr [31:0] $end
+$var wire 32 o" mem_rdata [31:0] $end
+$var wire 1 -" mem_re $end
+$var wire 1 ! mem_ready $end
+$var wire 32 p" mem_wdata [31:0] $end
+$var wire 1 +" mem_we $end
+$var wire 4 q" reg_addr [3:0] $end
+$var wire 32 r" reg_rdata [31:0] $end
+$var wire 32 s" reg_wdata [31:0] $end
+$var wire 1 (" reg_we $end
+$var wire 16 t" register_list [15:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 /" block_complete $end
+$var wire 1 3" block_active $end
+$var wire 1 0" base_reg_we $end
+$var reg 32 u" base_reg_data [31:0] $end
+$var reg 32 v" current_addr [31:0] $end
+$var reg 4 w" current_reg [3:0] $end
+$var reg 1 x" first_transfer $end
+$var reg 4 y" next_reg [3:0] $end
+$var reg 3 z" next_state [2:0] $end
+$var reg 5 {" reg_count [4:0] $end
+$var reg 16 |" remaining_regs [15:0] $end
+$var reg 3 }" state [2:0] $end
+$var reg 5 ~" total_regs [4:0] $end
+$scope begin $ivl_for_loop3 $end
+$var integer 32 !# i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop4 $end
+$var integer 32 "# i [31:0] $end
+$upscope $end
+$upscope $end
+$scope module u_decode $end
+$var wire 1 "" branch_link $end
+$var wire 24 ## branch_offset [23:0] $end
+$var wire 1 * clk $end
+$var wire 4 $# condition [3:0] $end
+$var wire 1 G" flush $end
+$var wire 1 } imm_en $end
+$var wire 12 %# immediate [11:0] $end
+$var wire 1 y is_memory $end
+$var wire 1 x mem_byte $end
+$var wire 1 w mem_load $end
+$var wire 1 v mem_pre $end
+$var wire 1 u mem_up $end
+$var wire 1 t mem_writeback $end
+$var wire 1 r psr_immediate $end
+$var wire 1 q psr_spsr $end
+$var wire 1 p psr_to_reg $end
+$var wire 4 &# rd [3:0] $end
+$var wire 4 '# rm [3:0] $end
+$var wire 4 (# rn [3:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 l set_flags $end
+$var wire 5 )# shift_amount [4:0] $end
+$var wire 2 *# shift_type [1:0] $end
+$var wire 1 X" stall $end
+$var wire 1 H thumb_mode $end
+$var wire 1 +# w_bit $end
+$var wire 1 ,# u_bit $end
+$var wire 2 -# shift_type_field [1:0] $end
+$var wire 5 .# shift_amt_field [4:0] $end
+$var wire 1 /# s_bit $end
+$var wire 4 0# rn_field [3:0] $end
+$var wire 4 1# rm_field [3:0] $end
+$var wire 4 2# rd_field [3:0] $end
+$var wire 32 3# pc_out [31:0] $end
+$var wire 32 4# pc_in [31:0] $end
+$var wire 1 5# p_bit $end
+$var wire 6 6# op_code [5:0] $end
+$var wire 2 7# op_class [1:0] $end
+$var wire 1 8# l_bit_mem $end
+$var wire 1 9# l_bit $end
+$var wire 1 z is_branch $end
+$var wire 32 :# instruction [31:0] $end
+$var wire 1 b instr_valid $end
+$var wire 12 ;# imm_field [11:0] $end
+$var wire 1 <# i_bit $end
+$var wire 1 i decode_valid $end
+$var wire 4 =# cond_field [3:0] $end
+$var wire 24 ># branch_offset_field [23:0] $end
+$var wire 1 ?# b_bit $end
+$var wire 4 @# alu_op [3:0] $end
+$var reg 4 A# instr_type [3:0] $end
+$var reg 32 B# pc_reg [31:0] $end
+$var reg 1 i valid_reg $end
+$upscope $end
+$scope module u_exception $end
+$var wire 1 * clk $end
+$var wire 5 C# current_mode [4:0] $end
+$var wire 32 D# current_pc [31:0] $end
+$var wire 1 E# data_abort $end
+$var wire 32 F# exception_spsr [31:0] $end
+$var wire 1 , fiq $end
+$var wire 1 . irq $end
+$var wire 1 G# prefetch_abort $end
+$var wire 1 0 rst_n $end
+$var wire 1 E swi $end
+$var wire 1 F undefined_instr $end
+$var wire 1 H# irq_disabled $end
+$var wire 1 I# fiq_disabled $end
+$var wire 32 J# current_cpsr [31:0] $end
+$var reg 32 K# exception_cpsr [31:0] $end
+$var reg 5 L# exception_mode [4:0] $end
+$var reg 1 e exception_taken $end
+$var reg 3 M# exception_type [2:0] $end
+$var reg 32 N# exception_vector [31:0] $end
+$upscope $end
+$scope module u_fetch $end
+$var wire 1 ?" branch_taken $end
+$var wire 32 O# branch_target [31:0] $end
+$var wire 1 * clk $end
+$var wire 1 F" fetch_en $end
+$var wire 1 G" flush $end
+$var wire 1 b instr_valid $end
+$var wire 32 P# instruction [31:0] $end
+$var wire 32 Q# mem_rdata [31:0] $end
+$var wire 1 ! mem_ready $end
+$var wire 32 R# pc_out [31:0] $end
+$var wire 1 0 rst_n $end
+$var wire 1 X" stall $end
+$var wire 1 H thumb_mode $end
+$var reg 2 S# current_state [1:0] $end
+$var reg 32 T# instr_buffer [31:0] $end
+$var reg 1 U# instr_ready $end
+$var reg 32 V# mem_addr [31:0] $end
+$var reg 1 _ mem_re $end
+$var reg 2 W# next_state [1:0] $end
+$var reg 32 X# pc [31:0] $end
+$upscope $end
+$scope module u_multiply $end
+$var wire 32 Y# acc_hi [31:0] $end
+$var wire 32 Z# acc_lo [31:0] $end
+$var wire 1 * clk $end
+$var wire 1 ? mul_accumulate $end
+$var wire 1 @ mul_en $end
+$var wire 1 U mul_long $end
+$var wire 1 A mul_set_flags $end
+$var wire 1 B mul_signed $end
+$var wire 2 [# mul_type [1:0] $end
+$var wire 1 Q result_ready $end
+$var wire 1 0 rst_n $end
+$var wire 1 P zero $end
+$var wire 32 \# result_lo [31:0] $end
+$var wire 32 ]# result_hi [31:0] $end
+$var wire 32 ^# operand_b [31:0] $end
+$var wire 32 _# operand_a [31:0] $end
+$var wire 1 T negative $end
+$var reg 64 `# final_result [63:0] $end
+$var reg 64 a# mul_result [63:0] $end
+$upscope $end
+$scope module u_regfile $end
+$var wire 1 * clk $end
+$var wire 32 b# cpsr_in [31:0] $end
+$var wire 32 c# cpsr_out [31:0] $end
+$var wire 1 N" cpsr_we $end
+$var wire 5 d# current_mode [4:0] $end
+$var wire 1 J" mode_change $end
+$var wire 32 e# pc_in [31:0] $end
+$var wire 32 f# pc_out [31:0] $end
+$var wire 1 P" pc_we $end
+$var wire 4 g# rd_addr [3:0] $end
+$var wire 32 h# rd_data [31:0] $end
+$var wire 1 R" rd_we $end
+$var wire 4 i# rm_addr [3:0] $end
+$var wire 4 j

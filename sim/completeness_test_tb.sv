@@ -163,7 +163,7 @@ module completeness_test_tb;
         
         // Multiply Instructions
         test_arm_instruction(32'hE0000291, "MUL R0, R1, R2", INSTR_MUL);
-        test_arm_instruction(32'hE0200391, "MLA R0, R1, R3, R2", INSTR_MUL);
+        test_arm_instruction(32'hE0203192, "MLA R0, R1, R3, R2", INSTR_MUL);
         test_arm_instruction(32'hE0800291, "UMULL R0, R1, R2, R2", INSTR_MUL_LONG);
         test_arm_instruction(32'hE0C00291, "SMULL R0, R1, R2, R2", INSTR_MUL_LONG);
         
@@ -184,8 +184,8 @@ module completeness_test_tb;
         test_arm_instruction(32'hE12FFF10, "BX R0", INSTR_BRANCH_EX);
         
         // Swap Instructions
-        test_arm_instruction(32'hE1000091, "SWP R0, R1, [R0]", INSTR_SINGLE_SWAP);
-        test_arm_instruction(32'hE1400091, "SWPB R0, R1, [R0]", INSTR_SINGLE_SWAP);
+        test_arm_instruction(32'hE1010091, "SWP R0, R1, [R0]", INSTR_SINGLE_SWAP);
+        test_arm_instruction(32'hE1410091, "SWPB R0, R1, [R0]", INSTR_SINGLE_SWAP);
         
         // PSR Transfer
         test_arm_instruction(32'hE10F0000, "MRS R0, CPSR", INSTR_PSR_TRANSFER);

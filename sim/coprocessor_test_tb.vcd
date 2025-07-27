@@ -1,0 +1,547 @@
+$date
+	Sat Jul 26 12:19:30 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module coprocessor_test_tb $end
+$var wire 32 ! cache_type [31:0] $end
+$var wire 1 " cp_busy $end
+$var wire 32 # cpu_id [31:0] $end
+$var wire 1 $ write_buffer_en $end
+$var wire 2 % ttb_ctrl [1:0] $end
+$var wire 32 & ttb_base [31:0] $end
+$var wire 1 ' tlb_flush $end
+$var wire 1 ( system_protect $end
+$var wire 1 ) rom_protection $end
+$var wire 1 * mmu_enable $end
+$var wire 1 + icache_flush $end
+$var wire 1 , icache_enable $end
+$var wire 1 - high_vectors $end
+$var wire 32 . domain_access [31:0] $end
+$var wire 1 / dcache_flush $end
+$var wire 1 0 dcache_enable $end
+$var wire 1 1 dcache_clean $end
+$var wire 32 2 cp_data_out [31:0] $end
+$var wire 1 3 cp_absent $end
+$var wire 32 4 cp15_reg_out [31:0] $end
+$var reg 1 5 clk $end
+$var reg 4 6 cp_crm [3:0] $end
+$var reg 4 7 cp_crn [3:0] $end
+$var reg 32 8 cp_data_in [31:0] $end
+$var reg 1 9 cp_en $end
+$var reg 4 : cp_num [3:0] $end
+$var reg 3 ; cp_op [2:0] $end
+$var reg 3 < cp_op1 [2:0] $end
+$var reg 3 = cp_op2 [2:0] $end
+$var reg 1 > debug_mode $end
+$var reg 1 ? rst_n $end
+$var integer 32 @ tests_passed [31:0] $end
+$var integer 32 A tests_run [31:0] $end
+$scope module u_coprocessor $end
+$var wire 32 B cache_type [31:0] $end
+$var wire 1 5 clk $end
+$var wire 1 3 cp_absent $end
+$var wire 1 " cp_busy $end
+$var wire 4 C cp_crm [3:0] $end
+$var wire 4 D cp_crn [3:0] $end
+$var wire 32 E cp_data_in [31:0] $end
+$var wire 1 9 cp_en $end
+$var wire 4 F cp_num [3:0] $end
+$var wire 3 G cp_op [2:0] $end
+$var wire 3 H cp_op1 [2:0] $end
+$var wire 3 I cp_op2 [2:0] $end
+$var wire 32 J cpu_id [31:0] $end
+$var wire 1 1 dcache_clean $end
+$var wire 1 0 dcache_enable $end
+$var wire 1 / dcache_flush $end
+$var wire 1 > debug_mode $end
+$var wire 32 K domain_access [31:0] $end
+$var wire 1 - high_vectors $end
+$var wire 1 , icache_enable $end
+$var wire 1 + icache_flush $end
+$var wire 1 * mmu_enable $end
+$var wire 1 ) rom_protection $end
+$var wire 1 ? rst_n $end
+$var wire 1 ( system_protect $end
+$var wire 1 ' tlb_flush $end
+$var wire 32 L ttb_base [31:0] $end
+$var wire 1 $ write_buffer_en $end
+$var wire 2 M ttb_ctrl [1:0] $end
+$var wire 32 N cp15_reg_out [31:0] $end
+$var reg 32 O cp_data_out [31:0] $end
+$var reg 1 P ctrl_a $end
+$var reg 1 Q ctrl_c $end
+$var reg 1 R ctrl_i $end
+$var reg 1 S ctrl_m $end
+$var reg 1 T ctrl_r $end
+$var reg 1 U ctrl_s $end
+$var reg 1 V ctrl_v $end
+$var reg 1 W ctrl_z $end
+$var reg 1 X dcache_clean_delayed $end
+$var reg 1 Y dcache_clean_trigger $end
+$var reg 1 Z dcache_flush_delayed $end
+$var reg 1 [ dcache_flush_trigger $end
+$var reg 32 \ domain_access_ctrl [31:0] $end
+$var reg 32 ] fault_address [31:0] $end
+$var reg 32 ^ fault_status [31:0] $end
+$var reg 1 _ icache_flush_delayed $end
+$var reg 1 ` icache_flush_trigger $end
+$var reg 32 a process_id [31:0] $end
+$var reg 1 b tlb_flush_delayed $end
+$var reg 1 c tlb_flush_trigger $end
+$var reg 32 d translation_table_base [31:0] $end
+$upscope $end
+$scope task mcr $end
+$upscope $end
+$scope task mrc $end
+$upscope $end
+$scope task test_cache_operations $end
+$var reg 1 e test_passed $end
+$upscope $end
+$scope task test_control_register $end
+$var reg 32 f ctrl_read [31:0] $end
+$var reg 32 g ctrl_write [31:0] $end
+$var reg 1 h test_passed $end
+$upscope $end
+$scope task test_coprocessor_absent $end
+$var reg 1 i test_passed $end
+$upscope $end
+$scope task test_cpu_id $end
+$var reg 32 j id [31:0] $end
+$var reg 1 k test_passed $end
+$upscope $end
+$scope task test_ttb_register $end
+$var reg 1 l test_passed $end
+$var reg 32 m ttb_read [31:0] $end
+$var reg 32 n ttb_write [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx n
+bx m
+xl
+xk
+bx j
+xi
+xh
+bx g
+bx f
+xe
+b0 d
+0c
+0b
+b0 a
+0`
+0_
+b0 ^
+b0 ]
+b0 \
+0[
+0Z
+0Y
+0X
+0W
+0V
+0U
+0T
+0S
+0R
+0Q
+0P
+b0 O
+b0 N
+b0 M
+b0 L
+b0 K
+b1000001000000000111000000000000 J
+b0 I
+b0 H
+b100 G
+b1111 F
+b0 E
+b0 D
+b0 C
+b1111000000000010000000000010 B
+b0 A
+b0 @
+0?
+0>
+b0 =
+b0 <
+b100 ;
+b1111 :
+09
+b0 8
+b0 7
+b0 6
+05
+b0 4
+03
+b0 2
+01
+00
+0/
+b0 .
+0-
+0,
+0+
+0*
+0)
+0(
+0'
+b0 &
+b0 %
+0$
+b1000001000000000111000000000000 #
+0"
+b1111000000000010000000000010 !
+$end
+#5000
+15
+#10000
+05
+#15000
+15
+#20000
+05
+#25000
+15
+#30000
+05
+#35000
+15
+#40000
+05
+#45000
+1?
+15
+#50000
+05
+#55000
+15
+#60000
+05
+#65000
+15
+#70000
+05
+#75000
+15
+#80000
+05
+#85000
+15
+#90000
+05
+#95000
+b1 A
+15
+#100000
+05
+#105000
+b1000001000000000111000000000000 2
+b1000001000000000111000000000000 O
+19
+15
+#110000
+05
+#115000
+b0 2
+b0 O
+09
+15
+#120000
+05
+#125000
+b11000000000101 g
+b10 A
+b1 @
+1k
+b1000001000000000111000000000000 j
+15
+#130000
+05
+#135000
+1-
+1V
+1,
+1R
+1$
+10
+1Q
+b11000000000101 4
+b11000000000101 N
+1*
+1S
+b11000000000101 8
+b11000000000101 E
+b1 7
+b1 D
+b11 ;
+b11 G
+19
+15
+#140000
+05
+#145000
+09
+15
+#150000
+05
+#155000
+15
+#160000
+05
+#165000
+b11000000000101 2
+b11000000000101 O
+b0 8
+b0 E
+b100 ;
+b100 G
+19
+15
+#170000
+05
+#175000
+b0 2
+b0 O
+09
+15
+#180000
+05
+#185000
+b10000000000000000000000000000000 n
+b11 A
+b10 @
+1h
+b11000000000101 f
+15
+#190000
+05
+#195000
+b10000000000000000000000000000000 &
+b10000000000000000000000000000000 L
+b10000000000000000000000000000000 d
+b10000000000000000000000000000000 8
+b10000000000000000000000000000000 E
+b10 7
+b10 D
+b11 ;
+b11 G
+19
+15
+#200000
+05
+#205000
+09
+15
+#210000
+05
+#215000
+15
+#220000
+05
+#225000
+b10000000000000000000000000000000 2
+b10000000000000000000000000000000 O
+b0 8
+b0 E
+b100 ;
+b100 G
+19
+15
+#230000
+05
+#235000
+b0 2
+b0 O
+09
+15
+#240000
+05
+#245000
+1e
+b100 A
+b11 @
+1l
+b10000000000000000000000000000000 m
+15
+#250000
+05
+#255000
+15
+#260000
+05
+#265000
+1`
+b101 6
+b101 C
+b111 7
+b111 D
+b11 ;
+b11 G
+19
+15
+#270000
+05
+#275000
+1+
+1_
+0`
+09
+15
+#280000
+05
+#285000
+0+
+0_
+15
+#290000
+05
+#295000
+0e
+15
+#300000
+05
+#305000
+15
+#310000
+05
+#315000
+15
+#320000
+05
+#325000
+1[
+b110 6
+b110 C
+19
+15
+#330000
+05
+#335000
+1/
+1Z
+0[
+09
+15
+#340000
+05
+#345000
+0/
+0Z
+15
+#350000
+05
+#355000
+15
+#360000
+05
+#365000
+15
+#370000
+05
+#375000
+1Y
+b1 =
+b1 I
+b1010 6
+b1010 C
+19
+15
+#380000
+05
+#385000
+11
+1X
+0Y
+09
+15
+#390000
+05
+#395000
+01
+0X
+15
+#400000
+05
+#405000
+b101 A
+15
+#410000
+05
+#415000
+13
+b0 2
+b0 O
+b0 =
+b0 I
+b0 6
+b0 C
+b0 7
+b0 D
+b1110 :
+b1110 F
+b100 ;
+b100 G
+19
+15
+#420000
+05
+#425000
+03
+09
+1i
+15
+#430000
+05
+#435000
+b100 @
+15
+#440000
+05
+#445000
+15
+#450000
+05
+#455000
+15
+#460000
+05
+#465000
+15
+#470000
+05
+#475000
+15
+#480000
+05
+#485000
+15
+#490000
+05
+#495000
+15
+#500000
+05
+#505000
+15
+#510000
+05
+#515000
+15
+#520000
+05
+#525000
+15
+#530000
+05
+#535000
+15

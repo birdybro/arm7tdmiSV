@@ -1,0 +1,897 @@
+$date
+	Sun Jul 27 10:09:10 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module writeback_test $end
+$var wire 1 ! pipeline_stall $end
+$var wire 1 " thumb_state $end
+$var wire 1 # rf_write_enable $end
+$var wire 32 $ rf_write_data [31:0] $end
+$var wire 4 % rf_write_addr [3:0] $end
+$var wire 1 & rf_spsr_write $end
+$var wire 32 ' rf_spsr_new [31:0] $end
+$var wire 1 ( rf_pc_write $end
+$var wire 32 ) rf_pc_new [31:0] $end
+$var wire 5 * rf_mode_new [4:0] $end
+$var wire 1 + rf_mode_change $end
+$var wire 1 , rf_cpsr_write $end
+$var wire 32 - rf_cpsr_new [31:0] $end
+$var wire 32 . retire_pc [31:0] $end
+$var wire 32 / retire_instr_count [31:0] $end
+$var wire 1 0 pipeline_flush $end
+$var wire 1 1 irq_disabled $end
+$var wire 1 2 instr_retire $end
+$var wire 1 3 forward_valid $end
+$var wire 32 4 forward_reg_data [31:0] $end
+$var wire 4 5 forward_reg_addr [3:0] $end
+$var wire 1 6 fiq_disabled $end
+$var wire 32 7 exception_vector [31:0] $end
+$var wire 1 8 exception_taken $end
+$var wire 5 9 current_mode [4:0] $end
+$var wire 32 : current_cpsr [31:0] $end
+$var reg 32 ; abort_address [31:0] $end
+$var reg 1 < alignment_fault $end
+$var reg 1 = alu_carry $end
+$var reg 1 > alu_negative $end
+$var reg 1 ? alu_overflow $end
+$var reg 32 @ alu_result [31:0] $end
+$var reg 1 A alu_zero $end
+$var reg 1 B branch_link $end
+$var reg 1 C branch_taken $end
+$var reg 32 D branch_target [31:0] $end
+$var reg 1 E clk $end
+$var reg 32 F cpsr_new [31:0] $end
+$var reg 1 G cpsr_update $end
+$var reg 1 H data_abort $end
+$var reg 1 I fiq_request $end
+$var reg 1 J flush $end
+$var reg 4 K instr_type [3:0] $end
+$var reg 1 L irq_request $end
+$var reg 32 M load_data [31:0] $end
+$var reg 1 N memory_complete $end
+$var reg 1 O memory_valid $end
+$var reg 32 P pc_in [31:0] $end
+$var reg 32 Q psr_data [31:0] $end
+$var reg 1 R psr_from_reg $end
+$var reg 1 S psr_spsr $end
+$var reg 1 T psr_to_reg $end
+$var reg 4 U reg_write_addr [3:0] $end
+$var reg 32 V reg_write_data [31:0] $end
+$var reg 1 W reg_write_enable $end
+$var reg 1 X rst_n $end
+$var reg 1 Y set_flags $end
+$var reg 1 Z stall $end
+$var reg 1 [ swi_exception $end
+$var reg 1 \ undefined_instr $end
+$var integer 32 ] test_count [31:0] $end
+$var integer 32 ^ test_passed [31:0] $end
+$scope module u_writeback $end
+$var wire 32 _ abort_address [31:0] $end
+$var wire 1 < alignment_fault $end
+$var wire 1 = alu_carry $end
+$var wire 1 > alu_negative $end
+$var wire 1 ? alu_overflow $end
+$var wire 32 ` alu_result [31:0] $end
+$var wire 1 A alu_zero $end
+$var wire 1 B branch_link $end
+$var wire 1 C branch_taken $end
+$var wire 32 a branch_target [31:0] $end
+$var wire 1 E clk $end
+$var wire 32 b cpsr_new [31:0] $end
+$var wire 1 G cpsr_update $end
+$var wire 32 c current_cpsr [31:0] $end
+$var wire 5 d current_mode [4:0] $end
+$var wire 1 H data_abort $end
+$var wire 1 8 exception_taken $end
+$var wire 32 e exception_vector [31:0] $end
+$var wire 1 6 fiq_disabled $end
+$var wire 1 I fiq_request $end
+$var wire 1 J flush $end
+$var wire 4 f forward_reg_addr [3:0] $end
+$var wire 32 g forward_reg_data [31:0] $end
+$var wire 1 3 forward_valid $end
+$var wire 1 2 instr_retire $end
+$var wire 4 h instr_type [3:0] $end
+$var wire 1 1 irq_disabled $end
+$var wire 1 L irq_request $end
+$var wire 32 i load_data [31:0] $end
+$var wire 1 N memory_complete $end
+$var wire 1 O memory_valid $end
+$var wire 32 j pc_in [31:0] $end
+$var wire 1 0 pipeline_flush $end
+$var wire 1 ! pipeline_stall $end
+$var wire 32 k psr_data [31:0] $end
+$var wire 1 R psr_from_reg $end
+$var wire 1 S psr_spsr $end
+$var wire 1 T psr_to_reg $end
+$var wire 4 l reg_write_addr [3:0] $end
+$var wire 32 m reg_write_data [31:0] $end
+$var wire 1 W reg_write_enable $end
+$var wire 32 n retire_instr_count [31:0] $end
+$var wire 32 o retire_pc [31:0] $end
+$var wire 32 p rf_cpsr_new [31:0] $end
+$var wire 1 , rf_cpsr_write $end
+$var wire 1 + rf_mode_change $end
+$var wire 1 ( rf_pc_write $end
+$var wire 1 & rf_spsr_write $end
+$var wire 4 q rf_write_addr [3:0] $end
+$var wire 32 r rf_write_data [31:0] $end
+$var wire 1 # rf_write_enable $end
+$var wire 1 X rst_n $end
+$var wire 1 Y set_flags $end
+$var wire 1 Z stall $end
+$var wire 1 [ swi_exception $end
+$var wire 1 " thumb_state $end
+$var wire 1 \ undefined_instr $end
+$var wire 32 s rf_spsr_new [31:0] $end
+$var wire 32 t rf_pc_new [31:0] $end
+$var wire 5 u rf_mode_new [4:0] $end
+$var reg 32 v cpsr_current [31:0] $end
+$var reg 32 w cpsr_updated [31:0] $end
+$var reg 1 x cpsr_write_enable $end
+$var reg 1 y exception_pending $end
+$var reg 32 z exception_return_addr [31:0] $end
+$var reg 32 { exception_spsr [31:0] $end
+$var reg 5 | exception_target_mode [4:0] $end
+$var reg 32 } exception_vector_addr [31:0] $end
+$var reg 1 ~ fiq_disable_current $end
+$var reg 1 !" highest_priority_exception $end
+$var reg 5 "" highest_priority_mode [4:0] $end
+$var reg 32 #" highest_priority_vector [31:0] $end
+$var reg 32 $" instruction_count [31:0] $end
+$var reg 1 %" irq_disable_current $end
+$var reg 5 &" mode_current [4:0] $end
+$var reg 32 '" pc_reg [31:0] $end
+$var reg 32 (" spsr_data [31:0] $end
+$var reg 1 )" spsr_write_enable $end
+$var reg 1 *" thumb_current $end
+$var reg 1 +" valid_reg $end
+$var reg 4 ," writeback_addr [3:0] $end
+$var reg 32 -" writeback_data [31:0] $end
+$var reg 1 ." writeback_enable $end
+$var reg 1 /" writeback_is_alu $end
+$var reg 1 0" writeback_is_load $end
+$var reg 1 1" writeback_is_pc $end
+$upscope $end
+$scope task test_branch_control $end
+$var reg 1 2" link $end
+$var reg 1 3" taken $end
+$var reg 32 4" target [31:0] $end
+$upscope $end
+$scope task test_cpsr_flag_update $end
+$var reg 1 5" c $end
+$var reg 1 6" n $end
+$var reg 1 7" should_update $end
+$var reg 1 8" v $end
+$var reg 1 9" z $end
+$upscope $end
+$scope task test_exception_handling $end
+$var reg 1 :" abort $end
+$var reg 32 ;" expected_vector [31:0] $end
+$var reg 1 <" swi $end
+$var reg 1 =" undef $end
+$upscope $end
+$scope task test_load_writeback $end
+$var reg 32 >" loaded_data [31:0] $end
+$upscope $end
+$scope task test_register_writeback $end
+$var reg 4 ?" addr [3:0] $end
+$var reg 32 @" data [31:0] $end
+$var reg 1 A" enable $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+xA"
+bx @"
+bx ?"
+bx >"
+x="
+x<"
+bx ;"
+x:"
+x9"
+x8"
+x7"
+x6"
+x5"
+bx 4"
+x3"
+x2"
+01"
+00"
+1/"
+0."
+b10010001101000101011001111000 -"
+b10 ,"
+0+"
+0*"
+0)"
+b0 ("
+b0 '"
+b10011 &"
+1%"
+b0 $"
+b0 #"
+b10011 ""
+0!"
+1~
+b0 }
+b10011 |
+b10011 {
+b100 z
+0y
+0x
+b10011 w
+b10011 v
+b10011 u
+b10000000000000 t
+b0 s
+b10010001101000101011001111000 r
+b10 q
+b10011 p
+b0 o
+b0 n
+b10010001101000101011001111000 m
+b10 l
+b0 k
+b1000000000000 j
+b10101011110011011110111100000001 i
+b0 h
+b10010001101000101011001111000 g
+b10 f
+b0 e
+b10011 d
+b10011 c
+b1100000000000000000000000010000 b
+b10000000000000 a
+b10010001101000101011001111000 `
+b0 _
+b0 ^
+b0 ]
+0\
+0[
+0Z
+1Y
+0X
+1W
+b10010001101000101011001111000 V
+b10 U
+0T
+0S
+0R
+b0 Q
+b1000000000000 P
+1O
+1N
+b10101011110011011110111100000001 M
+0L
+b0 K
+0J
+0I
+0H
+0G
+b1100000000000000000000000010000 F
+0E
+b10000000000000 D
+0C
+0B
+0A
+b10010001101000101011001111000 @
+0?
+0>
+1=
+0<
+b0 ;
+b10011 :
+b10011 9
+08
+b0 7
+16
+b10 5
+b10010001101000101011001111000 4
+03
+02
+11
+00
+b0 /
+b0 .
+b10011 -
+0,
+0+
+b10011 *
+b10000000000000 )
+0(
+b0 '
+0&
+b10 %
+b10010001101000101011001111000 $
+0#
+0"
+0!
+$end
+#5000
+1E
+#10000
+0E
+#15000
+1E
+#20000
+0E
+#25000
+1E
+#30000
+0E
+#35000
+1E
+#40000
+0E
+#45000
+12
+1,
+1x
+b100000000000000000000000010011 -
+b100000000000000000000000010011 p
+b100000000000000000000000010011 w
+13
+1#
+1."
+b1000000000100 z
+1+"
+b1000000000000 .
+b1000000000000 o
+b1000000000000 '"
+1X
+1E
+#50000
+0E
+#55000
+1,
+1x
+b100000000000000000000000010011 {
+06
+0~
+01
+0%"
+b100000000000000000000000010011 :
+b100000000000000000000000010011 c
+b100000000000000000000000010011 v
+b1 /
+b1 n
+b1 $"
+1E
+#60000
+0E
+#65000
+b10 /
+b10 n
+b10 $"
+1E
+#70000
+0E
+#75000
+b11 /
+b11 n
+b11 $"
+1E
+#80000
+0E
+#85000
+b100 /
+b100 n
+b100 $"
+1E
+#90000
+0E
+#95000
+b101 /
+b101 n
+b101 $"
+b1 ]
+1A"
+b10010001101000101011001111000 @"
+b10 ?"
+1E
+#100000
+0E
+#105000
+b110 /
+b110 n
+b110 $"
+1E
+#110000
+0E
+#115000
+b111 /
+b111 n
+b111 $"
+b101 5
+b101 f
+b101 %
+b101 q
+b101 ,"
+b11011110101011011011111011101111 V
+b11011110101011011011111011101111 m
+b101 U
+b101 l
+b10 ]
+b11011110101011011011111011101111 @"
+b101 ?"
+b1 ^
+1E
+#120000
+0E
+#125000
+b1000 /
+b1000 n
+b1000 $"
+1E
+#130000
+0E
+#135000
+b1001 /
+b1001 n
+b1001 $"
+03
+0#
+0."
+b11 5
+b11 f
+b11 %
+b11 q
+b11 ,"
+0W
+b11001010111111101011101010111110 V
+b11001010111111101011101010111110 m
+b11 U
+b11 l
+b11 ]
+0A"
+b11001010111111101011101010111110 @"
+b11 ?"
+b10 ^
+1E
+#140000
+0E
+#145000
+b1010 /
+b1010 n
+b1010 $"
+1E
+#150000
+0E
+#155000
+b1011 /
+b1011 n
+b1011 $"
+b100 ]
+17"
+08"
+15"
+09"
+06"
+b11 ^
+1E
+#160000
+0E
+#165000
+b1100 /
+b1100 n
+b1100 $"
+1E
+#170000
+0E
+#175000
+b1101 /
+b1101 n
+b1101 $"
+b1000000000000000000000000010011 -
+b1000000000000000000000000010011 p
+b1000000000000000000000000010011 w
+1,
+1x
+0=
+1A
+b101 ]
+05"
+19"
+1Y
+b100 ^
+1E
+#180000
+0E
+#185000
+1,
+1x
+b1000000000000000000000000010011 {
+b1000000000000000000000000010011 :
+b1000000000000000000000000010011 c
+b1000000000000000000000000010011 v
+b1110 /
+b1110 n
+b1110 $"
+1E
+#190000
+0E
+#195000
+b1111 /
+b1111 n
+b1111 $"
+0,
+0x
+1?
+1=
+1>
+b110 ]
+07"
+18"
+15"
+16"
+0Y
+b101 ^
+1E
+#200000
+0E
+#205000
+b10000 /
+b10000 n
+b10000 $"
+1E
+#210000
+0E
+#215000
+b10001 /
+b10001 n
+b10001 $"
+1(
+10
+b11001010111111101011101010111110 4
+b11001010111111101011101010111110 g
+b11001010111111101011101010111110 $
+b11001010111111101011101010111110 r
+b11001010111111101011101010111110 -"
+0/"
+b1001 K
+b1001 h
+1C
+b111 ]
+02"
+b10000000000000 4"
+13"
+b110 ^
+1E
+#220000
+0E
+#225000
+b10010 /
+b10010 n
+b10010 $"
+1E
+#230000
+0E
+#235000
+b10011 /
+b10011 n
+b10011 $"
+b1000000000100 4
+b1000000000100 g
+b1000000000100 $
+b1000000000100 r
+b1000000000100 -"
+11"
+b11000000000000 )
+b11000000000000 t
+1B
+b11000000000000 D
+b11000000000000 a
+b1000 ]
+12"
+b11000000000000 4"
+1C
+b111 ^
+1E
+#240000
+0E
+#245000
+b10100 /
+b10100 n
+b10100 $"
+1E
+#250000
+0E
+#255000
+b10101 /
+b10101 n
+b10101 $"
+0(
+00
+b100000000000000 )
+b100000000000000 t
+b11001010111111101011101010111110 4
+b11001010111111101011101010111110 g
+b11001010111111101011101010111110 $
+b11001010111111101011101010111110 r
+b11001010111111101011101010111110 -"
+01"
+b100000000000000 D
+b100000000000000 a
+b1001 ]
+02"
+b100000000000000 4"
+03"
+0B
+0C
+b1000 ^
+1E
+#260000
+0E
+#265000
+b10110 /
+b10110 n
+b10110 $"
+1E
+#270000
+0E
+#275000
+b10111 /
+b10111 n
+b10111 $"
+b10000 )
+b10000 t
+b1000000000000000000000000010011 '
+b1000000000000000000000000010011 s
+b10111 *
+b10111 u
+02
+10
+1+
+1&
+1(
+b1000000000000 z
+b10111 |
+b10000 7
+b10000 e
+b10000 }
+18
+1y
+b10111 ""
+b10000 #"
+1!"
+1H
+b1010 ]
+b10000 ;"
+0<"
+0="
+1:"
+b1001 ^
+1E
+#280000
+0E
+#285000
+b100000000000000 )
+b100000000000000 t
+b0 '
+b0 s
+b10011 *
+b10011 u
+00
+0+
+0&
+0(
+b10111 ""
+b10000 #"
+1!"
+08
+0y
+11
+1%"
+b10111 9
+b10111 d
+b10111 &"
+0+"
+1E
+#290000
+0E
+#295000
+b100 )
+b100 t
+b1000000000000000000000000010011 '
+b1000000000000000000000000010011 s
+b11011 *
+b11011 u
+10
+1+
+1&
+1(
+18
+1y
+1+"
+b1000000000100 z
+b11011 |
+b100 7
+b100 e
+b100 }
+b11011 ""
+b100 #"
+1!"
+1\
+b1011 ]
+b100 ;"
+1="
+0:"
+0H
+1E
+#300000
+0E
+#305000
+b100000000000000 )
+b100000000000000 t
+b0 '
+b0 s
+b10011 *
+b10011 u
+00
+0+
+0&
+0(
+b11011 ""
+b100 #"
+1!"
+08
+0y
+16
+1~
+b11011 9
+b11011 d
+b11011 &"
+0+"
+1E
+#310000
+0E
+#315000
+b1000 )
+b1000 t
+b1000000000000000000000000010011 '
+b1000000000000000000000000010011 s
+10
+1+
+1&
+1(
+18
+1y
+1+"
+b10011 |
+b1000 7
+b1000 e
+b1000 }
+b10011 ""
+b1000 #"
+1!"
+1[
+b1100 ]
+b1000 ;"
+1<"
+0="
+0\
+1E
+#320000
+0E
+#325000
+b100000000000000 )
+b100000000000000 t
+b0 '
+b0 s
+00
+0+
+0&
+0(
+b1000 #"
+1!"
+08
+0y
+b10011 9
+b10011 d
+b10011 &"
+0+"
+1E
+#330000
+0E
+#335000
+12
+13
+1#
+1."
+1+"
+b0 7
+b0 e
+b0 }
+b101 5
+b101 f
+b101 %
+b101 q
+b101 ,"
+b11111110111011011111101011001110 4
+b11111110111011011111101011001110 g
+b11111110111011011111101011001110 $
+b11111110111011011111101011001110 r
+b11111110111011011111101011001110 -"
+10"
+b0 #"
+0!"
+1W
+b101 U
+b101 l
+b11111110111011011111101011001110 M
+b11111110111011011111101011001110 i
+b110 K
+b110 h
+b1101 ]
+b11111110111011011111101011001110 >"
+0[
+1E
+#340000
+0E
+#345000
+b11000 /
+b11000 n
+b11000 $"
+1E
+#350000
+0E
+#355000
+b11001 /
+b11001 n
+b11001 $"
+b10010001101000101011001111000 4
+b10010001101000101011001111000 g
+b10010001101000101011001111000 $
+b10010001101000101011001111000 r
+b10010001101000101011001111000 -"
+1/"
+00"
+b1110 ]
+b0 K
+b0 h
+b1011 ^
+1E
+#360000
+0E
+#365000
+b11010 /
+b11010 n
+b11010 $"
+1E
+#370000
+0E
+#375000
+b11011 /
+b11011 n
+b11011 $"
+1E
+#380000
+0E
+#385000
+b11100 /
+b11100 n
+b11100 $"
+1E
+#390000
+0E
+#395000
+b11101 /
+b11101 n
+b11101 $"
+1E
+#400000
+0E
+#405000
+b11110 /
+b11110 n
+b11110 $"
+1E

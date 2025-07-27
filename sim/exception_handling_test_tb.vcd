@@ -1,0 +1,513 @@
+$date
+	Fri Jul 25 11:40:01 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module exception_handling_test_tb $end
+$var wire 1 ! decode_valid $end
+$var wire 1 " decode_set_flags $end
+$var wire 4 # decode_rn [3:0] $end
+$var wire 4 $ decode_rm [3:0] $end
+$var wire 4 % decode_rd [3:0] $end
+$var wire 32 & decode_pc [31:0] $end
+$var wire 1 ' decode_mem_writeback $end
+$var wire 1 ( decode_mem_up $end
+$var wire 1 ) decode_mem_pre $end
+$var wire 1 * decode_mem_load $end
+$var wire 1 + decode_mem_byte $end
+$var wire 1 , decode_is_memory $end
+$var wire 4 - decode_instr_type [3:0] $end
+$var wire 12 . decode_immediate [11:0] $end
+$var wire 1 / decode_imm_en $end
+$var wire 4 0 decode_condition [3:0] $end
+$var wire 4 1 decode_alu_op [3:0] $end
+$var reg 1 2 clk $end
+$var reg 32 3 cpsr [31:0] $end
+$var reg 5 4 current_mode [4:0] $end
+$var reg 1 5 data_abort_exception $end
+$var reg 5 6 exception_mode [4:0] $end
+$var reg 1 7 exception_taken $end
+$var reg 32 8 exception_vector [31:0] $end
+$var reg 1 9 fiq_exception $end
+$var reg 1 : flush $end
+$var reg 1 ; instr_valid $end
+$var reg 32 < instruction [31:0] $end
+$var reg 1 = irq_exception $end
+$var reg 32 > pc_in [31:0] $end
+$var reg 1 ? prefetch_abort_exception $end
+$var reg 1 @ reset_exception $end
+$var reg 1 A rst_n $end
+$var reg 32 B saved_cpsr [31:0] $end
+$var reg 1 C stall $end
+$var reg 1 D swi_exception $end
+$var reg 1 E test_passed $end
+$var reg 1 F thumb_mode $end
+$var reg 1 G undefined_exception $end
+$var integer 32 H tests_passed [31:0] $end
+$var integer 32 I tests_run [31:0] $end
+$scope module u_decode $end
+$var wire 1 J branch_link $end
+$var wire 24 K branch_offset [23:0] $end
+$var wire 1 2 clk $end
+$var wire 4 L condition [3:0] $end
+$var wire 1 ! decode_valid $end
+$var wire 1 : flush $end
+$var wire 1 / imm_en $end
+$var wire 12 M immediate [11:0] $end
+$var wire 1 ; instr_valid $end
+$var wire 32 N instruction [31:0] $end
+$var wire 1 , is_memory $end
+$var wire 1 + mem_byte $end
+$var wire 1 * mem_load $end
+$var wire 1 ) mem_pre $end
+$var wire 1 ( mem_up $end
+$var wire 1 ' mem_writeback $end
+$var wire 32 O pc_in [31:0] $end
+$var wire 32 P pc_out [31:0] $end
+$var wire 1 Q psr_immediate $end
+$var wire 1 R psr_spsr $end
+$var wire 1 S psr_to_reg $end
+$var wire 4 T rd [3:0] $end
+$var wire 4 U rm [3:0] $end
+$var wire 4 V rn [3:0] $end
+$var wire 1 A rst_n $end
+$var wire 1 " set_flags $end
+$var wire 1 W shift_reg $end
+$var wire 2 X shift_type [1:0] $end
+$var wire 1 C stall $end
+$var wire 1 F thumb_mode $end
+$var wire 1 Y w_bit $end
+$var wire 1 Z u_bit $end
+$var wire 2 [ shift_type_field [1:0] $end
+$var wire 4 \ shift_rs [3:0] $end
+$var wire 5 ] shift_amt_field [4:0] $end
+$var wire 5 ^ shift_amount [4:0] $end
+$var wire 1 _ s_bit $end
+$var wire 4 ` rn_field [3:0] $end
+$var wire 4 a rm_field [3:0] $end
+$var wire 4 b rd_field [3:0] $end
+$var wire 1 c p_bit $end
+$var wire 6 d op_code [5:0] $end
+$var wire 2 e op_class [1:0] $end
+$var wire 1 f l_bit_mem $end
+$var wire 1 g l_bit $end
+$var wire 1 h is_branch $end
+$var wire 12 i imm_field [11:0] $end
+$var wire 1 j i_bit $end
+$var wire 4 k cond_field [3:0] $end
+$var wire 24 l branch_offset_field [23:0] $end
+$var wire 1 m b_bit $end
+$var wire 4 n alu_op [3:0] $end
+$var reg 1 o cp_load $end
+$var reg 4 p cp_num [3:0] $end
+$var reg 3 q cp_op [2:0] $end
+$var reg 3 r cp_opcode1 [2:0] $end
+$var reg 3 s cp_opcode2 [2:0] $end
+$var reg 4 t cp_rd [3:0] $end
+$var reg 4 u cp_rn [3:0] $end
+$var reg 4 v instr_type [3:0] $end
+$var reg 32 w pc_reg [31:0] $end
+$var reg 5 x thumb_imm5 [4:0] $end
+$var reg 8 y thumb_imm8 [7:0] $end
+$var reg 5 z thumb_instr_type [4:0] $end
+$var reg 11 { thumb_offset11 [10:0] $end
+$var reg 8 | thumb_offset8 [7:0] $end
+$var reg 3 } thumb_rd [2:0] $end
+$var reg 3 ~ thumb_rn [2:0] $end
+$var reg 3 !" thumb_rs [2:0] $end
+$var reg 1 "" valid_reg $end
+$upscope $end
+$scope task test_exception_priorities $end
+$upscope $end
+$scope task test_reset_exception $end
+$upscope $end
+$scope task test_swi_instruction $end
+$var reg 24 #" expected_comment [23:0] $end
+$var reg 32 $" instr [31:0] $end
+$upscope $end
+$scope task test_undefined_instruction $end
+$var reg 32 %" instr [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx %"
+bx $"
+bx #"
+0""
+b0 !"
+b0 ~
+b0 }
+b0 |
+b0 {
+b1 z
+b0 y
+b0 x
+b0 w
+b111 v
+b0 u
+b0 t
+b0 s
+b0 r
+b0 q
+b0 p
+0o
+bx n
+xm
+bx l
+bx k
+xj
+bx i
+0h
+xg
+xf
+bx e
+bx d
+xc
+bx b
+bx a
+bx `
+x_
+bx ^
+bx ]
+bx \
+bx [
+xZ
+xY
+bx X
+0W
+bx V
+bx U
+bx T
+0S
+0R
+0Q
+b0 P
+b1000000000000 O
+bx N
+bx M
+bx L
+bx K
+0J
+b0 I
+b0 H
+0G
+0F
+xE
+0D
+0C
+bx B
+0A
+1@
+0?
+b1000000000000 >
+0=
+bx <
+1;
+0:
+09
+b0 8
+17
+b10011 6
+05
+bx 4
+bx 3
+02
+bx 1
+bx 0
+0/
+bx .
+b111 -
+0,
+x+
+x*
+x)
+x(
+x'
+b0 &
+bx %
+bx $
+bx #
+0"
+0!
+$end
+#5000
+12
+#10000
+02
+#15000
+b100 8
+1G
+1!
+1""
+b1000000000000 &
+b1000000000000 P
+b1000000000000 w
+b11011 6
+17
+0@
+1A
+12
+#20000
+02
+#25000
+12
+#30000
+02
+#35000
+0G
+0!
+0""
+b0 &
+b0 P
+b0 w
+b10011 6
+b0 8
+17
+1@
+b10000 4
+0A
+b1 I
+12
+#40000
+02
+#45000
+12
+#50000
+02
+#55000
+b100 8
+1G
+1!
+1""
+b1000000000000 &
+b1000000000000 P
+b1000000000000 w
+b11011 6
+17
+0@
+1A
+b1 H
+1E
+12
+#60000
+02
+#65000
+12
+#70000
+02
+#75000
+b110 ^
+1D
+0G
+b10011 6
+b1000 8
+17
+b1011 -
+b1011 v
+b1110 0
+b1110 L
+b1110 k
+b11 e
+1j
+b100000 d
+0_
+b1 #
+b1 V
+b1 `
+b10 %
+b10 T
+b10 b
+b101 $
+b101 U
+b101 a
+b1101000101 .
+b1101000101 M
+b1101000101 i
+b10 X
+b10 [
+b110 ]
+1g
+b10010001101000101 K
+b10010001101000101 l
+1)
+1c
+0(
+0Z
+0+
+0m
+0'
+0Y
+0*
+0f
+b1000 1
+b1000 n
+b11 \
+b10000 3
+b11101111000000010010001101000101 <
+b11101111000000010010001101000101 N
+b10 I
+b10010001101000101 #"
+b11101111000000010010001101000101 $"
+12
+#80000
+02
+#85000
+12
+#90000
+02
+#95000
+b0 ^
+b0 #
+b0 V
+b0 `
+b0 %
+b0 T
+b0 b
+b0 $
+b0 U
+b0 a
+b0 .
+b0 M
+b0 i
+b0 X
+b0 [
+b0 ]
+b0 K
+b0 l
+b0 \
+b1011 -
+b1011 v
+b10011 6
+b1000 8
+17
+b11101111000000000000000000000000 <
+b11101111000000000000000000000000 N
+b11 I
+b0 #"
+b11101111000000000000000000000000 $"
+b10000 3
+b10000 B
+b10 H
+12
+#100000
+02
+#105000
+12
+#110000
+02
+#115000
+b11111 ^
+b111111 d
+1_
+b1111 #
+b1111 V
+b1111 `
+b1111 %
+b1111 T
+b1111 b
+b1111 $
+b1111 U
+b1111 a
+b111111111111 .
+b111111111111 M
+b111111111111 i
+b11 X
+b11 [
+b11111 ]
+b111111111111111111111111 K
+b111111111111111111111111 l
+1(
+1Z
+1+
+1m
+1'
+1Y
+1*
+1f
+b1111 1
+b1111 n
+b1111 \
+b1011 -
+b1011 v
+b10011 6
+b1000 8
+17
+b11101111111111111111111111111111 <
+b11101111111111111111111111111111 N
+b100 I
+b111111111111111111111111 #"
+b11101111111111111111111111111111 $"
+b10000 3
+b11 H
+12
+#120000
+02
+#125000
+12
+#130000
+02
+#135000
+0D
+1G
+b0 0
+b0 L
+b0 k
+b1 e
+b111 -
+b111 v
+b11011 6
+b100 8
+17
+b111111111111111111111111111 <
+b111111111111111111111111111 N
+b101 I
+b111111111111111111111111111 %"
+b10000 3
+b100 H
+12
+#140000
+02
+#145000
+12
+#150000
+02
+#155000
+b1111 0
+b1111 L
+b1111 k
+b11 e
+b11011 6
+b100 8
+17
+b11111111111111111111111111111111 <
+b11111111111111111111111111111111 N
+b110 I
+b11111111111111111111111111111111 %"
+b10000 3
+b101 H
+12
+#160000
+02
+#165000
+12
+#170000
+02
+#175000
+b11011 6
+b100 8
+17
+b10000 4
+b1000 I
+b10000 3
+b1000 H
+12
+#180000
+02
+#185000
+12

@@ -1,0 +1,79 @@
+$date
+	Sun Jul 27 09:30:46 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module decode_simple_test $end
+$var reg 4 ! alu_op [3:0] $end
+$var reg 1 " clk $end
+$var reg 4 # condition [3:0] $end
+$var reg 1 $ flush $end
+$var reg 1 % imm_en $end
+$var reg 12 & immediate [11:0] $end
+$var reg 1 ' instr_valid $end
+$var reg 32 ( instruction [31:0] $end
+$var reg 32 ) pc_in [31:0] $end
+$var reg 4 * rd [3:0] $end
+$var reg 4 + rm [3:0] $end
+$var reg 4 , rn [3:0] $end
+$var reg 1 - rst_n $end
+$var reg 1 . stall $end
+$var reg 1 / thumb_mode $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0/
+0.
+0-
+bx ,
+bx +
+bx *
+b0 )
+b11100011101000000000000000000001 (
+1'
+bx &
+x%
+0$
+bx #
+0"
+bx !
+$end
+#5000
+1"
+#10000
+0"
+#15000
+1-
+1"
+#20000
+0"
+#25000
+1"
+#30000
+0"
+#35000
+1"
+#40000
+0"
+#45000
+b11100000100000000010000000000001 (
+1%
+b1 &
+b0 *
+b1101 !
+b1110 #
+1"
+#50000
+0"
+#55000
+0%
+b1 +
+b0 ,
+b10 *
+b100 !
+1"

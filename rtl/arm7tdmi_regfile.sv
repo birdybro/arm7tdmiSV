@@ -1,4 +1,4 @@
-import arm7tdmi_pkg::*;
+// import arm7tdmi_pkg::*;
 
 module arm7tdmi_regfile (
     input  logic        clk,
@@ -21,8 +21,8 @@ module arm7tdmi_regfile (
     input  logic        pc_we,
     
     // Mode control
-    input  processor_mode_t current_mode,
-    input  processor_mode_t target_mode,
+    input  logic [4:0]  current_mode,
+    input  logic [4:0]  target_mode,
     input  logic            mode_change,
     
     // CPSR/SPSR access
@@ -74,7 +74,7 @@ module arm7tdmi_regfile (
             end
             
             // Initialize status registers
-            cpsr <= {27'b0, MODE_SUPERVISOR};
+            cpsr <= {27'b0, 5'b10011}; // MODE_SUPERVISOR
             spsr_fiq <= 32'b0;
             spsr_irq <= 32'b0;
             spsr_svc <= 32'b0;

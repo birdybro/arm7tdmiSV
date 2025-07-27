@@ -1,11 +1,11 @@
-import arm7tdmi_pkg::*;
+// import arm7tdmi_pkg::*;
 
 module arm7tdmi_alu (
     input  logic        clk,
     input  logic        rst_n,
     
     // Control signals
-    input  alu_op_t     alu_op,
+    input  logic [3:0]  alu_op,
     input  logic        set_flags,
     
     // Operands
@@ -34,17 +34,17 @@ module arm7tdmi_alu (
         extended_result = 33'b0;
         
         case (alu_op)
-            ALU_AND: begin
+            4'b0000: begin // ALU_AND
                 alu_result = operand_a & operand_b;
                 alu_carry = carry_in;  // Preserve carry for logical operations
             end
             
-            ALU_EOR: begin
+            4'b0001: begin // ALU_EOR
                 alu_result = operand_a ^ operand_b;
                 alu_carry = carry_in;
             end
             
-            ALU_SUB: begin
+            4'b0010: begin // ALU_SUB
                 extended_result = {1'b0, operand_a} - {1'b0, operand_b};
                 alu_result = extended_result[31:0];
                 alu_carry = ~extended_result[32];  // Inverted for subtraction

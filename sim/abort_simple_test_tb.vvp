@@ -1,0 +1,708 @@
+#! /usr/bin/vvp
+:ivl_version "11.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 12;
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/system.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/va_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2009.vpi";
+S_0x5f08cd12d990 .scope package, "$unit" "$unit" 2 1;
+ .timescale 0 0;
+S_0x5f08cd12db20 .scope package, "arm7tdmi_pkg" "arm7tdmi_pkg" 3 1;
+ .timescale 0 0;
+P_0x5f08cd1777a0 .param/l "CPSR_C_BIT" 0 3 109, +C4<00000000000000000000000000011101>;
+P_0x5f08cd1777e0 .param/l "CPSR_F_BIT" 0 3 112, +C4<00000000000000000000000000000110>;
+P_0x5f08cd177820 .param/l "CPSR_I_BIT" 0 3 111, +C4<00000000000000000000000000000111>;
+P_0x5f08cd177860 .param/l "CPSR_N_BIT" 0 3 107, +C4<00000000000000000000000000011111>;
+P_0x5f08cd1778a0 .param/l "CPSR_T_BIT" 0 3 113, +C4<00000000000000000000000000000101>;
+P_0x5f08cd1778e0 .param/l "CPSR_V_BIT" 0 3 110, +C4<00000000000000000000000000011100>;
+P_0x5f08cd177920 .param/l "CPSR_Z_BIT" 0 3 108, +C4<00000000000000000000000000011110>;
+P_0x5f08cd177960 .param/l "R0" 0 3 89, C4<0000>;
+P_0x5f08cd1779a0 .param/l "R1" 0 3 90, C4<0001>;
+P_0x5f08cd1779e0 .param/l "R10" 0 3 99, C4<1010>;
+P_0x5f08cd177a20 .param/l "R11" 0 3 100, C4<1011>;
+P_0x5f08cd177a60 .param/l "R12" 0 3 101, C4<1100>;
+P_0x5f08cd177aa0 .param/l "R13" 0 3 102, C4<1101>;
+P_0x5f08cd177ae0 .param/l "R14" 0 3 103, C4<1110>;
+P_0x5f08cd177b20 .param/l "R15" 0 3 104, C4<1111>;
+P_0x5f08cd177b60 .param/l "R2" 0 3 91, C4<0010>;
+P_0x5f08cd177ba0 .param/l "R3" 0 3 92, C4<0011>;
+P_0x5f08cd177be0 .param/l "R4" 0 3 93, C4<0100>;
+P_0x5f08cd177c20 .param/l "R5" 0 3 94, C4<0101>;
+P_0x5f08cd177c60 .param/l "R6" 0 3 95, C4<0110>;
+P_0x5f08cd177ca0 .param/l "R7" 0 3 96, C4<0111>;
+P_0x5f08cd177ce0 .param/l "R8" 0 3 97, C4<1000>;
+P_0x5f08cd177d20 .param/l "R9" 0 3 98, C4<1001>;
+enum0x5f08cd0edb80 .enum4 (3)
+   "FETCH" 3'b000,
+   "DECODE" 3'b001,
+   "EXECUTE" 3'b010,
+   "MEMORY" 3'b011,
+   "WRITEBACK" 3'b100
+ ;
+enum0x5f08cd0ee4e0 .enum4 (5)
+   "MODE_USER" 5'b10000,
+   "MODE_FIQ" 5'b10001,
+   "MODE_IRQ" 5'b10010,
+   "MODE_SUPERVISOR" 5'b10011,
+   "MODE_ABORT" 5'b10111,
+   "MODE_UNDEFINED" 5'b11011,
+   "MODE_SYSTEM" 5'b11111
+ ;
+enum0x5f08cd1240e0 .enum4 (4)
+   "INSTR_DATA_PROC" 4'b0000,
+   "INSTR_MUL" 4'b0001,
+   "INSTR_MUL_LONG" 4'b0010,
+   "INSTR_SINGLE_SWAP" 4'b0011,
+   "INSTR_BRANCH_EX" 4'b0100,
+   "INSTR_HALFWORD_DT" 4'b0101,
+   "INSTR_SINGLE_DT" 4'b0110,
+   "INSTR_UNDEFINED" 4'b0111,
+   "INSTR_BLOCK_DT" 4'b1000,
+   "INSTR_BRANCH" 4'b1001,
+   "INSTR_COPROCESSOR" 4'b1010,
+   "INSTR_SWI" 4'b1011,
+   "INSTR_PSR_TRANSFER" 4'b1100
+ ;
+enum0x5f08cd150660 .enum4 (4)
+   "ALU_AND" 4'b0000,
+   "ALU_EOR" 4'b0001,
+   "ALU_SUB" 4'b0010,
+   "ALU_RSB" 4'b0011,
+   "ALU_ADD" 4'b0100,
+   "ALU_ADC" 4'b0101,
+   "ALU_SBC" 4'b0110,
+   "ALU_RSC" 4'b0111,
+   "ALU_TST" 4'b1000,
+   "ALU_TEQ" 4'b1001,
+   "ALU_CMP" 4'b1010,
+   "ALU_CMN" 4'b1011,
+   "ALU_ORR" 4'b1100,
+   "ALU_MOV" 4'b1101,
+   "ALU_BIC" 4'b1110,
+   "ALU_MVN" 4'b1111
+ ;
+enum0x5f08cd152210 .enum4 (4)
+   "COND_EQ" 4'b0000,
+   "COND_NE" 4'b0001,
+   "COND_CS" 4'b0010,
+   "COND_CC" 4'b0011,
+   "COND_MI" 4'b0100,
+   "COND_PL" 4'b0101,
+   "COND_VS" 4'b0110,
+   "COND_VC" 4'b0111,
+   "COND_HI" 4'b1000,
+   "COND_LS" 4'b1001,
+   "COND_GE" 4'b1010,
+   "COND_LT" 4'b1011,
+   "COND_GT" 4'b1100,
+   "COND_LE" 4'b1101,
+   "COND_AL" 4'b1110,
+   "COND_NV" 4'b1111
+ ;
+enum0x5f08cd153dc0 .enum4 (2)
+   "SHIFT_LSL" 2'b00,
+   "SHIFT_LSR" 2'b01,
+   "SHIFT_ASR" 2'b10,
+   "SHIFT_ROR" 2'b11
+ ;
+enum0x5f08cd154650 .enum4 (3)
+   "CP_CDP" 3'b000,
+   "CP_LDC" 3'b001,
+   "CP_STC" 3'b010,
+   "CP_MCR" 3'b011,
+   "CP_MRC" 3'b100
+ ;
+enum0x5f08cd1550c0 .enum4 (5)
+   "THUMB_ALU_IMM" 5'b00000,
+   "THUMB_ALU_REG" 5'b00001,
+   "THUMB_SHIFT" 5'b00010,
+   "THUMB_CMP_MOV_IMM" 5'b00011,
+   "THUMB_ALU_HI" 5'b00100,
+   "THUMB_PC_REL_LOAD" 5'b00101,
+   "THUMB_LOAD_STORE" 5'b00110,
+   "THUMB_LOAD_STORE_IMM" 5'b00111,
+   "THUMB_LOAD_STORE_HW" 5'b01000,
+   "THUMB_SP_REL_LOAD" 5'b01001,
+   "THUMB_GET_REL_ADDR" 5'b01010,
+   "THUMB_ADD_SUB_SP" 5'b01011,
+   "THUMB_PUSH_POP" 5'b01100,
+   "THUMB_LOAD_STORE_MULT" 5'b01101,
+   "THUMB_BRANCH_COND" 5'b01110,
+   "THUMB_BRANCH_UNCOND" 5'b01111,
+   "THUMB_BL_HIGH" 5'b10000,
+   "THUMB_BL_LOW" 5'b10001,
+   "THUMB_SWI" 5'b10010
+ ;
+S_0x5f08cd12dcb0 .scope module, "abort_simple_test_tb" "abort_simple_test_tb" 4 8;
+ .timescale -9 -12;
+v0x5f08cd198540_0 .var "clk", 0 0;
+v0x5f08cd198600_0 .var "current_cpsr", 31 0;
+v0x5f08cd1986a0_0 .var "current_mode", 4 0;
+v0x5f08cd198740_0 .var "current_pc", 31 0;
+v0x5f08cd1987e0_0 .var "data_abort", 0 0;
+v0x5f08cd198880_0 .net "exception_cpsr", 31 0, v0x5f08cd164d00_0;  1 drivers
+v0x5f08cd198920_0 .net "exception_mode", 4 0, v0x5f08cd15f3e0_0;  1 drivers
+v0x5f08cd1989c0_0 .net "exception_spsr", 31 0, L_0x5f08cd166750;  1 drivers
+v0x5f08cd198a60_0 .net "exception_taken", 0 0, v0x5f08cd197aa0_0;  1 drivers
+v0x5f08cd198b30_0 .net "exception_type", 2 0, v0x5f08cd197b60_0;  1 drivers
+v0x5f08cd198c00_0 .net "exception_vector", 31 0, v0x5f08cd197c40_0;  1 drivers
+v0x5f08cd198cd0_0 .var "fiq", 0 0;
+v0x5f08cd198da0_0 .var "irq", 0 0;
+v0x5f08cd198e70_0 .var "prefetch_abort", 0 0;
+v0x5f08cd198f40_0 .var "rst_n", 0 0;
+v0x5f08cd199010_0 .var "swi", 0 0;
+v0x5f08cd1990e0_0 .var/2s "test_count", 31 0;
+v0x5f08cd199180_0 .var/2s "test_passed", 31 0;
+v0x5f08cd199220_0 .var "undefined_instr", 0 0;
+S_0x5f08cd13b2f0 .scope task, "test_abort_cpsr_update" "test_abort_cpsr_update" 4 157, 4 157 0, S_0x5f08cd12dcb0;
+ .timescale -9 -12;
+E_0x5f08cd13cf20 .event posedge, v0x5f08cd1688c0_0;
+TD_abort_simple_test_tb.test_abort_cpsr_update ;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd1990e0_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd1990e0_0, 0, 32;
+    %vpi_call/w 4 159 "$display", "\012Test %d: Abort CPSR Update", v0x5f08cd1990e0_0 {0 0 0};
+    %pushi/vec4 16, 0, 5;
+    %store/vec4 v0x5f08cd1986a0_0, 0, 5;
+    %pushi/vec4 1610612767, 0, 32;
+    %store/vec4 v0x5f08cd198600_0, 0, 32;
+    %pushi/vec4 16384, 0, 32;
+    %store/vec4 v0x5f08cd198740_0, 0, 32;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %load/vec4 v0x5f08cd198880_0;
+    %parti/s 5, 0, 2;
+    %pushi/vec4 23, 0, 5;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %load/vec4 v0x5f08cd198880_0;
+    %parti/s 1, 7, 4;
+    %pushi/vec4 1, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198880_0;
+    %parti/s 1, 5, 4;
+    %pushi/vec4 0, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_0.0, 8;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd199180_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd199180_0, 0, 32;
+    %vpi_call/w 4 175 "$display", "  \342\234\205 PASS: CPSR correctly updated for abort" {0 0 0};
+    %vpi_call/w 4 176 "$display", "    New CPSR: 0x%08X", v0x5f08cd198880_0 {0 0 0};
+    %jmp T_0.1;
+T_0.0 ;
+    %vpi_call/w 4 178 "$display", "  \342\235\214 FAIL: CPSR update incorrect" {0 0 0};
+    %vpi_call/w 4 179 "$display", "    Expected: Mode=ABORT(0x17), I=1, T=0" {0 0 0};
+    %vpi_call/w 4 180 "$display", "    Got CPSR: 0x%08X", v0x5f08cd198880_0 {0 0 0};
+T_0.1 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %end;
+S_0x5f08cd13b4f0 .scope task, "test_abort_priority" "test_abort_priority" 4 124, 4 124 0, S_0x5f08cd12dcb0;
+ .timescale -9 -12;
+TD_abort_simple_test_tb.test_abort_priority ;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd1990e0_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd1990e0_0, 0, 32;
+    %vpi_call/w 4 126 "$display", "\012Test %d: Abort Exception Priority", v0x5f08cd1990e0_0 {0 0 0};
+    %pushi/vec4 16, 0, 5;
+    %store/vec4 v0x5f08cd1986a0_0, 0, 5;
+    %pushi/vec4 31, 0, 32;
+    %store/vec4 v0x5f08cd198600_0, 0, 32;
+    %pushi/vec4 12288, 0, 32;
+    %store/vec4 v0x5f08cd198740_0, 0, 32;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd198da0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd198cd0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %load/vec4 v0x5f08cd198a60_0;
+    %load/vec4 v0x5f08cd198b30_0;
+    %pushi/vec4 4, 0, 3;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198c00_0;
+    %pushi/vec4 16, 0, 32;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_1.2, 8;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd199180_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd199180_0, 0, 32;
+    %vpi_call/w 4 144 "$display", "  \342\234\205 PASS: Data abort has correct priority" {0 0 0};
+    %jmp T_1.3;
+T_1.2 ;
+    %vpi_call/w 4 146 "$display", "  \342\235\214 FAIL: Exception priority incorrect" {0 0 0};
+    %vpi_call/w 4 147 "$display", "    Expected: Data Abort (type=4)" {0 0 0};
+    %vpi_call/w 4 148 "$display", "    Got: type=%d", v0x5f08cd198b30_0 {0 0 0};
+T_1.3 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198da0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198cd0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %end;
+S_0x5f08cd177d70 .scope task, "test_data_abort_exception" "test_data_abort_exception" 4 61, 4 61 0, S_0x5f08cd12dcb0;
+ .timescale -9 -12;
+TD_abort_simple_test_tb.test_data_abort_exception ;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd1990e0_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd1990e0_0, 0, 32;
+    %vpi_call/w 4 63 "$display", "\012Test %d: Data Abort Exception", v0x5f08cd1990e0_0 {0 0 0};
+    %pushi/vec4 16, 0, 5;
+    %store/vec4 v0x5f08cd1986a0_0, 0, 5;
+    %pushi/vec4 31, 0, 32;
+    %store/vec4 v0x5f08cd198600_0, 0, 32;
+    %pushi/vec4 4096, 0, 32;
+    %store/vec4 v0x5f08cd198740_0, 0, 32;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %load/vec4 v0x5f08cd198a60_0;
+    %load/vec4 v0x5f08cd198920_0;
+    %pushi/vec4 23, 0, 5;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198c00_0;
+    %pushi/vec4 16, 0, 32;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198b30_0;
+    %pushi/vec4 4, 0, 3;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_2.4, 8;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd199180_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd199180_0, 0, 32;
+    %vpi_call/w 4 80 "$display", "  \342\234\205 PASS: Data abort exception correctly generated" {0 0 0};
+    %vpi_call/w 4 81 "$display", "    Mode: 0x%02X, Vector: 0x%08X", v0x5f08cd198920_0, v0x5f08cd198c00_0 {0 0 0};
+    %jmp T_2.5;
+T_2.4 ;
+    %vpi_call/w 4 83 "$display", "  \342\235\214 FAIL: Data abort exception incorrect" {0 0 0};
+    %vpi_call/w 4 84 "$display", "    Expected: Mode=ABORT, Vector=0x00000010" {0 0 0};
+    %vpi_call/w 4 85 "$display", "    Got: Mode=0x%02X, Vector=0x%08X, Taken=%b", v0x5f08cd198920_0, v0x5f08cd198c00_0, v0x5f08cd198a60_0 {0 0 0};
+T_2.5 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %end;
+S_0x5f08cd177f00 .scope task, "test_prefetch_abort_exception" "test_prefetch_abort_exception" 4 93, 4 93 0, S_0x5f08cd12dcb0;
+ .timescale -9 -12;
+TD_abort_simple_test_tb.test_prefetch_abort_exception ;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd1990e0_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd1990e0_0, 0, 32;
+    %vpi_call/w 4 95 "$display", "\012Test %d: Prefetch Abort Exception", v0x5f08cd1990e0_0 {0 0 0};
+    %pushi/vec4 16, 0, 5;
+    %store/vec4 v0x5f08cd1986a0_0, 0, 5;
+    %pushi/vec4 31, 0, 32;
+    %store/vec4 v0x5f08cd198600_0, 0, 32;
+    %pushi/vec4 8192, 0, 32;
+    %store/vec4 v0x5f08cd198740_0, 0, 32;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd198e70_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %load/vec4 v0x5f08cd198a60_0;
+    %load/vec4 v0x5f08cd198920_0;
+    %pushi/vec4 23, 0, 5;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198c00_0;
+    %pushi/vec4 12, 0, 32;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %load/vec4 v0x5f08cd198b30_0;
+    %pushi/vec4 3, 0, 3;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_3.6, 8;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x5f08cd199180_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %cast2;
+    %store/vec4 v0x5f08cd199180_0, 0, 32;
+    %vpi_call/w 4 112 "$display", "  \342\234\205 PASS: Prefetch abort exception correctly generated" {0 0 0};
+    %vpi_call/w 4 113 "$display", "    Mode: 0x%02X, Vector: 0x%08X", v0x5f08cd198920_0, v0x5f08cd198c00_0 {0 0 0};
+    %jmp T_3.7;
+T_3.6 ;
+    %vpi_call/w 4 115 "$display", "  \342\235\214 FAIL: Prefetch abort exception incorrect" {0 0 0};
+    %vpi_call/w 4 116 "$display", "    Expected: Mode=ABORT, Vector=0x0000000C" {0 0 0};
+    %vpi_call/w 4 117 "$display", "    Got: Mode=0x%02X, Vector=0x%08X", v0x5f08cd198920_0, v0x5f08cd198c00_0 {0 0 0};
+T_3.7 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198e70_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %end;
+S_0x5f08cd178090 .scope module, "u_exception" "arm7tdmi_exception" 4 40, 5 3 0, S_0x5f08cd12dcb0;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "clk";
+    .port_info 1 /INPUT 1 "rst_n";
+    .port_info 2 /INPUT 1 "irq";
+    .port_info 3 /INPUT 1 "fiq";
+    .port_info 4 /INPUT 1 "swi";
+    .port_info 5 /INPUT 1 "undefined_instr";
+    .port_info 6 /INPUT 1 "prefetch_abort";
+    .port_info 7 /INPUT 1 "data_abort";
+    .port_info 8 /INPUT 5 "current_mode";
+    .port_info 9 /INPUT 32 "current_cpsr";
+    .port_info 10 /INPUT 32 "current_pc";
+    .port_info 11 /OUTPUT 1 "exception_taken";
+    .port_info 12 /OUTPUT 5 "exception_mode";
+    .port_info 13 /OUTPUT 32 "exception_vector";
+    .port_info 14 /OUTPUT 32 "exception_cpsr";
+    .port_info 15 /OUTPUT 32 "exception_spsr";
+    .port_info 16 /OUTPUT 3 "exception_type";
+P_0x5f08cd178220 .param/l "EXCEPT_DATA_ABT" 0 5 36, C4<100>;
+P_0x5f08cd178260 .param/l "EXCEPT_FIQ" 0 5 38, C4<110>;
+P_0x5f08cd1782a0 .param/l "EXCEPT_IRQ" 0 5 37, C4<101>;
+P_0x5f08cd1782e0 .param/l "EXCEPT_PREFETCH_ABT" 0 5 35, C4<011>;
+P_0x5f08cd178320 .param/l "EXCEPT_RESET" 0 5 32, C4<000>;
+P_0x5f08cd178360 .param/l "EXCEPT_SWI" 0 5 34, C4<010>;
+P_0x5f08cd1783a0 .param/l "EXCEPT_UNDEFINED" 0 5 33, C4<001>;
+P_0x5f08cd1783e0 .param/l "VECTOR_DATA_ABT" 0 5 45, C4<00000000000000000000000000010000>;
+P_0x5f08cd178420 .param/l "VECTOR_FIQ" 0 5 47, C4<00000000000000000000000000011100>;
+P_0x5f08cd178460 .param/l "VECTOR_IRQ" 0 5 46, C4<00000000000000000000000000011000>;
+P_0x5f08cd1784a0 .param/l "VECTOR_PREFETCH_ABT" 0 5 44, C4<00000000000000000000000000001100>;
+P_0x5f08cd1784e0 .param/l "VECTOR_RESET" 0 5 41, C4<00000000000000000000000000000000>;
+P_0x5f08cd178520 .param/l "VECTOR_SWI" 0 5 43, C4<00000000000000000000000000001000>;
+P_0x5f08cd178560 .param/l "VECTOR_UNDEFINED" 0 5 42, C4<00000000000000000000000000000100>;
+L_0x5f08cd166750 .functor BUFZ 32, v0x5f08cd198600_0, C4<00000000000000000000000000000000>, C4<00000000000000000000000000000000>, C4<00000000000000000000000000000000>;
+v0x5f08cd1688c0_0 .net "clk", 0 0, v0x5f08cd198540_0;  1 drivers
+v0x5f08cd16b700_0 .net "current_cpsr", 31 0, v0x5f08cd198600_0;  1 drivers
+v0x5f08cd165ea0_0 .net "current_mode", 4 0, v0x5f08cd1986a0_0;  1 drivers
+v0x5f08cd167cf0_0 .net "current_pc", 31 0, v0x5f08cd198740_0;  1 drivers
+v0x5f08cd162c60_0 .net "data_abort", 0 0, v0x5f08cd1987e0_0;  1 drivers
+v0x5f08cd164d00_0 .var "exception_cpsr", 31 0;
+v0x5f08cd15f3e0_0 .var "exception_mode", 4 0;
+v0x5f08cd1979c0_0 .net "exception_spsr", 31 0, L_0x5f08cd166750;  alias, 1 drivers
+v0x5f08cd197aa0_0 .var "exception_taken", 0 0;
+v0x5f08cd197b60_0 .var "exception_type", 2 0;
+v0x5f08cd197c40_0 .var "exception_vector", 31 0;
+v0x5f08cd197d20_0 .net "fiq", 0 0, v0x5f08cd198cd0_0;  1 drivers
+v0x5f08cd197de0_0 .net "fiq_disabled", 0 0, L_0x5f08cd1993c0;  1 drivers
+v0x5f08cd197ea0_0 .net "irq", 0 0, v0x5f08cd198da0_0;  1 drivers
+v0x5f08cd197f60_0 .net "irq_disabled", 0 0, L_0x5f08cd1992f0;  1 drivers
+v0x5f08cd198020_0 .net "prefetch_abort", 0 0, v0x5f08cd198e70_0;  1 drivers
+v0x5f08cd1980e0_0 .net "rst_n", 0 0, v0x5f08cd198f40_0;  1 drivers
+v0x5f08cd1981a0_0 .net "swi", 0 0, v0x5f08cd199010_0;  1 drivers
+v0x5f08cd198260_0 .net "undefined_instr", 0 0, v0x5f08cd199220_0;  1 drivers
+E_0x5f08cd14a070 .event edge, v0x5f08cd16b700_0, v0x5f08cd197aa0_0, v0x5f08cd15f3e0_0, v0x5f08cd197b60_0;
+E_0x5f08cd146fc0/0 .event edge, v0x5f08cd162c60_0, v0x5f08cd197d20_0, v0x5f08cd197de0_0, v0x5f08cd197ea0_0;
+E_0x5f08cd146fc0/1 .event edge, v0x5f08cd197f60_0, v0x5f08cd198020_0, v0x5f08cd198260_0, v0x5f08cd1981a0_0;
+E_0x5f08cd146fc0 .event/or E_0x5f08cd146fc0/0, E_0x5f08cd146fc0/1;
+L_0x5f08cd1992f0 .part v0x5f08cd198600_0, 7, 1;
+L_0x5f08cd1993c0 .part v0x5f08cd198600_0, 6, 1;
+    .scope S_0x5f08cd178090;
+T_4 ;
+Ewait_0 .event/or E_0x5f08cd146fc0, E_0x0;
+    %wait Ewait_0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 0, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 19, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %load/vec4 v0x5f08cd162c60_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.0, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 4, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 23, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 16, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %jmp T_4.1;
+T_4.0 ;
+    %load/vec4 v0x5f08cd197d20_0;
+    %load/vec4 v0x5f08cd197de0_0;
+    %nor/r;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.2, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 6, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 17, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 28, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %jmp T_4.3;
+T_4.2 ;
+    %load/vec4 v0x5f08cd197ea0_0;
+    %load/vec4 v0x5f08cd197f60_0;
+    %nor/r;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.4, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 5, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 18, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 24, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %jmp T_4.5;
+T_4.4 ;
+    %load/vec4 v0x5f08cd198020_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.6, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 3, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 23, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 12, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %jmp T_4.7;
+T_4.6 ;
+    %load/vec4 v0x5f08cd198260_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.8, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 1, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 27, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 4, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+    %jmp T_4.9;
+T_4.8 ;
+    %load/vec4 v0x5f08cd1981a0_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_4.10, 8;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd197aa0_0, 0, 1;
+    %pushi/vec4 2, 0, 3;
+    %store/vec4 v0x5f08cd197b60_0, 0, 3;
+    %pushi/vec4 19, 0, 5;
+    %store/vec4 v0x5f08cd15f3e0_0, 0, 5;
+    %pushi/vec4 8, 0, 32;
+    %store/vec4 v0x5f08cd197c40_0, 0, 32;
+T_4.10 ;
+T_4.9 ;
+T_4.7 ;
+T_4.5 ;
+T_4.3 ;
+T_4.1 ;
+    %jmp T_4;
+    .thread T_4, $push;
+    .scope S_0x5f08cd178090;
+T_5 ;
+Ewait_1 .event/or E_0x5f08cd14a070, E_0x0;
+    %wait Ewait_1;
+    %load/vec4 v0x5f08cd16b700_0;
+    %store/vec4 v0x5f08cd164d00_0, 0, 32;
+    %load/vec4 v0x5f08cd197aa0_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_5.0, 8;
+    %load/vec4 v0x5f08cd15f3e0_0;
+    %ix/load 4, 0, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 5;
+    %load/vec4 v0x5f08cd197b60_0;
+    %dup/vec4;
+    %pushi/vec4 6, 0, 3;
+    %cmp/u;
+    %jmp/1 T_5.2, 6;
+    %dup/vec4;
+    %pushi/vec4 5, 0, 3;
+    %cmp/u;
+    %jmp/1 T_5.3, 6;
+    %pushi/vec4 1, 0, 1;
+    %ix/load 4, 7, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 1;
+    %jmp T_5.5;
+T_5.2 ;
+    %pushi/vec4 1, 0, 1;
+    %ix/load 4, 6, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 1;
+    %pushi/vec4 1, 0, 1;
+    %ix/load 4, 7, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 1;
+    %jmp T_5.5;
+T_5.3 ;
+    %pushi/vec4 1, 0, 1;
+    %ix/load 4, 7, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 1;
+    %jmp T_5.5;
+T_5.5 ;
+    %pop/vec4 1;
+    %pushi/vec4 0, 0, 1;
+    %ix/load 4, 5, 0;
+    %flag_set/imm 4, 0;
+    %store/vec4 v0x5f08cd164d00_0, 4, 1;
+T_5.0 ;
+    %jmp T_5;
+    .thread T_5, $push;
+    .scope S_0x5f08cd12dcb0;
+T_6 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198540_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd198f40_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198da0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198cd0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd199010_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd199220_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198e70_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd1987e0_0, 0, 1;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x5f08cd1990e0_0, 0, 32;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x5f08cd199180_0, 0, 32;
+    %end;
+    .thread T_6, $init;
+    .scope S_0x5f08cd12dcb0;
+T_7 ;
+    %delay 5000, 0;
+    %load/vec4 v0x5f08cd198540_0;
+    %inv;
+    %store/vec4 v0x5f08cd198540_0, 0, 1;
+    %jmp T_7;
+    .thread T_7;
+    .scope S_0x5f08cd12dcb0;
+T_8 ;
+    %vpi_call/w 4 189 "$dumpfile", "abort_simple_test_tb.vcd" {0 0 0};
+    %vpi_call/w 4 190 "$dumpvars", 32'sb00000000000000000000000000000000, S_0x5f08cd12dcb0 {0 0 0};
+    %vpi_call/w 4 192 "$display", "=== ARM7TDMI Abort Exception Test ===" {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5f08cd198f40_0, 0, 1;
+    %wait E_0x5f08cd13cf20;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5f08cd198f40_0, 0, 1;
+    %pushi/vec4 2, 0, 32;
+T_8.0 %dup/vec4;
+    %pushi/vec4 0, 0, 32;
+    %cmp/s;
+    %jmp/1xz T_8.1, 5;
+    %jmp/1 T_8.1, 4;
+    %pushi/vec4 1, 0, 32;
+    %sub;
+    %wait E_0x5f08cd13cf20;
+    %jmp T_8.0;
+T_8.1 ;
+    %pop/vec4 1;
+    %fork TD_abort_simple_test_tb.test_data_abort_exception, S_0x5f08cd177d70;
+    %join;
+    %fork TD_abort_simple_test_tb.test_prefetch_abort_exception, S_0x5f08cd177f00;
+    %join;
+    %fork TD_abort_simple_test_tb.test_abort_priority, S_0x5f08cd13b4f0;
+    %join;
+    %fork TD_abort_simple_test_tb.test_abort_cpsr_update, S_0x5f08cd13b2f0;
+    %join;
+    %pushi/vec4 5, 0, 32;
+T_8.2 %dup/vec4;
+    %pushi/vec4 0, 0, 32;
+    %cmp/s;
+    %jmp/1xz T_8.3, 5;
+    %jmp/1 T_8.3, 4;
+    %pushi/vec4 1, 0, 32;
+    %sub;
+    %wait E_0x5f08cd13cf20;
+    %jmp T_8.2;
+T_8.3 ;
+    %pop/vec4 1;
+    %vpi_call/w 4 208 "$display", "\012=== Test Summary ===" {0 0 0};
+    %vpi_call/w 4 209 "$display", "Tests Run: %d", v0x5f08cd1990e0_0 {0 0 0};
+    %vpi_call/w 4 210 "$display", "Tests Passed: %d", v0x5f08cd199180_0 {0 0 0};
+    %load/vec4 v0x5f08cd199180_0;
+    %cvt/rv/s;
+    %pushi/real 1677721600, 4072; load=100.000
+    %mul/wr;
+    %load/vec4 v0x5f08cd1990e0_0;
+    %cvt/rv/s;
+    %div/wr;
+    %vpi_call/w 4 211 "$display", "Pass Rate: %.1f%%", W<0,r> {0 1 0};
+    %load/vec4 v0x5f08cd199180_0;
+    %load/vec4 v0x5f08cd1990e0_0;
+    %cmp/e;
+    %jmp/0xz  T_8.4, 4;
+    %vpi_call/w 4 214 "$display", "\012\342\234\205 ALL ABORT EXCEPTION TESTS PASSED!" {0 0 0};
+    %jmp T_8.5;
+T_8.4 ;
+    %vpi_call/w 4 216 "$display", "\012\342\235\214 SOME ABORT EXCEPTION TESTS FAILED" {0 0 0};
+T_8.5 ;
+    %vpi_call/w 4 219 "$finish" {0 0 0};
+    %end;
+    .thread T_8;
+    .scope S_0x5f08cd12dcb0;
+T_9 ;
+    %delay 1000000, 0;
+    %vpi_call/w 4 225 "$display", "ERROR: Test timeout!" {0 0 0};
+    %vpi_call/w 4 226 "$finish" {0 0 0};
+    %end;
+    .thread T_9;
+# The file index is used to find the file name in the following table.
+:file_names 6;
+    "N/A";
+    "<interactive>";
+    "-";
+    "../rtl/arm7tdmi_defines.sv";
+    "abort_simple_test_tb.sv";
+    "../rtl/arm7tdmi_exception.sv";

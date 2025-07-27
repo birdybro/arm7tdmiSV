@@ -1,0 +1,499 @@
+$date
+	Fri Jul 25 09:21:16 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module mmu_multipage_test_tb $end
+$var wire 32 ! tlb_misses [31:0] $end
+$var wire 32 " tlb_hits [31:0] $end
+$var wire 32 # page_faults [31:0] $end
+$var wire 1 $ mmu_busy $end
+$var wire 1 % mem_write $end
+$var wire 32 & mem_wdata [31:0] $end
+$var wire 2 ' mem_size [1:0] $end
+$var wire 1 ( mem_req $end
+$var wire 32 ) mem_paddr [31:0] $end
+$var wire 1 * cpu_ready $end
+$var wire 32 + cpu_rdata [31:0] $end
+$var wire 1 , cpu_abort $end
+$var wire 32 - asid_switches [31:0] $end
+$var reg 1 . cache_enable $end
+$var reg 1 / clk $end
+$var reg 1 0 cpu_req $end
+$var reg 2 1 cpu_size [1:0] $end
+$var reg 32 2 cpu_vaddr [31:0] $end
+$var reg 32 3 cpu_wdata [31:0] $end
+$var reg 1 4 cpu_write $end
+$var reg 8 5 current_asid [7:0] $end
+$var reg 4 6 domain_access [3:0] $end
+$var reg 1 7 mem_abort $end
+$var reg 32 8 mem_rdata [31:0] $end
+$var reg 1 9 mem_ready $end
+$var reg 1 : mmu_enable $end
+$var reg 1 ; rst_n $end
+$var reg 32 < tlb_flush_addr [31:0] $end
+$var reg 1 = tlb_flush_all $end
+$var reg 1 > tlb_flush_asid $end
+$var reg 8 ? tlb_flush_asid_val [7:0] $end
+$var reg 1 @ tlb_flush_entry $end
+$var reg 1 A tlb_flush_global $end
+$var reg 32 B ttb_base [31:0] $end
+$var integer 32 C test_count [31:0] $end
+$var integer 32 D test_passed [31:0] $end
+$var integer 32 E timeout [31:0] $end
+$scope module u_mmu $end
+$var wire 1 . cache_enable $end
+$var wire 1 / clk $end
+$var wire 1 , cpu_abort $end
+$var wire 32 F cpu_rdata [31:0] $end
+$var wire 1 * cpu_ready $end
+$var wire 1 0 cpu_req $end
+$var wire 2 G cpu_size [1:0] $end
+$var wire 32 H cpu_vaddr [31:0] $end
+$var wire 32 I cpu_wdata [31:0] $end
+$var wire 1 4 cpu_write $end
+$var wire 8 J current_asid [7:0] $end
+$var wire 4 K domain_access [3:0] $end
+$var wire 1 7 mem_abort $end
+$var wire 32 L mem_rdata [31:0] $end
+$var wire 1 9 mem_ready $end
+$var wire 1 $ mmu_busy $end
+$var wire 1 : mmu_enable $end
+$var wire 1 ; rst_n $end
+$var wire 32 M tlb_flush_addr [31:0] $end
+$var wire 1 = tlb_flush_all $end
+$var wire 1 > tlb_flush_asid $end
+$var wire 8 N tlb_flush_asid_val [7:0] $end
+$var wire 1 @ tlb_flush_entry $end
+$var wire 1 A tlb_flush_global $end
+$var wire 32 O ttb_base [31:0] $end
+$var wire 10 P va_tiny_page_offset [9:0] $end
+$var wire 20 Q va_tiny_page_index [19:0] $end
+$var wire 12 R va_small_page_offset [11:0] $end
+$var wire 20 S va_small_page_index [19:0] $end
+$var wire 20 T va_section_offset [19:0] $end
+$var wire 20 U va_section_index [19:0] $end
+$var wire 8 V va_page_sub [7:0] $end
+$var wire 16 W va_large_page_offset [15:0] $end
+$var wire 20 X va_large_page_index [19:0] $end
+$var wire 32 Y l2_addr [31:0] $end
+$var wire 32 Z l1_addr [31:0] $end
+$var wire 1 [ asid_changed $end
+$var reg 32 \ asid_switches [31:0] $end
+$var reg 1 ] domain_ok $end
+$var reg 32 ^ final_paddr [31:0] $end
+$var reg 32 _ l1_pte [31:0] $end
+$var reg 32 ` l2_pte [31:0] $end
+$var reg 32 a mem_paddr [31:0] $end
+$var reg 1 ( mem_req $end
+$var reg 2 b mem_size [1:0] $end
+$var reg 32 c mem_wdata [31:0] $end
+$var reg 1 % mem_write $end
+$var reg 3 d next_state [2:0] $end
+$var reg 32 e page_faults [31:0] $end
+$var reg 1 f permission_ok $end
+$var reg 8 g prev_asid [7:0] $end
+$var reg 3 h state [2:0] $end
+$var reg 1 i tlb_hit $end
+$var reg 4 j tlb_hit_index [3:0] $end
+$var reg 32 k tlb_hits [31:0] $end
+$var reg 32 l tlb_misses [31:0] $end
+$var reg 4 m tlb_next_replace [3:0] $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 n i [31:0] $end
+$scope begin $unm_blk_2 $end
+$var reg 1 o page_match $end
+$upscope $end
+$upscope $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 p i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop2 $end
+$var integer 32 q i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop3 $end
+$var integer 32 r i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop4 $end
+$var integer 32 s i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop5 $end
+$var integer 32 t i [31:0] $end
+$upscope $end
+$upscope $end
+$scope begin $ivl_for_loop10 $end
+$var integer 32 u i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop11 $end
+$var integer 32 v i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop6 $end
+$var integer 32 w i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop7 $end
+$var integer 32 x i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop8 $end
+$var integer 32 y i [31:0] $end
+$upscope $end
+$scope begin $ivl_for_loop9 $end
+$var integer 32 z i [31:0] $end
+$upscope $end
+$scope task memory_access $end
+$var reg 32 { expected_paddr [31:0] $end
+$var reg 32 | vaddr [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx |
+bx {
+b10000 z
+b10000000000 y
+b1000000000000 x
+b10000000000000000 w
+b10000000000 v
+b1000000000000 u
+b0 t
+b0 s
+b0 r
+b0 q
+b10000 p
+0o
+b10000 n
+b0 m
+b0 l
+b0 k
+b0 j
+0i
+b0 h
+b0 g
+0f
+b0 e
+b0 d
+b0 c
+b10 b
+b0 a
+bx `
+bx _
+b0 ^
+0]
+b0 \
+1[
+b10000000000000000 Z
+bx0000000000 Y
+b0 X
+b0 W
+b0 V
+b0 U
+b0 T
+b0 S
+b0 R
+b0 Q
+b0 P
+b10000000000000000 O
+b0 N
+b0 M
+b0 L
+b1 K
+b1 J
+b0 I
+b0 H
+b10 G
+b0 F
+b0 E
+b0 D
+b0 C
+b10000000000000000 B
+0A
+0@
+b0 ?
+0>
+0=
+b0 <
+0;
+1:
+19
+b0 8
+07
+b1 6
+b1 5
+04
+b0 3
+b0 2
+b10 1
+00
+0/
+1.
+b0 -
+0,
+b0 +
+1*
+b0 )
+0(
+b10 '
+b0 &
+0%
+0$
+b0 #
+b0 "
+b0 !
+$end
+#5000
+b10000 p
+1/
+#10000
+0/
+#15000
+b10000 p
+1/
+#20000
+0/
+#25000
+b10000 p
+1/
+#30000
+0/
+#35000
+b10000 p
+1/
+#40000
+0/
+#45000
+b1 -
+b1 \
+0[
+b1 g
+1;
+1/
+#50000
+0/
+#55000
+1/
+#60000
+0/
+#65000
+1/
+#70000
+0/
+#75000
+1/
+#80000
+0/
+#85000
+1/
+#90000
+0/
+#95000
+0*
+b100 Q
+b1 d
+b1000000000000000001000000000000 )
+b1000000000000000001000000000000 a
+b10000 n
+b1000000000000000001000000000000 ^
+b10001000000000000 Z
+b10000000000 U
+b1000000000000 T
+b100000000000000 X
+b1000000000000 W
+b1000000000000000001 S
+bx0000000100 Y
+b1 V
+10
+b1000000000000000001000000000000 2
+b1000000000000000001000000000000 H
+b1 C
+b10000000000000000001000000000000 {
+b1000000000000000001000000000000 |
+1/
+#100000
+0/
+#105000
+1$
+b1 h
+0*
+b10000 n
+b10 d
+00
+1/
+#110000
+0/
+#115000
+1(
+b1 !
+b1 l
+b10 h
+b1000000000 Q
+b101 d
+b10001000000000000 )
+b10001000000000000 a
+b10000 n
+b1000000000010000000000000000000 ^
+b10000000000000000000 T
+b100000000001000 X
+b0 W
+b1000000000010000000 S
+bx1000000000 Y
+b10000000 V
+10
+b1000000000010000000000000000000 2
+b1000000000010000000000000000000 H
+b10 C
+b10000000000010000000000000000000 {
+b1000000000010000000000000000000 |
+1/
+#120000
+0/
+#125000
+b1000000000010000000000000000000 )
+b1000000000010000000000000000000 a
+0(
+1,
+b10000 n
+b1000000000 Y
+b10000000000000000000110000011110 +
+b10000000000000000000110000011110 F
+b10000000000000000000110000011110 8
+b10000000000000000000110000011110 L
+b101 h
+b0 _
+b1 E
+1/
+#130000
+0/
+#135000
+b1 #
+b1 e
+b10 E
+1/
+#140000
+0/
+#145000
+b10 #
+b10 e
+b10000 n
+b0 d
+00
+1/
+#150000
+0/
+#155000
+0,
+0$
+b11 #
+b11 e
+b0 h
+b1000000000000000000 Q
+b1 d
+b1010000000000000000000000000000 )
+b1010000000000000000000000000000 a
+b10000 n
+b1010000000000000000000000000000 ^
+b10001010000000000 Z
+b10100000000 U
+b0 T
+b101000000000000 X
+b1010000000000000000 S
+b0 Y
+b0 V
+b0 E
+10
+b1010000000000000000000000000000 2
+b1010000000000000000000000000000 H
+b11 C
+b10010000000000000000000000000000 {
+b1010000000000000000000000000000 |
+1/
+#160000
+0/
+#165000
+1$
+b1 h
+0*
+b10000 n
+b10 d
+00
+1/
+#170000
+0/
+#175000
+1(
+b10 !
+b10 l
+b10 h
+b1000000000000100000 Q
+b101 d
+b10001010000000000 )
+b10001010000000000 a
+b10000 n
+b1010000000000001000000000000000 ^
+b1000000000000000 T
+b1000000000000000 W
+b1010000000000001000 S
+b100000 Y
+b1000 V
+10
+b1010000000000001000000000000000 2
+b1010000000000001000000000000000 H
+b100 C
+b10010000000000001000000000000000 {
+b1010000000000001000000000000000 |
+1/
+#180000
+0/
+#185000
+b1010000000000001000000000000000 )
+b1010000000000001000000000000000 a
+0(
+1,
+b10000 n
+b10000000000000000000110000100000 Y
+b100000000000000001 +
+b100000000000000001 F
+b100000000000000001 8
+b100000000000000001 L
+b101 h
+b10000000000000000000110000011110 _
+b1 E
+1/
+#190000
+0/
+#195000
+b100 #
+b100 e
+b10 E
+1/
+#200000
+0/
+#205000
+b101 #
+b101 e
+b10000 n
+b0 d
+00
+1/
+#210000
+0/
+#215000
+0,
+0$
+b110 #
+b110 e
+b0 h
+b1000000000000111100 Q
+b1 d
+b1010000000000001111000000000000 )
+b1010000000000001111000000000000 a
+b10000 n
+b1010000000000001111000000000000 ^
+b1111000000000000 T
+b1111000000000000 W
+b1010000000000001111 S
+b10000000000000000000110000111100 Y
+b1111 V
